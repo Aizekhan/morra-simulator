@@ -1,328 +1,323 @@
 import GUI from "lil-gui";
 
-import { MORRA_CONFIG }
-from "../world/MorraConfig";
+import { TimeControls } from "./TimeControls";
 
-export const gui =
-  new GUI({
-    title: "MORRA Simulator",
-    width: 420
-  });
+import {
+  MORRA_CONFIG
+} from "../world/MorraConfig";
 
-// =====================
-// FOLDERS
-// =====================
+export class DebugPanel {
 
-export const worldFolder =
-  gui.addFolder("World");
+  gui: GUI;
 
-export const timeFolder =
-  gui.addFolder("Time");
+  constructor(
+    timeControls: TimeControls
+  ) {
 
-export const morraFolder =
-  gui.addFolder("Morra");
+    this.gui =
+      new GUI({
+        title: "MORRA Simulator",
+        width: 420
+      });
 
-export const largeSunFolder =
-  gui.addFolder("Large Sun");
+    this.createWorldFolder();
+    this.createTimeFolder(timeControls);
+    this.createMorraFolder();
+    this.createSunFolders();
+    this.createMoonFolders();
+    this.createLightingFolder();
+    this.createDebugFolder();
+  }
 
-export const mediumSunFolder =
-  gui.addFolder("Medium Sun");
+  private createWorldFolder() {
 
-export const smallSunFolder =
-  gui.addFolder("Small Sun");
+    const folder =
+      this.gui.addFolder("World");
 
-export const moonNorthFolder =
-  gui.addFolder("North Moon");
+    folder.add(
+      MORRA_CONFIG,
+      "TIME_SPEED",
+      MORRA_CONFIG.LIMITS.TIME_SPEED.min,
+      MORRA_CONFIG.LIMITS.TIME_SPEED.max,
+      MORRA_CONFIG.LIMITS.TIME_SPEED.step
+    );
 
-export const moonEquatorFolder =
-  gui.addFolder("Equator Moon");
+    folder.add(
+      MORRA_CONFIG,
+      "ROTATION_SPEED",
+      MORRA_CONFIG.LIMITS.ROTATION_SPEED.min,
+      MORRA_CONFIG.LIMITS.ROTATION_SPEED.max,
+      MORRA_CONFIG.LIMITS.ROTATION_SPEED.step
+    );
+  }
 
-export const lightingFolder =
-  gui.addFolder("Lighting");
+  private createTimeFolder(
+    timeControls: TimeControls
+  ) {
 
-export const debugFolder =
-  gui.addFolder("Debug");
+    const folder =
+      this.gui.addFolder("Time");
 
-// =====================
-// WORLD
-// =====================
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showTimePanel"
+    );
 
-worldFolder.add(
-  MORRA_CONFIG,
-  "TIME_SPEED",
-  0,
-  10000,
-  1
-);
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showTimeline"
+    );
 
-worldFolder.add(
-  MORRA_CONFIG,
-  "ROTATION_SPEED",
-  0,
-  1,
-  0.001
-);
+    folder.add(
+      timeControls,
+      "pause"
+    ).name("Pause / Resume");
 
-worldFolder.add(
-  MORRA_CONFIG,
-  "AXIS_TILT",
-  0,
-  90,
-  0.1
-);
+    folder.add(
+      timeControls,
+      "speed1"
+    ).name("1x");
 
-// =====================
-// TIME
-// =====================
+    folder.add(
+      timeControls,
+      "speed10"
+    ).name("10x");
 
-timeFolder.add(
-  MORRA_CONFIG.DEBUG,
-  "showTimePanel"
-);
+    folder.add(
+      timeControls,
+      "speed100"
+    ).name("100x");
 
-timeFolder.add(
-  MORRA_CONFIG.DEBUG,
-  "showTimeline"
-);
+    folder.add(
+      timeControls,
+      "speed1000"
+    ).name("1000x");
 
-// =====================
-// MORRA
-// =====================
+    folder.add(
+      timeControls,
+      "addHour"
+    ).name("+ 1 Hour");
 
-morraFolder.add(
-  MORRA_CONFIG,
-  "MORRA_RADIUS",
-  50,
-  1000,
-  1
-);
+    folder.add(
+      timeControls,
+      "addDay"
+    ).name("+ 1 Day");
 
-// =====================
-// LARGE SUN
-// =====================
+    folder.open();
+  }
 
-largeSunFolder.add(
-  MORRA_CONFIG.SUN_LARGE,
-  "radius",
-  1,
-  500,
-  1
-);
+  private createMorraFolder() {
 
-largeSunFolder.add(
-  MORRA_CONFIG.SUN_LARGE,
-  "orbitRadius",
-  50,
-  10000,
-  1
-);
+    const folder =
+      this.gui.addFolder("Morra");
 
-largeSunFolder.add(
-  MORRA_CONFIG.SUN_LARGE,
-  "orbitHeight",
-  -5000,
-  5000,
-  1
-);
+    folder.add(
+      MORRA_CONFIG,
+      "MORRA_RADIUS",
+      MORRA_CONFIG.LIMITS.MORRA_RADIUS.min,
+      MORRA_CONFIG.LIMITS.MORRA_RADIUS.max,
+      MORRA_CONFIG.LIMITS.MORRA_RADIUS.step
+    );
 
-largeSunFolder.add(
-  MORRA_CONFIG.SUN_LARGE,
-  "orbitSpeed",
-  0,
-  0.05,
-  0.0001
-);
+    folder.add(
+      MORRA_CONFIG,
+      "AXIS_TILT",
+      MORRA_CONFIG.LIMITS.AXIS_TILT.min,
+      MORRA_CONFIG.LIMITS.AXIS_TILT.max,
+      MORRA_CONFIG.LIMITS.AXIS_TILT.step
+    );
+  }
 
-// =====================
-// MEDIUM SUN
-// =====================
+  private createSunFolders() {
 
-mediumSunFolder.add(
-  MORRA_CONFIG.SUN_MEDIUM,
-  "radius",
-  1,
-  500,
-  1
-);
+    this.createSunFolder(
+      "Large Sun",
+      MORRA_CONFIG.SUN_LARGE
+    );
 
-mediumSunFolder.add(
-  MORRA_CONFIG.SUN_MEDIUM,
-  "orbitRadius",
-  50,
-  10000,
-  1
-);
+    this.createSunFolder(
+      "Medium Sun",
+      MORRA_CONFIG.SUN_MEDIUM
+    );
 
-mediumSunFolder.add(
-  MORRA_CONFIG.SUN_MEDIUM,
-  "orbitHeight",
-  -5000,
-  5000,
-  1
-);
+    this.createSunFolder(
+      "Small Sun",
+      MORRA_CONFIG.SUN_SMALL
+    );
+  }
 
-mediumSunFolder.add(
-  MORRA_CONFIG.SUN_MEDIUM,
-  "orbitSpeed",
-  0,
-  0.05,
-  0.0001
-);
+  private createSunFolder(
+    name: string,
+    sun: {
+      radius: number;
+      orbitRadius: number;
+      orbitSpeed: number;
+      orbitHeight: number;
+    }
+  ) {
 
-// =====================
-// SMALL SUN
-// =====================
+    const folder =
+      this.gui.addFolder(name);
 
-smallSunFolder.add(
-  MORRA_CONFIG.SUN_SMALL,
-  "radius",
-  1,
-  500,
-  1
-);
+    folder.add(
+      sun,
+      "radius",
+      MORRA_CONFIG.LIMITS.BODY_RADIUS.min,
+      MORRA_CONFIG.LIMITS.BODY_RADIUS.max,
+      MORRA_CONFIG.LIMITS.BODY_RADIUS.step
+    );
 
-smallSunFolder.add(
-  MORRA_CONFIG.SUN_SMALL,
-  "orbitRadius",
-  50,
-  10000,
-  1
-);
+    folder.add(
+      sun,
+      "orbitRadius",
+      MORRA_CONFIG.LIMITS.ORBIT_RADIUS.min,
+      MORRA_CONFIG.LIMITS.ORBIT_RADIUS.max,
+      MORRA_CONFIG.LIMITS.ORBIT_RADIUS.step
+    );
 
-smallSunFolder.add(
-  MORRA_CONFIG.SUN_SMALL,
-  "orbitSpeed",
-  0,
-  0.05,
-  0.0001
-);
+    folder.add(
+      sun,
+      "orbitHeight",
+      MORRA_CONFIG.LIMITS.BODY_HEIGHT.min,
+      MORRA_CONFIG.LIMITS.BODY_HEIGHT.max,
+      MORRA_CONFIG.LIMITS.BODY_HEIGHT.step
+    );
 
-// =====================
-// NORTH MOON
-// =====================
+    folder.add(
+      sun,
+      "orbitSpeed",
+      MORRA_CONFIG.LIMITS.ORBIT_SPEED.min,
+      MORRA_CONFIG.LIMITS.ORBIT_SPEED.max,
+      MORRA_CONFIG.LIMITS.ORBIT_SPEED.step
+    );
+  }
 
-moonNorthFolder.add(
-  MORRA_CONFIG.MOON_NORTH,
-  "radius",
-  1,
-  300,
-  1
-);
+  private createMoonFolders() {
 
-moonNorthFolder.add(
-  MORRA_CONFIG.MOON_NORTH,
-  "orbitRadius",
-  50,
-  5000,
-  1
-);
+    this.createMoonFolder(
+      "North Moon",
+      MORRA_CONFIG.MOON_NORTH
+    );
 
-moonNorthFolder.add(
-  MORRA_CONFIG.MOON_NORTH,
-  "orbitSpeed",
-  0,
-  0.05,
-  0.0001
-);
+    this.createMoonFolder(
+      "Equator Moon",
+      MORRA_CONFIG.MOON_EQUATOR
+    );
+  }
 
-// =====================
-// EQUATOR MOON
-// =====================
+  private createMoonFolder(
+    name: string,
+    moon: {
+      radius: number;
+      orbitRadius: number;
+      orbitSpeed: number;
+    }
+  ) {
 
-moonEquatorFolder.add(
-  MORRA_CONFIG.MOON_EQUATOR,
-  "radius",
-  1,
-  300,
-  1
-);
+    const folder =
+      this.gui.addFolder(name);
 
-moonEquatorFolder.add(
-  MORRA_CONFIG.MOON_EQUATOR,
-  "orbitRadius",
-  50,
-  5000,
-  1
-);
+    folder.add(
+      moon,
+      "radius",
+      MORRA_CONFIG.LIMITS.BODY_RADIUS.min,
+      MORRA_CONFIG.LIMITS.BODY_RADIUS.max,
+      MORRA_CONFIG.LIMITS.BODY_RADIUS.step
+    );
 
-moonEquatorFolder.add(
-  MORRA_CONFIG.MOON_EQUATOR,
-  "orbitSpeed",
-  0,
-  0.05,
-  0.0001
-);
+    folder.add(
+      moon,
+      "orbitRadius",
+      MORRA_CONFIG.LIMITS.ORBIT_RADIUS.min,
+      MORRA_CONFIG.LIMITS.ORBIT_RADIUS.max,
+      MORRA_CONFIG.LIMITS.ORBIT_RADIUS.step
+    );
 
-// =====================
-// LIGHTING
-// =====================
+    folder.add(
+      moon,
+      "orbitSpeed",
+      MORRA_CONFIG.LIMITS.ORBIT_SPEED.min,
+      MORRA_CONFIG.LIMITS.ORBIT_SPEED.max,
+      MORRA_CONFIG.LIMITS.ORBIT_SPEED.step
+    );
+  }
 
-lightingFolder.add(
-  MORRA_CONFIG.LIGHTS,
-  "ambient",
-  0,
-  5,
-  0.01
-);
+  private createLightingFolder() {
 
-lightingFolder.add(
-  MORRA_CONFIG.LIGHTS.LARGE,
-  "intensity",
-  0,
-  500,
-  1
-);
+    const folder =
+      this.gui.addFolder("Lighting");
 
-lightingFolder.add(
-  MORRA_CONFIG.LIGHTS.MEDIUM,
-  "intensity",
-  0,
-  500,
-  1
-);
+    folder.add(
+      MORRA_CONFIG.LIGHTS,
+      "ambient",
+      0,
+      10,
+      0.01
+    );
 
-lightingFolder.add(
-  MORRA_CONFIG.LIGHTS.SMALL,
-  "intensity",
-  0,
-  500,
-  1
-);
+    folder.add(
+      MORRA_CONFIG.LIGHTS.LARGE,
+      "intensity",
+      0,
+      500,
+      1
+    );
 
-// =====================
-// DEBUG
-// =====================
+    folder.add(
+      MORRA_CONFIG.LIGHTS.MEDIUM,
+      "intensity",
+      0,
+      500,
+      1
+    );
 
-debugFolder.add(
-  MORRA_CONFIG.DEBUG,
-  "showAxis"
-);
+    folder.add(
+      MORRA_CONFIG.LIGHTS.SMALL,
+      "intensity",
+      0,
+      500,
+      1
+    );
+  }
 
-debugFolder.add(
-  MORRA_CONFIG.DEBUG,
-  "showEquator"
-);
+  private createDebugFolder() {
 
-debugFolder.add(
-  MORRA_CONFIG.DEBUG,
-  "showOrbits"
-);
+    const folder =
+      this.gui.addFolder("Debug");
 
-debugFolder.add(
-  MORRA_CONFIG.DEBUG,
-  "showLightHelpers"
-);
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showAxis"
+    );
 
-debugFolder.add(
-  MORRA_CONFIG.DEBUG,
-  "showTimePanel"
-);
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showEquator"
+    );
 
-debugFolder.add(
-  MORRA_CONFIG.DEBUG,
-  "showTimeline"
-);
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showOrbits"
+    );
 
-// =====================
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showLightHelpers"
+    );
 
-worldFolder.open();
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showTimePanel"
+    );
+
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showTimeline"
+    );
+  }
+
+  destroy() {
+
+    this.gui.destroy();
+  }
+}
