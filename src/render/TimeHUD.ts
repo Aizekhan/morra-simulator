@@ -6,6 +6,10 @@ import {
   AstronomicalEventState
 } from "../astronomy/AstronomicalEventSystem";
 
+import {
+  MORRA_CONFIG
+} from "../world/MorraConfig";
+
 export class TimeHUD {
 
   readonly element:
@@ -64,6 +68,17 @@ export class TimeHUD {
     astronomy: AstronomicalEventState
   ) {
 
+    this.element.style.display =
+      MORRA_CONFIG.DEBUG.showTimePanel
+        ? "block"
+        : "none";
+
+    if(
+      !MORRA_CONFIG.DEBUG.showTimePanel
+    ) {
+      return;
+    }
+
     const events: string[] = [];
 
     if(
@@ -89,10 +104,18 @@ export class TimeHUD {
 
     html +=
       "<div style=\"display:flex;justify-content:space-between;margin-bottom:6px\">" +
-      "<span>Y:" + snapshot.year + "</span>" +
-      "<span>M:" + snapshot.month + "</span>" +
-      "<span>D:" + snapshot.day + "</span>" +
-      "<span>H:" + Math.floor(snapshot.hour) + "</span>" +
+      "<span>Y:" +
+      snapshot.year +
+      "</span>" +
+      "<span>M:" +
+      snapshot.month +
+      "</span>" +
+      "<span>D:" +
+      snapshot.day +
+      "</span>" +
+      "<span>H:" +
+      Math.floor(snapshot.hour) +
+      "</span>" +
       "</div>";
 
     if(
