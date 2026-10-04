@@ -22,6 +22,10 @@ export interface CelestialBodyOptions {
   orbitAscendingNode?: number;
 
   orbitEccentricity?: number;
+
+  orbitPlaneOffset?: number;
+
+  reverseOrbit?: boolean;
 }
 
 export class CelestialBody {
@@ -50,6 +54,10 @@ export class CelestialBody {
   orbitAscendingNode: number;
 
   orbitEccentricity: number;
+
+  orbitPlaneOffset: number;
+
+  reverseOrbit: boolean;
 
   readonly initialAngle: number;
 
@@ -129,6 +137,12 @@ export class CelestialBody {
     this.orbitEccentricity =
       options.orbitEccentricity ?? 0;
 
+    this.orbitPlaneOffset =
+      options.orbitPlaneOffset ?? 0;
+
+    this.reverseOrbit =
+      options.reverseOrbit ?? false;
+
     this.initialAngle =
       options.initialAngle ?? 0;
 
@@ -201,12 +215,20 @@ export class CelestialBody {
       speed;
   }
 
-  setOrbitHeight(
-    height: number
+  setOrbitPlaneOffset(
+    offset: number
   ) {
 
-    this.orbitOffsetY =
-      height;
+    this.orbitPlaneOffset =
+      offset;
+  }
+
+  setReverseOrbit(
+    reverse: boolean
+  ) {
+
+    this.reverseOrbit =
+      reverse;
   }
 
   setOrbitPlane(
@@ -249,8 +271,14 @@ export class CelestialBody {
     absoluteHours: number
   ) {
 
+    const direction =
+      this.reverseOrbit
+        ? -1
+        : 1;
+
     this.angle =
       this.initialAngle +
+      direction *
       this.orbitSpeed *
       absoluteHours;
 
@@ -295,6 +323,13 @@ export class CelestialBody {
           this.orbitOffsetY,
           this.orbitOffsetZ
         )
+      )
+      .add(
+        basis.normal
+          .clone()
+          .multiplyScalar(
+            this.orbitPlaneOffset
+          )
       );
   }
 
