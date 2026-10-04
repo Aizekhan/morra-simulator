@@ -139,6 +139,21 @@ export class TimelineUI {
     this.dateLabel.style.marginLeft =
       "auto";
 
+    this.dateLabel.style.width =
+      "180px";
+
+    this.dateLabel.style.minWidth =
+      "180px";
+
+    this.dateLabel.style.maxWidth =
+      "180px";
+
+    this.dateLabel.style.flex =
+      "0 0 180px";
+
+    this.dateLabel.style.whiteSpace =
+      "nowrap";
+
     header.append(
       previous,
       this.yearLabel,
@@ -474,15 +489,18 @@ export class TimelineUI {
         ? "Play"
         : "Pause";
 
-    this.dateLabel.textContent =
-      "M:" +
+    this.dateLabel.innerHTML =
+      "<span style=\"display:inline-block;width:55px;text-align:left\">M:" +
       snapshot.month +
-      " D:" +
+      "</span>" +
+      "<span style=\"display:inline-block;width:60px;text-align:left\">D:" +
       snapshot.day +
-      " H:" +
+      "</span>" +
+      "<span style=\"display:inline-block;width:65px;text-align:left\">H:" +
       Math.floor(
         snapshot.hour
-      );
+      ) +
+      "</span>";
 
     this.renderMarkers(
       snapshot.year,
