@@ -11,11 +11,22 @@ export interface AstronomicalEventState {
 
 export class AstronomicalEventSystem {
 
+  private readonly morra: CelestialBody;
+
+  private readonly suns: CelestialBody[];
+
+  private readonly moons: CelestialBody[];
+
   constructor(
-    private readonly morra: CelestialBody,
-    private readonly suns: CelestialBody[],
-    private readonly moons: CelestialBody[]
-  ) {}
+    morra: CelestialBody,
+    suns: CelestialBody[],
+    moons: CelestialBody[]
+  ) {
+
+    this.morra = morra;
+    this.suns = suns;
+    this.moons = moons;
+  }
 
   evaluate():
     AstronomicalEventState {
