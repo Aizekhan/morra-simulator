@@ -26,9 +26,6 @@ export class SurfaceFieldVisualizer {
   private readonly texture:
     THREE.DataTexture;
 
-  private readonly engine:
-    SurfaceFieldEngine;
-
   private channel:
     SurfaceFieldChannel =
       "MAGIC";
@@ -56,9 +53,6 @@ export class SurfaceFieldVisualizer {
 
     this.morra =
       morra;
-
-    this.engine =
-      engine;
 
     const initialWidth =
       engine.getConfig()
