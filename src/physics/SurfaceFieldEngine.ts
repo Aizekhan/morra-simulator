@@ -157,7 +157,9 @@ export class SurfaceFieldEngine {
       next.longitudeSegments !==
         this.config.longitudeSegments ||
       next.updateIntervalHours !==
-        this.config.updateIntervalHours;
+        this.config.updateIntervalHours ||
+      next.updateIntervalMilliseconds !==
+        this.config.updateIntervalMilliseconds;
 
     this.config = {
       latitudeSegments:
@@ -244,8 +246,6 @@ export class SurfaceFieldEngine {
     if(
       !force &&
       this.map &&
-      !timeChangedEnough &&
-      !worldChanged &&
       !wallClockChangedEnough
     ) {
       return this.map;
