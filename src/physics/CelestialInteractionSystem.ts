@@ -16,10 +16,6 @@ import type {
   RadiationSource
 } from "./RadiationEngine";
 
-import {
-  RENDER_LAYERS
-} from "../render/RenderLayers";
-
 interface CelestialSourceConfig {
 
   id: string;
@@ -137,11 +133,7 @@ export class CelestialInteractionSystem {
         true;
 
       light.layers.set(
-        RENDER_LAYERS.MORRA_LIGHT_RECEIVER
-      );
-
-      light.layers.enable(
-        RENDER_LAYERS.MOON_LIGHT_RECEIVER
+        0
       );
 
       this.configureShadow(
@@ -174,7 +166,7 @@ export class CelestialInteractionSystem {
             );
 
           reflectedLight.layers.set(
-            RENDER_LAYERS.MORRA_LIGHT_RECEIVER
+            0
           );
 
           reflectedLight.castShadow =
@@ -523,11 +515,7 @@ export class CelestialInteractionSystem {
       10000;
 
     light.shadow.camera.layers.set(
-      RENDER_LAYERS.MORRA_LIGHT_RECEIVER
-    );
-
-    light.shadow.camera.layers.enable(
-      RENDER_LAYERS.MOON_LIGHT_RECEIVER
+      0
     );
 
     light.shadow.autoUpdate =
@@ -559,11 +547,7 @@ export class CelestialInteractionSystem {
       10000;
 
     light.shadow.camera.layers.set(
-      RENDER_LAYERS.MORRA_LIGHT_RECEIVER
-    );
-
-    light.shadow.camera.layers.enable(
-      RENDER_LAYERS.MOON_LIGHT_RECEIVER
+      0
     );
 
     light.shadow.autoUpdate =
