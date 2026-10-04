@@ -29,6 +29,10 @@ import {
 } from "./render/WorldEventPanel";
 
 import {
+  EnvironmentInspectorPanel
+} from "./render/EnvironmentInspectorPanel";
+
+import {
   WorldInteractionSystem
 } from "./world/WorldInteractionSystem";
 
@@ -66,6 +70,11 @@ const eventPanel =
     simulation.worldEventSystem
   );
 
+const environmentPanel =
+  new EnvironmentInspectorPanel(
+    simulation.morraSystem.environmentEngine
+  );
+
 const worldInteraction =
   new WorldInteractionSystem(
     renderer.camera,
@@ -75,6 +84,10 @@ const worldInteraction =
     selection => {
       eventPanel.setLocation(
         selection.location.id
+      );
+
+      environmentPanel.setPoint(
+        selection.point
       );
     }
   );
@@ -99,6 +112,10 @@ function animate() {
     frame.time
   );
 
+  environmentPanel.update(
+    frame.time
+  );
+
   debugPanel.update();
 
   cameraController.update();
@@ -115,6 +132,8 @@ window.addEventListener(
     worldInteraction.dispose();
 
     eventPanel.dispose();
+
+    environmentPanel.dispose();
 
     timeline.dispose();
 
