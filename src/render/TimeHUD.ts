@@ -114,17 +114,17 @@ export class TimeHUD {
       "<div style=\"font-size:17px;font-weight:700;margin-bottom:8px;height:20px;line-height:20px;white-space:nowrap\">MORRA</div>";
 
     html +=
-      "<div style=\"display:flex;align-items:center;gap:0;margin-bottom:6px;height:18px;line-height:18px;white-space:nowrap;font-variant-numeric:tabular-nums\">" +
-      "<span style=\"display:inline-block;width:7ch;text-align:left\">Y:" +
+      "<div style=\"display:grid;grid-template-columns:65px 55px 55px 50px;width:225px;min-width:225px;max-width:225px;margin-bottom:6px;height:18px;line-height:18px;white-space:nowrap;overflow:hidden\">" +
+      "<span style=\"display:block;width:65px;min-width:65px;max-width:65px;text-align:left;overflow:hidden\">Y:" +
       snapshot.year +
       "</span>" +
-      "<span style=\"display:inline-block;width:6ch;text-align:left\">M:" +
+      "<span style=\"display:block;width:55px;min-width:55px;max-width:55px;text-align:left;overflow:hidden\">M:" +
       snapshot.month +
       "</span>" +
-      "<span style=\"display:inline-block;width:6ch;text-align:left\">D:" +
+      "<span style=\"display:block;width:55px;min-width:55px;max-width:55px;text-align:left;overflow:hidden\">D:" +
       snapshot.day +
       "</span>" +
-      "<span style=\"display:inline-block;width:6ch;text-align:left\">H:" +
+      "<span style=\"display:block;width:50px;min-width:50px;max-width:50px;text-align:left;overflow:hidden\">H:" +
       Math.floor(snapshot.hour) +
       "</span>" +
       "</div>";
