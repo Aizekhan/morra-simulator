@@ -463,7 +463,15 @@ export class SurfaceFieldEngine {
             sample.magosphere.anomalyStrength,
           shadow:
             1 -
-            sample.radiation.magicVisibility
+            sample.radiation.lightVisibility,
+          umbra:
+            hasUmbra
+              ? 1
+              : 0,
+          penumbra:
+            hasPenumbra
+              ? 1
+              : 0
         };
 
         samples[index] =
