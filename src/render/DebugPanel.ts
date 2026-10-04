@@ -148,6 +148,9 @@ export class DebugPanel {
       orbitRadius: number;
       orbitSpeed: number;
       orbitHeight: number;
+      orbitInclination: number;
+      orbitAscendingNode: number;
+      orbitEccentricity: number;
     },
     light: {
       color: number;
@@ -193,6 +196,30 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.max,
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.step
     ).listen();
+
+    folder.add(
+      sun,
+      "orbitInclination",
+      MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.min,
+      MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.max,
+      MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.step
+    ).name("ORBIT INCLINATION (°)").listen();
+
+    folder.add(
+      sun,
+      "orbitAscendingNode",
+      MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.min,
+      MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.max,
+      MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.step
+    ).name("ORBIT NODE (°)").listen();
+
+    folder.add(
+      sun,
+      "orbitEccentricity",
+      MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.min,
+      MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.max,
+      MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.step
+    ).name("ORBIT ELLIPSE").listen();
   }
 
   private createMoonFolders() {
@@ -216,6 +243,9 @@ export class DebugPanel {
       orbitColor: number;
       orbitRadius: number;
       orbitSpeed: number;
+      orbitInclination: number;
+      orbitAscendingNode: number;
+      orbitEccentricity: number;
     }
   ) {
 
@@ -255,6 +285,30 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.max,
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.step
     ).listen();
+
+    folder.add(
+      moon,
+      "orbitInclination",
+      MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.min,
+      MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.max,
+      MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.step
+    ).name("ORBIT INCLINATION (°)").listen();
+
+    folder.add(
+      moon,
+      "orbitAscendingNode",
+      MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.min,
+      MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.max,
+      MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.step
+    ).name("ORBIT NODE (°)").listen();
+
+    folder.add(
+      moon,
+      "orbitEccentricity",
+      MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.min,
+      MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.max,
+      MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.step
+    ).name("ORBIT ELLIPSE").listen();
   }
 
   private createLightingFolder() {
