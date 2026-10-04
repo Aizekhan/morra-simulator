@@ -85,15 +85,13 @@ export class SimulationTime {
   ) {
 
     const hoursInDay =
-      MORRA_CONFIG.HOURS_IN_DAY;
+      this.getHoursInDay();
 
     const hoursInMonth =
-      hoursInDay *
-      MORRA_CONFIG.DAYS_IN_MONTH;
+      this.getHoursInMonth();
 
     const hoursInYear =
-      hoursInMonth *
-      MORRA_CONFIG.MONTHS_IN_YEAR;
+      this.getHoursInYear();
 
     const normalizedYear =
       Math.max(
@@ -144,10 +142,15 @@ export class SimulationTime {
       normalizedHour;
   }
 
+  getHoursInDay() {
+
+    return MORRA_CONFIG.HOURS_IN_DAY;
+  }
+
   getHoursInMonth() {
 
     return (
-      MORRA_CONFIG.HOURS_IN_DAY *
+      this.getHoursInDay() *
       MORRA_CONFIG.DAYS_IN_MONTH
     );
   }
@@ -163,7 +166,7 @@ export class SimulationTime {
   getSnapshot(): CalendarSnapshot {
 
     const hoursInDay =
-      MORRA_CONFIG.HOURS_IN_DAY;
+      this.getHoursInDay();
 
     const hoursInMonth =
       this.getHoursInMonth();
