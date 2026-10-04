@@ -1,45 +1,78 @@
-import { MorraTimeSystem }
-from "../world/MorraTimeSystem";
+import {
+  SimulationTime
+} from "../core/SimulationTime";
 
 export class TimeControls {
 
   pause: () => void;
 
   speed1: () => void;
-
   speed10: () => void;
-
   speed100: () => void;
-
   speed1000: () => void;
 
   addHour: () => void;
-
   addDay: () => void;
 
   constructor(
-    timeSystem: MorraTimeSystem
+    private readonly time:
+      SimulationTime
   ) {
 
     this.pause =
-      () => timeSystem.pause();
+      () => this.time.pause();
 
     this.speed1 =
-      () => timeSystem.speed1();
+      () => this.time.setTimeScale(1);
 
     this.speed10 =
-      () => timeSystem.speed10();
+      () => this.time.setTimeScale(10);
 
     this.speed100 =
-      () => timeSystem.speed100();
+      () => this.time.setTimeScale(100);
 
     this.speed1000 =
-      () => timeSystem.speed1000();
+      () => this.time.setTimeScale(1000);
 
     this.addHour =
-      () => timeSystem.addHour();
+      () => this.time.addHours(1);
 
     this.addDay =
-      () => timeSystem.addDay();
+      () => this.time.addHours(
+        this.time.getHoursInDay()
+      );
+  }
+
+  get timeScale() {
+
+    return this.time.timeScale;
+  }
+
+  set timeScale(
+    value: number
+  ) {
+
+    this.time.setTimeScale(
+      value
+    );
+  }
+
+  get absoluteHours() {
+
+    return this.time.totalHours;
+  }
+
+  set absoluteHours(
+    value: number
+  ) {
+
+    this.time.setAbsoluteHours(
+      value
+    );
+  }
+
+  get hoursInDay() {
+
+    return this.time.getHoursInDay();
   }
 }
