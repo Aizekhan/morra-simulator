@@ -30,9 +30,13 @@ export class OrbitSystem {
 
   private entries: OrbitEntry[] = [];
 
+  private readonly scene: THREE.Scene;
+
   constructor(
-    private readonly scene: THREE.Scene
-  ) {}
+    scene: THREE.Scene
+  ) {
+    this.scene = scene;
+  }
 
   add(
     body: CelestialBody,
