@@ -97,12 +97,6 @@ export class SurfaceFieldEngine {
   private map:
     SurfaceFieldMap | null = null;
 
-  private lastAbsoluteHours:
-    number | null = null;
-
-  private lastWorldSignature:
-    string | null = null;
-
   private lastUpdateTimestamp:
     number | null = null;
 
@@ -666,45 +660,5 @@ export class SurfaceFieldEngine {
     };
   }
 
-  private getWorldSignature() {
 
-    const values =
-      [
-        this.environment.morra.radius,
-        this.environment.morra.mesh.rotation.z
-      ];
-
-    for(
-      const source
-      of this.environment.radiation.getSources()
-    ) {
-
-      values.push(
-        source.body.radius,
-        source.body.orbitRadius,
-        source.body.orbitSpeed,
-        source.body.orbitInclination,
-        source.body.orbitAscendingNode,
-        source.body.orbitEccentricity,
-        source.body.orbitPlaneOffset,
-        source.body.mesh.visible
-          ? 1
-          : 0,
-        source.lightPower,
-        source.heatPower,
-        source.magicPower
-      );
-    }
-
-    return values
-      .map(
-        value =>
-          value.toFixed(
-            5
-          )
-      )
-      .join(
-        "|"
-      );
-  }
 }
