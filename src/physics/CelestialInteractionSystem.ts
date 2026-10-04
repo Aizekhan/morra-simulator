@@ -74,7 +74,7 @@ export class CelestialInteractionSystem {
     0;
 
   private readonly shadowUpdateEveryFrames =
-    2;
+    3;
 
   constructor(
     scene: THREE.Scene,
@@ -503,8 +503,8 @@ export class CelestialInteractionSystem {
   ) {
 
     light.shadow.mapSize.set(
-      1024,
-      1024
+      512,
+      512
     );
 
     light.shadow.bias =
