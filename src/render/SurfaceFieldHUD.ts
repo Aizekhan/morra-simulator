@@ -3,9 +3,12 @@ import {
 } from "../world/MorraConfig";
 
 import type {
-  SurfaceFieldChannel,
   SurfaceFieldMap
 } from "../physics/SurfaceFieldEngine";
+
+import type {
+  SurfaceFieldChannel
+} from "./SurfaceFieldVisualizer";
 
 export class SurfaceFieldHUD {
 
@@ -84,6 +87,17 @@ export class SurfaceFieldHUD {
       map !== this.lastMap ||
       channel !== this.lastChannel;
 
+    this.root.style.display =
+      MORRA_CONFIG.DEBUG.showSurfaceField
+        ? "block"
+        : "none";
+
+    if(
+      !MORRA_CONFIG.DEBUG.showSurfaceField
+    ) {
+      return;
+    }
+
     if(
       !changed
     ) {
@@ -96,20 +110,10 @@ export class SurfaceFieldHUD {
     this.lastChannel =
       channel;
 
-    this.root.style.display =
-      MORRA_CONFIG.DEBUG.showSurfaceField
-        ? "block"
-        : "none";
-
-    if(
-      MORRA_CONFIG.DEBUG.showSurfaceField
-    ) {
-
-      this.render(
-        map,
-        channel
-      );
-    }
+    this.render(
+      map,
+      channel
+    );
   }
 
   private render(
