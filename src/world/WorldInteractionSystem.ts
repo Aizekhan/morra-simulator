@@ -4,7 +4,7 @@ import {
   CelestialBody
 } from "../astronomy/CelestialBody";
 
-import {
+import type {
   WorldLocation
 } from "../world/WorldLocation";
 
