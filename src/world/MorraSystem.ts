@@ -1,14 +1,32 @@
 import * as THREE from "three";
 
-import { CelestialBody } from "../astronomy/CelestialBody";
-import { CelestialSystem } from "../astronomy/CelestialSystem";
-import { MorraLightSystem } from "../astronomy/MorraLightSystem";
+import {
+  CelestialBody
+} from "../astronomy/CelestialBody";
 
-import { OrbitRenderer } from "../render/OrbitRenderer";
+import {
+  CelestialSystem
+} from "../astronomy/CelestialSystem";
 
-import { MORRA_CONFIG } from "./MorraConfig";
-import { MorraAxis } from "./MorraAxis";
-import { MorraConfigSynchronizer } from "./MorraConfigSynchronizer";
+import {
+  MorraLightSystem
+} from "../astronomy/MorraLightSystem";
+
+import {
+  OrbitSystem
+} from "../astronomy/OrbitSystem";
+
+import {
+  MORRA_CONFIG
+} from "./MorraConfig";
+
+import {
+  MorraAxis
+} from "./MorraAxis";
+
+import {
+  MorraConfigSynchronizer
+} from "./MorraConfigSynchronizer";
 
 export class MorraSystem {
 
@@ -25,24 +43,22 @@ export class MorraSystem {
   sunMedium: CelestialBody;
   sunSmall: CelestialBody;
 
-  sunLargeOrbit: THREE.LineLoop;
-  sunMediumOrbit: THREE.LineLoop;
-  sunSmallOrbit: THREE.LineLoop;
-
-  moonNorthOrbit: THREE.LineLoop;
-  moonEquatorOrbit: THREE.LineLoop;
-
   celestialSystem: CelestialSystem;
 
-  configSynchronizer: MorraConfigSynchronizer;
+  orbitSystem: OrbitSystem;
 
-  lightSystem: MorraLightSystem;
+  configSynchronizer:
+    MorraConfigSynchronizer;
+
+  lightSystem:
+    MorraLightSystem;
 
   constructor(
     scene: THREE.Scene
   ) {
 
-    this.scene = scene;
+    this.scene =
+      scene;
 
     this.morra =
       new CelestialBody(
@@ -53,11 +69,6 @@ export class MorraSystem {
     scene.add(
       this.morra.mesh
     );
-
-    this.morra.mesh.rotation.z =
-      THREE.MathUtils.degToRad(
-        MORRA_CONFIG.AXIS_TILT
-      );
 
     this.axis =
       new MorraAxis(
@@ -130,7 +141,10 @@ export class MorraSystem {
         MORRA_CONFIG.LIGHTS.SMALL.color,
         MORRA_CONFIG.SUN_SMALL.orbitRadius,
         MORRA_CONFIG.SUN_SMALL.orbitSpeed,
-        MORRA_CONFIG.SUN_SMALL.orbitPlane
+        MORRA_CONFIG.SUN_SMALL.orbitPlane,
+        0,
+        MORRA_CONFIG.SUN_SMALL.orbitHeight,
+        0
       );
 
     scene.add(
@@ -160,8 +174,39 @@ export class MorraSystem {
       this.sunSmall
     );
 
+    this.orbitSystem =
+      new OrbitSystem(
+        scene
+      );
+
+    this.orbitSystem.add(
+      this.sunLarge,
+      MORRA_CONFIG.LIGHTS.LARGE.color
+    );
+
+    this.orbitSystem.add(
+      this.sunMedium,
+      MORRA_CONFIG.LIGHTS.MEDIUM.color
+    );
+
+    this.orbitSystem.add(
+      this.sunSmall,
+      MORRA_CONFIG.LIGHTS.SMALL.color
+    );
+
+    this.orbitSystem.add(
+      this.moonNorth,
+      MORRA_CONFIG.MOON_NORTH.orbitColor
+    );
+
+    this.orbitSystem.add(
+      this.moonEquator,
+      MORRA_CONFIG.MOON_EQUATOR.orbitColor
+    );
+
     this.configSynchronizer =
       new MorraConfigSynchronizer({
+        morra: this.morra,
         moonNorth: this.moonNorth,
         moonEquator: this.moonEquator,
         sunLarge: this.sunLarge,
@@ -176,77 +221,33 @@ export class MorraSystem {
         this.sunMedium,
         this.sunSmall
       );
-
-    this.sunLargeOrbit =
-      OrbitRenderer.createOrbit(
-        MORRA_CONFIG.SUN_LARGE.orbitRadius,
-        MORRA_CONFIG.LIGHTS.LARGE.color,
-        MORRA_CONFIG.SUN_LARGE.orbitPlane,
-        0,
-        MORRA_CONFIG.SUN_LARGE.orbitHeight,
-        0
-      );
-
-    this.sunMediumOrbit =
-      OrbitRenderer.createOrbit(
-        MORRA_CONFIG.SUN_MEDIUM.orbitRadius,
-        MORRA_CONFIG.LIGHTS.MEDIUM.color,
-        MORRA_CONFIG.SUN_MEDIUM.orbitPlane,
-        0,
-        MORRA_CONFIG.SUN_MEDIUM.orbitHeight,
-        0
-      );
-
-    this.sunSmallOrbit =
-      OrbitRenderer.createOrbit(
-        MORRA_CONFIG.SUN_SMALL.orbitRadius,
-        MORRA_CONFIG.LIGHTS.SMALL.color,
-        MORRA_CONFIG.SUN_SMALL.orbitPlane
-      );
-
-    this.moonNorthOrbit =
-      OrbitRenderer.createOrbit(
-        MORRA_CONFIG.MOON_NORTH.orbitRadius,
-        MORRA_CONFIG.MOON_NORTH.orbitColor,
-        MORRA_CONFIG.MOON_NORTH.orbitPlane
-      );
-
-    this.moonEquatorOrbit =
-      OrbitRenderer.createOrbit(
-        MORRA_CONFIG.MOON_EQUATOR.orbitRadius,
-        MORRA_CONFIG.MOON_EQUATOR.orbitColor,
-        MORRA_CONFIG.MOON_EQUATOR.orbitPlane
-      );
-
-    scene.add(this.sunLargeOrbit);
-    scene.add(this.sunMediumOrbit);
-    scene.add(this.sunSmallOrbit);
-
-    scene.add(this.moonNorthOrbit);
-    scene.add(this.moonEquatorOrbit);
-
-    this.setOrbitVisible(
-      MORRA_CONFIG.DEBUG.showOrbits
-    );
   }
 
   update(
-    delta: number
+    absoluteHours: number
   ) {
-
-    const simulationDelta =
-      delta *
-      MORRA_CONFIG.TIME_SPEED;
-
-    this.morra.mesh.rotation.y +=
-      MORRA_CONFIG.ROTATION_SPEED *
-      simulationDelta;
 
     this.configSynchronizer.sync();
 
-    this.celestialSystem.update(
-      simulationDelta
+    this.morra.mesh.rotation.z =
+      THREE.MathUtils.degToRad(
+        MORRA_CONFIG.AXIS_TILT
+      );
+
+    this.morra.mesh.rotation.y =
+      MORRA_CONFIG.ROTATION_SPEED *
+      absoluteHours;
+
+    this.axis.update(
+      this.morra.radius,
+      MORRA_CONFIG.AXIS_TILT
     );
+
+    this.celestialSystem.update(
+      absoluteHours
+    );
+
+    this.orbitSystem.update();
 
     this.axis.axisLine.visible =
       MORRA_CONFIG.DEBUG.showAxis;
@@ -260,30 +261,30 @@ export class MorraSystem {
     this.axis.equator.visible =
       MORRA_CONFIG.DEBUG.showEquator;
 
-    this.setOrbitVisible(
+    this.orbitSystem.setVisible(
       MORRA_CONFIG.DEBUG.showOrbits
     );
 
     this.lightSystem.update();
   }
 
-  setOrbitVisible(
-    visible: boolean
-  ) {
+  dispose() {
 
-    this.sunLargeOrbit.visible =
-      visible;
+    this.orbitSystem.dispose();
 
-    this.sunMediumOrbit.visible =
-      visible;
+    this.lightSystem.largeHelper.dispose();
+    this.lightSystem.mediumHelper.dispose();
+    this.lightSystem.smallHelper.dispose();
 
-    this.sunSmallOrbit.visible =
-      visible;
+    this.morra.dispose();
 
-    this.moonNorthOrbit.visible =
-      visible;
+    this.moonNorth.dispose();
+    this.moonEquator.dispose();
 
-    this.moonEquatorOrbit.visible =
-      visible;
+    this.sunLarge.dispose();
+    this.sunMedium.dispose();
+    this.sunSmall.dispose();
+
+    this.axis.dispose();
   }
 }
