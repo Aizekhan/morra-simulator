@@ -2,12 +2,21 @@ import * as THREE from "three";
 
 export class MorraAxis {
 
-  axisLine!: THREE.Line;
+  axisLine: THREE.Line;
 
-  northPole!: THREE.Mesh;
-  southPole!: THREE.Mesh;
+  northPole: THREE.Mesh;
+  southPole: THREE.Mesh;
 
-  equator!: THREE.LineLoop;
+  equator: THREE.LineLoop;
+
+  private scene: THREE.Scene;
+
+  private axisMaterial: THREE.LineBasicMaterial;
+  private equatorMaterial: THREE.LineBasicMaterial;
+
+  private poleGeometry: THREE.SphereGeometry;
+  private northMaterial: THREE.MeshBasicMaterial;
+  private southMaterial: THREE.MeshBasicMaterial;
 
   constructor(
     scene: THREE.Scene,
@@ -15,85 +24,62 @@ export class MorraAxis {
     tilt: number
   ) {
 
-    const tiltRad =
-      THREE.MathUtils.degToRad(
-        tilt
-      );
+    this.scene =
+      scene;
 
-    // ЄДИНА ВІСЬ МОРРИ
+    this.axisMaterial =
+      new THREE.LineBasicMaterial({
+        color: 0x00ffff
+      });
 
-    const axis =
-      new THREE.Vector3(
-        Math.sin(tiltRad),
-        Math.cos(tiltRad),
-        0
-      ).normalize();
+    this.equatorMaterial =
+      new THREE.LineBasicMaterial({
+        color: 0x00ff00
+      });
 
-    // -----------------
-    // AXIS LINE
-    // -----------------
-
-    const axisGeometry =
-      new THREE.BufferGeometry()
-      .setFromPoints([
-        axis.clone()
-          .multiplyScalar(
-            -radius * 2
-          ),
-
-        axis.clone()
-          .multiplyScalar(
-            radius * 2
-          )
-      ]);
-
-    this.axisLine =
-      new THREE.Line(
-        axisGeometry,
-        new THREE.LineBasicMaterial({
-          color: 0x00ffff
-        })
-      );
-
-    scene.add(
-      this.axisLine
-    );
-
-    // -----------------
-    // POLES
-    // -----------------
-
-    const poleGeometry =
+    this.poleGeometry =
       new THREE.SphereGeometry(
         5,
         16,
         16
       );
 
+    this.northMaterial =
+      new THREE.MeshBasicMaterial({
+        color: 0x00ffff
+      });
+
+    this.southMaterial =
+      new THREE.MeshBasicMaterial({
+        color: 0xff4444
+      });
+
+    this.axisLine =
+      new THREE.Line(
+        new THREE.BufferGeometry(),
+        this.axisMaterial
+      );
+
     this.northPole =
       new THREE.Mesh(
-        poleGeometry,
-        new THREE.MeshBasicMaterial({
-          color: 0x00ffff
-        })
+        this.poleGeometry,
+        this.northMaterial
       );
 
     this.southPole =
       new THREE.Mesh(
-        poleGeometry,
-        new THREE.MeshBasicMaterial({
-          color: 0xff4444
-        })
+        this.poleGeometry,
+        this.southMaterial
       );
 
-    this.northPole.position.copy(
-      axis.clone()
-        .multiplyScalar(radius)
-    );
+    this.equator =
+      new THREE.LineLoop(
+        new THREE.BufferGeometry(),
+        this.equatorMaterial
+      );
 
-    this.southPole.position.copy(
-      axis.clone()
-        .multiplyScalar(-radius)
+    scene.add(
+      this.axisLine
     );
 
     scene.add(
@@ -104,12 +90,76 @@ export class MorraAxis {
       this.southPole
     );
 
-    // -----------------
-    // EQUATOR
-    // -----------------
+    scene.add(
+      this.equator
+    );
+
+    this.update(
+      radius,
+      tilt
+    );
+  }
+
+  update(
+    radius: number,
+    tilt: number
+  ) {
+
+    const safeRadius =
+      Math.max(
+        0.1,
+        radius
+      );
+
+    const tiltRad =
+      THREE.MathUtils.degToRad(
+        tilt
+      );
+
+    const axis =
+      new THREE.Vector3(
+        Math.sin(tiltRad),
+        Math.cos(tiltRad),
+        0
+      ).normalize();
+
+    const axisGeometry =
+      new THREE.BufferGeometry()
+      .setFromPoints([
+        axis.clone()
+          .multiplyScalar(
+            -safeRadius * 2
+          ),
+
+        axis.clone()
+          .multiplyScalar(
+            safeRadius * 2
+          )
+      ]);
+
+    this.axisLine.geometry.dispose();
+
+    this.axisLine.geometry =
+      axisGeometry;
+
+    this.northPole.position.copy(
+      axis.clone()
+        .multiplyScalar(
+          safeRadius
+        )
+    );
+
+    this.southPole.position.copy(
+      axis.clone()
+        .multiplyScalar(
+          -safeRadius
+        )
+    );
 
     const helper =
-      Math.abs(axis.y) > 0.99
+      Math.abs(
+        axis.y
+      ) > 0.99
         ? new THREE.Vector3(
             1,
             0,
@@ -123,60 +173,94 @@ export class MorraAxis {
 
     const basis1 =
       new THREE.Vector3()
-        .crossVectors(
-          axis,
-          helper
-        )
-        .normalize();
+      .crossVectors(
+        axis,
+        helper
+      )
+      .normalize();
 
     const basis2 =
       new THREE.Vector3()
-        .crossVectors(
-          axis,
-          basis1
-        )
-        .normalize();
+      .crossVectors(
+        axis,
+        basis1
+      )
+      .normalize();
 
-    const points: THREE.Vector3[] =
-      [];
+    const points:
+      THREE.Vector3[] = [];
 
-    for(let i=0;i<=256;i++){
+    for(
+      let i = 0;
+      i <= 256;
+      i++
+    ) {
 
-      const a =
-        (i / 256) *
+      const angle =
+        (
+          i /
+          256
+        ) *
         Math.PI *
         2;
 
-      const p =
+      points.push(
         basis1.clone()
+        .multiplyScalar(
+          Math.cos(angle) *
+          safeRadius
+        )
+        .add(
+          basis2.clone()
           .multiplyScalar(
-            Math.cos(a) * radius
+            Math.sin(angle) *
+            safeRadius
           )
-          .add(
-            basis2.clone()
-              .multiplyScalar(
-                Math.sin(a) * radius
-              )
-          );
-
-      points.push(p);
+        )
+      );
     }
 
     const equatorGeometry =
       new THREE.BufferGeometry()
-        .setFromPoints(
-          points
-        );
-
-    this.equator =
-      new THREE.LineLoop(
-        equatorGeometry,
-        new THREE.LineBasicMaterial({
-          color: 0x00ff00
-        })
+      .setFromPoints(
+        points
       );
 
-    scene.add(
+    this.equator.geometry.dispose();
+
+    this.equator.geometry =
+      equatorGeometry;
+  }
+
+  dispose() {
+
+    this.axisLine.geometry.dispose();
+
+    this.equator.geometry.dispose();
+
+    this.poleGeometry.dispose();
+
+    this.axisMaterial.dispose();
+
+    this.equatorMaterial.dispose();
+
+    this.northMaterial.dispose();
+
+    this.southMaterial.dispose();
+
+    this.scene.remove(
+      this.axisLine
+    );
+
+    this.scene.remove(
+      this.northPole
+    );
+
+    this.scene.remove(
+      this.southPole
+    );
+
+    this.scene.remove(
       this.equator
     );
   }
