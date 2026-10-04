@@ -13,6 +13,14 @@ import {
   MorraEnvironmentEngine
 } from "../physics/MorraEnvironmentEngine";
 
+import {
+  SurfaceFieldEngine
+} from "../physics/SurfaceFieldEngine";
+
+import {
+  SurfaceFieldVisualizer
+} from "../render/SurfaceFieldVisualizer";
+
 export class MorraSystem {
 
   scene: THREE.Scene;
@@ -39,6 +47,12 @@ export class MorraSystem {
 
   environmentEngine:
     MorraEnvironmentEngine;
+
+  surfaceFieldEngine:
+    SurfaceFieldEngine;
+
+  surfaceFieldVisualizer:
+    SurfaceFieldVisualizer;
 
   constructor(
     scene: THREE.Scene
@@ -317,6 +331,25 @@ export class MorraSystem {
           this.moonEquator
         ]
       );
+
+    this.surfaceFieldEngine =
+      new SurfaceFieldEngine(
+        this.environmentEngine,
+        {
+          latitudeSegments:
+            MORRA_CONFIG.SURFACE_FIELD.latitudeSegments,
+          longitudeSegments:
+            MORRA_CONFIG.SURFACE_FIELD.longitudeSegments,
+          updateIntervalHours:
+            MORRA_CONFIG.SURFACE_FIELD.updateIntervalHours
+        }
+      );
+
+    this.surfaceFieldVisualizer =
+      new SurfaceFieldVisualizer(
+        this.morra.mesh,
+        this.surfaceFieldEngine
+      );
   }
 
   update(
@@ -365,6 +398,40 @@ export class MorraSystem {
     );
 
     this.lightSystem.update();
+
+    this.surfaceFieldEngine.setConfig({
+      latitudeSegments:
+        MORRA_CONFIG.SURFACE_FIELD.latitudeSegments,
+      longitudeSegments:
+        MORRA_CONFIG.SURFACE_FIELD.longitudeSegments,
+      updateIntervalHours:
+        MORRA_CONFIG.SURFACE_FIELD.updateIntervalHours
+    });
+
+    const fieldMap =
+      this.surfaceFieldEngine.update(
+        absoluteHours
+      );
+
+    this.surfaceFieldVisualizer.setRadius(
+      this.morra.radius
+    );
+
+    this.surfaceFieldVisualizer.setChannel(
+      MORRA_CONFIG.SURFACE_FIELD.channel
+    );
+
+    this.surfaceFieldVisualizer.setOpacity(
+      MORRA_CONFIG.SURFACE_FIELD.opacity
+    );
+
+    this.surfaceFieldVisualizer.setEnabled(
+      MORRA_CONFIG.DEBUG.showSurfaceField
+    );
+
+    this.surfaceFieldVisualizer.update(
+      fieldMap
+    );
   }
 
   dispose() {
@@ -372,6 +439,8 @@ export class MorraSystem {
     this.orbitSystem.dispose();
 
     this.lightSystem.dispose();
+
+    this.surfaceFieldVisualizer.dispose();
 
     this.morra.dispose();
 
