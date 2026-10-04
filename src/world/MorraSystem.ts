@@ -345,6 +345,21 @@ export class MorraSystem {
         }
       );
 
+    this.sunLarge.mesh.userData.radiationId =
+      "Large Sun";
+
+    this.sunMedium.mesh.userData.radiationId =
+      "Medium Sun";
+
+    this.sunSmall.mesh.userData.radiationId =
+      "Small Sun";
+
+    this.moonNorth.mesh.userData.radiationId =
+      "North Moon";
+
+    this.moonEquator.mesh.userData.radiationId =
+      "Equator Moon";
+
     this.surfaceFieldVisualizer =
       new SurfaceFieldVisualizer(
         this.morra.mesh,
