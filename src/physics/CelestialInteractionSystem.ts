@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 import {
   CelestialBody
-} from "./CelestialBody";
+} from "../astronomy/CelestialBody";
 
 import {
   MorraEnvironmentEngine
@@ -12,9 +12,9 @@ import {
   MORRA_CONFIG
 } from "../world/MorraConfig";
 
-import {
+import type {
   RadiationSource
-} from "../physics/RadiationEngine";
+} from "./RadiationEngine";
 
 import {
   RENDER_LAYERS
