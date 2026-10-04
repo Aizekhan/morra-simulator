@@ -431,8 +431,6 @@ export class CelestialBody {
       presentationMesh.material.dispose();
     }
 
-    this.geometry.dispose();
-
     this.material.dispose();
   }
 }
