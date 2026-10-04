@@ -282,55 +282,31 @@ export class CelestialBody {
       this.orbitSpeed *
       absoluteHours;
 
-    const eccentricAnomaly =
-      OrbitMath.solveEccentricAnomaly(
-        this.angle,
-        this.orbitEccentricity
-      );
+    const direction =
+      this.reverseOrbit
+        ? -1
+        : 1;
 
-    const ellipsePoint =
-      OrbitMath.getEllipsePoint(
+    this.angle =
+      this.initialAngle +
+      direction *
+      this.orbitSpeed *
+      absoluteHours;
+
+    this.mesh.position.copy(
+      OrbitMath.getPosition(
         this.orbitRadius,
         this.orbitEccentricity,
-        eccentricAnomaly
-      );
-
-    const basis =
-      OrbitMath.getBasis(
+        this.angle,
         this.orbitPlane,
         this.orbitInclination,
-        this.orbitAscendingNode
-      );
-
-    this.mesh.position
-      .copy(
-        basis.primary
-          .clone()
-          .multiplyScalar(
-            ellipsePoint.primary
-          )
-          .add(
-            basis.secondary
-              .clone()
-              .multiplyScalar(
-                ellipsePoint.secondary
-              )
-          )
+        this.orbitAscendingNode,
+        this.orbitPlaneOffset,
+        this.orbitOffsetX,
+        this.orbitOffsetY,
+        this.orbitOffsetZ
       )
-      .add(
-        new THREE.Vector3(
-          this.orbitOffsetX,
-          this.orbitOffsetY,
-          this.orbitOffsetZ
-        )
-      )
-      .add(
-        basis.normal
-          .clone()
-          .multiplyScalar(
-            this.orbitPlaneOffset
-          )
-      );
+    );
   }
 
   dispose() {
