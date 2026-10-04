@@ -214,14 +214,25 @@ export class MorraSystem {
 
     this.configSynchronizer.sync();
 
-    this.morra.mesh.rotation.z =
+    const axisTilt =
       THREE.MathUtils.degToRad(
         MORRA_CONFIG.AXIS_TILT
       );
 
+    this.morra.mesh.rotation.z =
+      axisTilt;
+
     this.morra.mesh.rotation.y =
       MORRA_CONFIG.ROTATION_SPEED *
       absoluteHours;
+
+    this.moonNorth.setOrbitRotationZ(
+      axisTilt
+    );
+
+    this.moonEquator.setOrbitRotationZ(
+      axisTilt
+    );
 
     this.axis.update(
       this.morra.radius,
