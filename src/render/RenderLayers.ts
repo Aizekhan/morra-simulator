@@ -2,6 +2,8 @@ export const RENDER_LAYERS = {
 
   DEFAULT: 0,
 
-  MORRA_LIGHT_RECEIVER: 1
+  MORRA_LIGHT_RECEIVER: 1,
+
+  MOON_LIGHT_RECEIVER: 2
 
 } as const;

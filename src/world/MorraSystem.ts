@@ -26,6 +26,10 @@ import {
 } from "../render/ShadowVolumeVisualizer";
 
 import {
+  MoonReflectionLightSystem
+} from "../astronomy/MoonReflectionLightSystem";
+
+import {
   RENDER_LAYERS
 } from "../render/RenderLayers";
 
@@ -64,6 +68,9 @@ export class MorraSystem {
 
   shadowVolumeVisualizer:
     ShadowVolumeVisualizer;
+
+  moonReflectionLightSystem:
+    MoonReflectionLightSystem;
 
   constructor(
     scene: THREE.Scene
@@ -382,6 +389,40 @@ export class MorraSystem {
         MORRA_CONFIG.SURFACE_FIELD.latitudeSegments
       );
 
+    this.moonReflectionLightSystem =
+      new MoonReflectionLightSystem(
+        scene,
+        this.environmentEngine,
+        this.moonNorth,
+        this.moonEquator,
+        [
+          {
+            body:
+              this.sunLarge,
+            color:
+              MORRA_CONFIG.LIGHTS.LARGE.color,
+            intensity:
+              MORRA_CONFIG.LIGHTS.LARGE.intensity
+          },
+          {
+            body:
+              this.sunMedium,
+            color:
+              MORRA_CONFIG.LIGHTS.MEDIUM.color,
+            intensity:
+              MORRA_CONFIG.LIGHTS.MEDIUM.intensity
+          },
+          {
+            body:
+              this.sunSmall,
+            color:
+              MORRA_CONFIG.LIGHTS.SMALL.color,
+            intensity:
+              MORRA_CONFIG.LIGHTS.SMALL.intensity
+          }
+        ]
+      );
+
     this.shadowVolumeVisualizer =
       new ShadowVolumeVisualizer(
         scene,
@@ -448,6 +489,8 @@ export class MorraSystem {
 
     this.lightSystem.update();
 
+    this.moonReflectionLightSystem.update();
+
     this.surfaceFieldEngine.setConfig({
       latitudeSegments:
         MORRA_CONFIG.SURFACE_FIELD.latitudeSegments,
@@ -507,6 +550,8 @@ export class MorraSystem {
     this.surfaceFieldVisualizer.dispose();
 
     this.shadowVolumeVisualizer.dispose();
+
+    this.moonReflectionLightSystem.dispose();
 
     this.morra.dispose();
 

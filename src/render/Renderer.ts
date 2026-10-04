@@ -46,6 +46,10 @@ export class Renderer {
       RENDER_LAYERS.MORRA_LIGHT_RECEIVER
     );
 
+    this.camera.layers.enable(
+      RENDER_LAYERS.MOON_LIGHT_RECEIVER
+    );
+
     this.renderer =
       new THREE.WebGLRenderer({
         antialias: true

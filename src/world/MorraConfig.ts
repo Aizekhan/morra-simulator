@@ -240,6 +240,23 @@ export const MORRA_CONFIG = {
   },
 
   // =========================
+  // MOON REFLECTION
+  // =========================
+
+  // Simulator rendering calibration, not canon.
+  MOON_REFLECTION: {
+
+    enabled: true,
+
+    albedo: 0.12,
+
+    intensityScale: 50000000,
+
+    maxIntensity: 2.5
+
+  },
+
+  // =========================
   // SURFACE FIELD
   // =========================
 
@@ -271,7 +288,7 @@ export const MORRA_CONFIG = {
 
   SHADOW_VOLUMES: {
 
-    enabled: true,
+    enabled: false,
 
     length: 1600,
 
@@ -303,7 +320,7 @@ DEBUG: {
 
   showSurfaceField: true,
 
-  showRadiationRays: true
+  showRadiationRays: false
 
 },
 
