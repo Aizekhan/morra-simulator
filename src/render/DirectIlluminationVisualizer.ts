@@ -4,6 +4,15 @@ import {
   MorraEnvironmentEngine
 } from "../physics/MorraEnvironmentEngine";
 
+const MORRA_COLORS = {
+  large:
+    0xffcc88,
+  medium:
+    0xffaa55,
+  small:
+    0xffffcc
+};
+
 export class DirectIlluminationVisualizer {
 
   private readonly engine:
@@ -121,10 +130,11 @@ export class DirectIlluminationVisualizer {
       ]);
 
       const color =
-        source.body.mesh.material instanceof
-        THREE.MeshBasicMaterial
-          ? source.body.mesh.material.color.getHex()
-          : 0xffffff;
+        source.id === "large-sun"
+          ? MORRA_COLORS.large
+          : source.id === "medium-sun"
+            ? MORRA_COLORS.medium
+            : MORRA_COLORS.small;
 
       const beamMaterial =
         new THREE.LineBasicMaterial({
