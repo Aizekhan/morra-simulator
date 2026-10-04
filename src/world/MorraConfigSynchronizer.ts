@@ -1,11 +1,14 @@
 import { CelestialBody } from "../astronomy/CelestialBody";
 
-import { MORRA_CONFIG } from "./MorraConfig";
+import {
+  MORRA_CONFIG
+} from "./MorraConfig";
 
 export class MorraConfigSynchronizer {
 
   constructor(
     private readonly bodies: {
+      morra: CelestialBody;
       moonNorth: CelestialBody;
       moonEquator: CelestialBody;
       sunLarge: CelestialBody;
@@ -16,29 +19,68 @@ export class MorraConfigSynchronizer {
 
   sync() {
 
+    const morraRadius =
+      Math.max(
+        0.1,
+        MORRA_CONFIG.MORRA_RADIUS
+      );
+
+    this.bodies.morra.setRadius(
+      morraRadius
+    );
+
+    this.bodies.morra.setColor(
+      MORRA_CONFIG.MORRA_COLOR
+    );
+
+    this.bodies.moonNorth.setColor(
+      MORRA_CONFIG.MOON_NORTH.color
+    );
+
+    this.bodies.moonEquator.setColor(
+      MORRA_CONFIG.MOON_EQUATOR.color
+    );
+
+    this.bodies.sunLarge.setColor(
+      MORRA_CONFIG.LIGHTS.LARGE.color
+    );
+
+    this.bodies.sunMedium.setColor(
+      MORRA_CONFIG.LIGHTS.MEDIUM.color
+    );
+
+    this.bodies.sunSmall.setColor(
+      MORRA_CONFIG.LIGHTS.SMALL.color
+    );
+
     this.syncBody(
       this.bodies.moonNorth,
-      MORRA_CONFIG.MOON_NORTH
+      MORRA_CONFIG.MOON_NORTH,
+      morraRadius + this.bodies.moonNorth.radius + 10
     );
 
     this.syncBody(
       this.bodies.moonEquator,
-      MORRA_CONFIG.MOON_EQUATOR
+      MORRA_CONFIG.MOON_EQUATOR,
+      morraRadius + this.bodies.moonEquator.radius + 10
     );
 
     this.syncBody(
       this.bodies.sunLarge,
-      MORRA_CONFIG.SUN_LARGE
+      MORRA_CONFIG.SUN_LARGE,
+      morraRadius + this.bodies.sunLarge.radius + 100
     );
 
     this.syncBody(
       this.bodies.sunMedium,
-      MORRA_CONFIG.SUN_MEDIUM
+      MORRA_CONFIG.SUN_MEDIUM,
+      morraRadius + this.bodies.sunMedium.radius + 100
     );
 
     this.syncBody(
       this.bodies.sunSmall,
-      MORRA_CONFIG.SUN_SMALL
+      MORRA_CONFIG.SUN_SMALL,
+      morraRadius + this.bodies.sunSmall.radius + 100
     );
   }
 
@@ -50,7 +92,8 @@ export class MorraConfigSynchronizer {
       orbitSpeed: number;
       orbitPlane: "XZ" | "YZ" | "XY";
       orbitHeight?: number;
-    }
+    },
+    minimumOrbitRadius: number
   ) {
 
     body.setRadius(
@@ -58,15 +101,19 @@ export class MorraConfigSynchronizer {
     );
 
     body.setOrbitRadius(
-      config.orbitRadius
+      Math.max(
+        config.orbitRadius,
+        minimumOrbitRadius
+      )
     );
 
     body.setOrbitSpeed(
       config.orbitSpeed
     );
 
-    body.orbitPlane =
-      config.orbitPlane;
+    body.setOrbitPlane(
+      config.orbitPlane
+    );
 
     if(
       config.orbitHeight !== undefined
