@@ -59,11 +59,15 @@ export interface SurfaceFieldMap {
 
   anomalyStrength: Float32Array;
 
+  shadow: Float32Array;
+
   lightStats: SurfaceFieldStats;
 
   heatStats: SurfaceFieldStats;
 
   magicStats: SurfaceFieldStats;
+
+  shadowStats: SurfaceFieldStats;
 }
 
 export class SurfaceFieldEngine {
@@ -271,6 +275,11 @@ export class SurfaceFieldEngine {
         count
       );
 
+    const shadow =
+      new Float32Array(
+        count
+      );
+
     let lightSum =
       0;
 
@@ -296,6 +305,15 @@ export class SurfaceFieldEngine {
       Number.NEGATIVE_INFINITY;
 
     let magicMax =
+      Number.NEGATIVE_INFINITY;
+
+    let shadowSum =
+      0;
+
+    let shadowMin =
+      Number.POSITIVE_INFINITY;
+
+    let shadowMax =
       Number.NEGATIVE_INFINITY;
 
     for(
@@ -388,7 +406,10 @@ export class SurfaceFieldEngine {
           magosphereStability:
             sample.magosphere.stability,
           anomalyStrength:
-            sample.magosphere.anomalyStrength
+            sample.magosphere.anomalyStrength,
+          shadow:
+            1 -
+            sample.radiation.magicVisibility
         };
 
         samples[index] =
@@ -409,6 +430,9 @@ export class SurfaceFieldEngine {
         anomalyStrength[index] =
           sampleData.anomalyStrength;
 
+        shadow[index] =
+          sampleData.shadow;
+
         lightSum +=
           sampleData.light;
 
@@ -417,6 +441,21 @@ export class SurfaceFieldEngine {
 
         magicSum +=
           sampleData.magic;
+
+        shadowSum +=
+          sampleData.shadow;
+
+        shadowMin =
+          Math.min(
+            shadowMin,
+            sampleData.shadow
+          );
+
+        shadowMax =
+          Math.max(
+            shadowMax,
+            sampleData.shadow
+          );
 
         lightMin =
           Math.min(
@@ -491,6 +530,15 @@ export class SurfaceFieldEngine {
           magicMax,
         average:
           magicSum /
+          count
+      },
+      shadowStats: {
+        min:
+          shadowMin,
+        max:
+          shadowMax,
+        average:
+          shadowSum /
           count
       }
     };
