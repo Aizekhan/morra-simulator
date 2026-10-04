@@ -191,6 +191,13 @@ export class SurfaceFieldVisualizer {
       SurfaceFieldChannel
   ) {
 
+    if(
+      this.channel ===
+      channel
+    ) {
+      return;
+    }
+
     this.channel =
       channel;
 
