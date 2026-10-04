@@ -293,7 +293,7 @@ export class RadiationEngine {
           .normalize();
 
       const angularSeparation =
-        THREE.MathUtils.acos(
+        Math.acos(
           THREE.MathUtils.clamp(
             sourceDirection.dot(
               occluderDirection
