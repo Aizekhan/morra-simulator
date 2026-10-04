@@ -41,8 +41,8 @@ import {
 } from "./world/MorraConfig";
 
 import {
-  RadiationRayVisualizer
-} from "./render/RadiationRayVisualizer";
+  DirectIlluminationVisualizer
+} from "./render/DirectIlluminationVisualizer";
 
 import {
   WorldInteractionSystem
@@ -90,8 +90,8 @@ const environmentPanel =
 const surfaceFieldHUD =
   new SurfaceFieldHUD();
 
-const radiationRayVisualizer =
-  new RadiationRayVisualizer(
+const directIlluminationVisualizer =
+  new DirectIlluminationVisualizer(
     renderer.scene,
     simulation.morraSystem.environmentEngine
   );
@@ -111,9 +111,7 @@ const worldInteraction =
         selection.point
       );
 
-      radiationRayVisualizer.setPoint(
-        selection.point
-      );
+
     }
   );
 
@@ -146,11 +144,11 @@ function animate() {
     MORRA_CONFIG.SURFACE_FIELD.channel
   );
 
-  radiationRayVisualizer.setEnabled(
-    MORRA_CONFIG.DEBUG.showRadiationRays
+  directIlluminationVisualizer.setEnabled(
+    MORRA_CONFIG.DEBUG.showDirectIllumination
   );
 
-  radiationRayVisualizer.update();
+  directIlluminationVisualizer.update();
 
   debugPanel.update();
 
@@ -173,7 +171,7 @@ window.addEventListener(
 
     surfaceFieldHUD.dispose();
 
-    radiationRayVisualizer.dispose();
+    directIlluminationVisualizer.dispose();
 
     timeline.dispose();
 
