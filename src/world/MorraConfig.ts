@@ -240,6 +240,29 @@ export const MORRA_CONFIG = {
   },
 
   // =========================
+  // SURFACE FIELD
+  // =========================
+
+  SURFACE_FIELD: {
+
+    latitudeSegments: 32,
+
+    longitudeSegments: 64,
+
+    updateIntervalHours: 0.25,
+
+    channel: "MAGIC" as
+      "LIGHT" |
+      "HEAT" |
+      "MAGIC" |
+      "MAGOSPHERE" |
+      "ANOMALY",
+
+    opacity: 0.48
+
+  },
+
+  // =========================
   // DEBUG
   // =========================
 
@@ -255,7 +278,9 @@ DEBUG: {
 
   showTimePanel: true,
 
-  showTimeline: true
+  showTimeline: true,
+
+  showSurfaceField: false
 
 },
 
