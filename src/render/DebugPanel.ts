@@ -381,6 +381,42 @@ export class DebugPanel {
       MORRA_CONFIG.MOON_EQUATOR
     );
 
+    const reflection =
+      root.addFolder(
+        "🌙 REFLECTION"
+      );
+
+    reflection.add(
+      MORRA_CONFIG.MOON_REFLECTION,
+      "enabled"
+    ).name("ENABLED").listen();
+
+    reflection.add(
+      MORRA_CONFIG.MOON_REFLECTION,
+      "albedo",
+      0,
+      1,
+      0.01
+    ).name("ALBEDO").listen();
+
+    reflection.add(
+      MORRA_CONFIG.MOON_REFLECTION,
+      "intensityScale",
+      0,
+      100000000,
+      100000
+    ).name("INTENSITY SCALE").listen();
+
+    reflection.add(
+      MORRA_CONFIG.MOON_REFLECTION,
+      "maxIntensity",
+      0,
+      10,
+      0.01
+    ).name("MAX INTENSITY").listen();
+
+    reflection.close();
+
     root.close();
   }
 
