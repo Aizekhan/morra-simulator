@@ -1,7 +1,6 @@
 import * as THREE from "three";
 
 import type {
-  SurfaceFieldEngine,
   SurfaceFieldMap
 } from "../physics/SurfaceFieldEngine";
 
@@ -47,8 +46,7 @@ export class SurfaceFieldVisualizer {
     number;
 
   constructor(
-    morra: THREE.Mesh,
-    engine: SurfaceFieldEngine
+    morra: THREE.Mesh
   ) {
 
     this.morra =
