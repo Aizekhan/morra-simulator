@@ -12,6 +12,8 @@ export interface CelestialBodyOptions {
   segments?: number;
 
   emissiveIntensity?: number;
+
+  orbitRotationZ?: number;
 }
 
 export class CelestialBody {
@@ -34,6 +36,8 @@ export class CelestialBody {
   orbitOffsetX: number;
   orbitOffsetY: number;
   orbitOffsetZ: number;
+
+  orbitRotationZ: number;
 
   readonly initialAngle: number;
 
@@ -103,6 +107,9 @@ export class CelestialBody {
 
     this.orbitOffsetZ =
       orbitOffsetZ;
+
+    this.orbitRotationZ =
+      options.orbitRotationZ ?? 0;
 
     this.initialAngle =
       options.initialAngle ?? 0;
@@ -192,12 +199,12 @@ export class CelestialBody {
       plane;
   }
 
-  setInitialAngle(
-    angle: number
+  setOrbitRotationZ(
+    rotation: number
   ) {
 
-    this.angle =
-      angle;
+    this.orbitRotationZ =
+      rotation;
   }
 
   updateAtTime(
@@ -270,6 +277,20 @@ export class CelestialBody {
         );
 
         break;
+    }
+
+    if(
+      this.orbitRotationZ !== 0
+    ) {
+
+      this.mesh.position.applyAxisAngle(
+        new THREE.Vector3(
+          0,
+          0,
+          1
+        ),
+        this.orbitRotationZ
+      );
     }
   }
 
