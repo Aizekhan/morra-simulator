@@ -296,8 +296,7 @@ export class CelestialBody {
           this.orbitOffsetZ
         )
       );
-
-
+  }
 
   dispose() {
 
