@@ -10,6 +10,10 @@ export const MORRA_CONFIG = {
 
   MORRA_VISIBLE: true,
 
+  // Render-only base emissive so Morra remains visually readable
+  // when the physical light sources are on the far side.
+  MORRA_BASE_EMISSIVE: 0.22,
+
   AXIS_TILT: 23,
 
   ROTATION_SPEED: 0.01,
