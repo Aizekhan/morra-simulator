@@ -146,15 +146,6 @@ export class OrbitSystem {
         this.showOrbits &&
         entry.body.mesh.visible;
 
-      continue;
-
-      OrbitRenderer.updateOrbit(
-        entry.line,
-        shape
-      );
-
-      entry.lastKey =
-        key;
     }
   }
 
