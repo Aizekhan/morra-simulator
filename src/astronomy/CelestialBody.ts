@@ -282,11 +282,6 @@ export class CelestialBody {
       this.orbitSpeed *
       absoluteHours;
 
-    const direction =
-      this.reverseOrbit
-        ? -1
-        : 1;
-
     this.angle =
       this.initialAngle +
       direction *
