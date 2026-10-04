@@ -1,12 +1,14 @@
 import * as THREE from "three";
 
 import { CelestialBody } from "../astronomy/CelestialBody";
+import { CelestialSystem } from "../astronomy/CelestialSystem";
 import { MorraLightSystem } from "../astronomy/MorraLightSystem";
 
 import { OrbitRenderer } from "../render/OrbitRenderer";
 
 import { MORRA_CONFIG } from "./MorraConfig";
 import { MorraAxis } from "./MorraAxis";
+import { MorraConfigSynchronizer } from "./MorraConfigSynchronizer";
 
 export class MorraSystem {
 
@@ -29,6 +31,10 @@ export class MorraSystem {
 
   moonNorthOrbit: THREE.LineLoop;
   moonEquatorOrbit: THREE.LineLoop;
+
+  celestialSystem: CelestialSystem;
+
+  configSynchronizer: MorraConfigSynchronizer;
 
   lightSystem: MorraLightSystem;
 
@@ -131,6 +137,38 @@ export class MorraSystem {
       this.sunSmall.mesh
     );
 
+    this.celestialSystem =
+      new CelestialSystem();
+
+    this.celestialSystem.add(
+      this.moonNorth
+    );
+
+    this.celestialSystem.add(
+      this.moonEquator
+    );
+
+    this.celestialSystem.add(
+      this.sunLarge
+    );
+
+    this.celestialSystem.add(
+      this.sunMedium
+    );
+
+    this.celestialSystem.add(
+      this.sunSmall
+    );
+
+    this.configSynchronizer =
+      new MorraConfigSynchronizer({
+        moonNorth: this.moonNorth,
+        moonEquator: this.moonEquator,
+        sunLarge: this.sunLarge,
+        sunMedium: this.sunMedium,
+        sunSmall: this.sunSmall
+      });
+
     this.lightSystem =
       new MorraLightSystem(
         scene,
@@ -193,7 +231,7 @@ export class MorraSystem {
   }
 
   update(
-    delta:number
+    delta: number
   ) {
 
     const simulationDelta =
@@ -204,69 +242,9 @@ export class MorraSystem {
       MORRA_CONFIG.ROTATION_SPEED *
       simulationDelta;
 
-    // LIVE CONFIG UPDATE
+    this.configSynchronizer.sync();
 
-    this.sunLarge.setRadius(
-      MORRA_CONFIG.SUN_LARGE.radius
-    );
-
-    this.sunLarge.setOrbitRadius(
-      MORRA_CONFIG.SUN_LARGE.orbitRadius
-    );
-
-    this.sunLarge.setOrbitSpeed(
-      MORRA_CONFIG.SUN_LARGE.orbitSpeed
-    );
-
-    this.sunLarge.setOrbitHeight(
-      MORRA_CONFIG.SUN_LARGE.orbitHeight
-    );
-
-    this.sunMedium.setRadius(
-      MORRA_CONFIG.SUN_MEDIUM.radius
-    );
-
-    this.sunMedium.setOrbitRadius(
-      MORRA_CONFIG.SUN_MEDIUM.orbitRadius
-    );
-
-    this.sunMedium.setOrbitSpeed(
-      MORRA_CONFIG.SUN_MEDIUM.orbitSpeed
-    );
-
-    this.sunMedium.setOrbitHeight(
-      MORRA_CONFIG.SUN_MEDIUM.orbitHeight
-    );
-
-    this.sunSmall.setRadius(
-      MORRA_CONFIG.SUN_SMALL.radius
-    );
-
-    this.sunSmall.setOrbitRadius(
-      MORRA_CONFIG.SUN_SMALL.orbitRadius
-    );
-
-    this.sunSmall.setOrbitSpeed(
-      MORRA_CONFIG.SUN_SMALL.orbitSpeed
-    );
-
-    this.moonNorth.update(
-      simulationDelta
-    );
-
-    this.moonEquator.update(
-      simulationDelta
-    );
-
-    this.sunLarge.update(
-      simulationDelta
-    );
-
-    this.sunMedium.update(
-      simulationDelta
-    );
-
-    this.sunSmall.update(
+    this.celestialSystem.update(
       simulationDelta
     );
 
@@ -290,7 +268,7 @@ export class MorraSystem {
   }
 
   setOrbitVisible(
-    visible:boolean
+    visible: boolean
   ) {
 
     this.sunLargeOrbit.visible =
