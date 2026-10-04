@@ -34,7 +34,7 @@ export class MorraEnvironmentEngine {
   readonly magosphere =
     new MagosphereEngine();
 
-  private readonly morra:
+  readonly morra:
     CelestialBody;
 
   private readonly occluders:

@@ -63,6 +63,8 @@ export class DebugPanel {
 
     this.createLightingFolder();
 
+    this.createSurfaceFieldFolder();
+
     this.createDebugFolder();
   }
 
@@ -424,6 +426,63 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.max,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.step
     ).name("SMALL SUN INTENSITY").listen();
+  }
+
+  private createSurfaceFieldFolder() {
+
+    const folder =
+      this.gui.addFolder("Surface Field");
+
+    folder.add(
+      MORRA_CONFIG.SURFACE_FIELD,
+      "latitudeSegments",
+      8,
+      96,
+      4
+    ).name("LATITUDE RESOLUTION").listen();
+
+    folder.add(
+      MORRA_CONFIG.SURFACE_FIELD,
+      "longitudeSegments",
+      16,
+      192,
+      8
+    ).name("LONGITUDE RESOLUTION").listen();
+
+    folder.add(
+      MORRA_CONFIG.SURFACE_FIELD,
+      "updateIntervalHours",
+      0,
+      10,
+      0.05
+    ).name("UPDATE INTERVAL (H)").listen();
+
+    folder.add(
+      MORRA_CONFIG.SURFACE_FIELD,
+      "channel",
+      [
+        "LIGHT",
+        "HEAT",
+        "MAGIC",
+        "MAGOSPHERE",
+        "ANOMALY"
+      ]
+    ).name("CHANNEL").listen();
+
+    folder.add(
+      MORRA_CONFIG.SURFACE_FIELD,
+      "opacity",
+      0,
+      1,
+      0.01
+    ).name("OPACITY").listen();
+
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showSurfaceField"
+    ).name("SHOW FIELD MAP").listen();
+
+    folder.open();
   }
 
   private createDebugFolder() {
