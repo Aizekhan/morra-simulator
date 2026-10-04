@@ -54,12 +54,16 @@ export class MorraLightSystem {
     this.largeLight.castShadow =
       true;
 
-    this.largeLight.layers.enable(
+    this.largeLight.layers.set(
       RENDER_LAYERS.MORRA_LIGHT_RECEIVER
     );
 
     this.largeLight.layers.enable(
       RENDER_LAYERS.MOON_LIGHT_RECEIVER
+    );
+
+    this.configureShadow(
+      this.largeLight
     );
 
     scene.add(
@@ -76,12 +80,16 @@ export class MorraLightSystem {
     this.mediumLight.castShadow =
       true;
 
-    this.mediumLight.layers.enable(
+    this.mediumLight.layers.set(
       RENDER_LAYERS.MORRA_LIGHT_RECEIVER
     );
 
     this.mediumLight.layers.enable(
       RENDER_LAYERS.MOON_LIGHT_RECEIVER
+    );
+
+    this.configureShadow(
+      this.mediumLight
     );
 
     scene.add(
@@ -98,12 +106,16 @@ export class MorraLightSystem {
     this.smallLight.castShadow =
       true;
 
-    this.smallLight.layers.enable(
+    this.smallLight.layers.set(
       RENDER_LAYERS.MORRA_LIGHT_RECEIVER
     );
 
     this.smallLight.layers.enable(
       RENDER_LAYERS.MOON_LIGHT_RECEIVER
+    );
+
+    this.configureShadow(
+      this.smallLight
     );
 
     scene.add(
@@ -212,6 +224,50 @@ export class MorraLightSystem {
     this.largeHelper.update();
     this.mediumHelper.update();
     this.smallHelper.update();
+  }
+
+  private configureShadow(
+    light: THREE.PointLight
+  ) {
+
+    light.shadow.mapSize.set(
+      2048,
+      2048
+    );
+
+    light.shadow.bias =
+      -0.0002;
+
+    light.shadow.normalBias =
+      0.35;
+
+    light.shadow.radius =
+      2;
+
+    light.shadow.camera.near =
+      1;
+
+    light.shadow.camera.far =
+      Math.max(
+        10000,
+        light.distance ||
+        10000
+      );
+
+    light.shadow.camera.layers.enable(
+      0
+    );
+
+    light.shadow.camera.layers.enable(
+      RENDER_LAYERS.MORRA_LIGHT_RECEIVER
+    );
+
+    light.shadow.camera.layers.enable(
+      RENDER_LAYERS.MOON_LIGHT_RECEIVER
+    );
+
+    light.shadow.autoUpdate =
+      true;
   }
 
   dispose() {
