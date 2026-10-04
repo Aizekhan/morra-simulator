@@ -17,20 +17,6 @@ export interface MagosphereSample {
 
 export class MagosphereEngine {
 
-  private referenceMagicInput =
-    1;
-
-  setReferenceMagicInput(
-    value: number
-  ) {
-
-    this.referenceMagicInput =
-      Math.max(
-        Number.EPSILON,
-        value
-      );
-  }
-
   evaluate(
     radiation: RadiationSample
   ): MagosphereSample {
