@@ -71,6 +71,13 @@ export class MorraConfigSynchronizer {
       MORRA_CONFIG.LIGHTS.SMALL.color
     );
 
+    this.bodies.sunLarge.setSelfIllumination(1.8);
+    this.bodies.sunMedium.setSelfIllumination(1.8);
+    this.bodies.sunSmall.setSelfIllumination(1.8);
+
+    this.bodies.moonNorth.setSelfIllumination(0.15);
+    this.bodies.moonEquator.setSelfIllumination(0.15);
+
     this.syncBody(
       this.bodies.moonNorth,
       MORRA_CONFIG.MOON_NORTH,
