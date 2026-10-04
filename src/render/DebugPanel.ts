@@ -219,7 +219,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.min,
       MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.max,
       MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.step
-    ).name("ORBIT ELLIPSE").listen();
+    ).name("ORBIT ECCENTRICITY").listen();
   }
 
   private createMoonFolders() {
