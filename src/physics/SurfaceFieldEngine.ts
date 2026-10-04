@@ -103,6 +103,9 @@ export class SurfaceFieldEngine {
   private lastWorldSignature:
     string | null = null;
 
+  private lastUpdateTimestamp:
+    number | null = null;
+
   constructor(
     environment:
       MorraEnvironmentEngine,
@@ -191,12 +194,6 @@ export class SurfaceFieldEngine {
     if(changed) {
       this.map =
         null;
-
-      this.lastAbsoluteHours =
-        null;
-
-      this.lastWorldSignature =
-        null;
     }
   }
 
@@ -216,9 +213,6 @@ export class SurfaceFieldEngine {
     absoluteHours: number,
     force = false
   ) {
-
-    const signature =
-      this.getWorldSignature();
 
     const now =
       typeof performance !== "undefined"
@@ -246,12 +240,6 @@ export class SurfaceFieldEngine {
 
     this.map =
       map;
-
-    this.lastAbsoluteHours =
-      absoluteHours;
-
-    this.lastWorldSignature =
-      signature;
 
     this.lastUpdateTimestamp =
       now;
