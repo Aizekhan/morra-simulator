@@ -32,6 +32,9 @@ export class OrbitSystem {
 
   private readonly scene: THREE.Scene;
 
+  private showOrbits =
+    true;
+
   constructor(
     scene: THREE.Scene
   ) {
@@ -65,6 +68,9 @@ export class OrbitSystem {
     this.scene.add(
       line
     );
+
+    line.userData.celestialBody =
+      body;
 
     this.entries.push({
       body,
@@ -123,11 +129,24 @@ export class OrbitSystem {
         );
 
       if(
-        key ===
+        key !==
         entry.lastKey
       ) {
-        continue;
+
+        OrbitRenderer.updateOrbit(
+          entry.line,
+          shape
+        );
+
+        entry.lastKey =
+          key;
       }
+
+      entry.line.visible =
+        this.showOrbits &&
+        entry.body.mesh.visible;
+
+      continue;
 
       OrbitRenderer.updateOrbit(
         entry.line,
@@ -143,12 +162,16 @@ export class OrbitSystem {
     visible: boolean
   ) {
 
+    this.showOrbits =
+      visible;
+
     for(
       const entry of this.entries
     ) {
 
       entry.line.visible =
-        visible;
+        this.showOrbits &&
+        entry.body.mesh.visible;
     }
   }
 
