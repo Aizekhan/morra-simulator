@@ -495,6 +495,11 @@ export class DebugPanel {
 
     shadowFolder.add(
       MORRA_CONFIG.SHADOW_VOLUMES,
+      "enabled"
+    ).name("SHOW SHADOW VOLUMES").listen();
+
+    shadowFolder.add(
+      MORRA_CONFIG.SHADOW_VOLUMES,
       "length",
       100,
       10000,
