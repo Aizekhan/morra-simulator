@@ -25,6 +25,10 @@ import {
   ShadowVolumeVisualizer
 } from "../render/ShadowVolumeVisualizer";
 
+import {
+  RENDER_LAYERS
+} from "../render/RenderLayers";
+
 export class MorraSystem {
 
   scene: THREE.Scene;
@@ -73,6 +77,10 @@ export class MorraSystem {
         MORRA_CONFIG.MORRA_RADIUS,
         MORRA_CONFIG.MORRA_COLOR
       );
+
+    this.morra.mesh.layers.set(
+      RENDER_LAYERS.MORRA_LIGHT_RECEIVER
+    );
 
     scene.add(
       this.morra.mesh
