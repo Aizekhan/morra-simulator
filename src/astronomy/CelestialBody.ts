@@ -107,6 +107,14 @@ export class CelestialBody {
         this.material
       );
 
+    if(
+      (options.emissiveIntensity ?? 0.05) >
+      0.5
+    ) {
+      this.material.emissiveIntensity =
+        options.emissiveIntensity ?? 0.05;
+    }
+
     this.mesh.castShadow =
       true;
 
@@ -151,6 +159,21 @@ export class CelestialBody {
 
     this.angle =
       this.initialAngle;
+  }
+
+  setSelfIllumination(
+    intensity: number
+  ) {
+
+    this.material.emissiveIntensity =
+      Math.max(
+        0,
+        intensity
+      );
+
+    this.material.emissive.setHex(
+      this.material.color.getHex()
+    );
   }
 
   setRadius(
