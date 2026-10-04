@@ -76,6 +76,12 @@ export class SurfaceFieldVisualizer {
     this.texture.flipY =
       true;
 
+    this.texture.minFilter =
+      THREE.LinearFilter;
+
+    this.texture.magFilter =
+      THREE.LinearFilter;
+
     this.texture.needsUpdate =
       true;
 
@@ -91,6 +97,14 @@ export class SurfaceFieldVisualizer {
           opacity: {
             value:
               this.opacity
+          },
+          lowColor: {
+            value:
+              new THREE.Color(0x06152f)
+          },
+          highColor: {
+            value:
+              new THREE.Color(0x4de9ff)
           }
         },
         vertexShader: `
@@ -111,6 +125,8 @@ export class SurfaceFieldVisualizer {
         fragmentShader: `
           uniform sampler2D fieldTexture;
           uniform float opacity;
+          uniform vec3 lowColor;
+          uniform vec3 highColor;
 
           varying vec2 vUv;
 
@@ -122,24 +138,10 @@ export class SurfaceFieldVisualizer {
                 vUv
               ).r;
 
-            vec3 cold =
-              vec3(
-                0.02,
-                0.08,
-                0.35
-              );
-
-            vec3 hot =
-              vec3(
-                1.0,
-                0.85,
-                0.12
-              );
-
             vec3 color =
               mix(
-                cold,
-                hot,
+                lowColor,
+                highColor,
                 value
               );
 
@@ -177,6 +179,8 @@ export class SurfaceFieldVisualizer {
       this.overlay
     );
 
+    this.applyChannelColors();
+
     this.setEnabled(
       false
     );
@@ -187,15 +191,10 @@ export class SurfaceFieldVisualizer {
       SurfaceFieldChannel
   ) {
 
-    if(
-      this.channel ===
-      channel
-    ) {
-      return;
-    }
-
     this.channel =
       channel;
+
+    this.applyChannelColors();
 
     if(
       this.lastMap
@@ -203,6 +202,68 @@ export class SurfaceFieldVisualizer {
       this.updateMap(
         this.lastMap
       );
+    }
+  }
+
+  getChannel() {
+
+    return this.channel;
+  }
+
+  private applyChannelColors() {
+
+    const colors =
+      this.getChannelColors();
+
+    this.material.uniforms
+      .lowColor.value
+      .setHex(
+        colors.low
+      );
+
+    this.material.uniforms
+      .highColor.value
+      .setHex(
+        colors.high
+      );
+  }
+
+  private getChannelColors() {
+
+    switch(
+      this.channel
+    ) {
+
+      case "LIGHT":
+        return {
+          low: 0x07142c,
+          high: 0xfff1a8
+        };
+
+      case "HEAT":
+        return {
+          low: 0x10204a,
+          high: 0xff3b20
+        };
+
+      case "MAGOSPHERE":
+        return {
+          low: 0x2b0710,
+          high: 0x59ffb0
+        };
+
+      case "ANOMALY":
+        return {
+          low: 0x07111f,
+          high: 0xff4d00
+        };
+
+      case "MAGIC":
+      default:
+        return {
+          low: 0x12002d,
+          high: 0x46e6ff
+        };
     }
   }
 
