@@ -500,13 +500,8 @@ export class SurfaceFieldEngine {
 
     const values =
       [
-        this.environment.morra.mesh.position.x,
-        this.environment.morra.mesh.position.y,
-        this.environment.morra.mesh.position.z,
-        this.environment.morra.mesh.rotation.x,
-        this.environment.morra.mesh.rotation.y,
-        this.environment.morra.mesh.rotation.z,
-        this.environment.morra.radius
+        this.environment.morra.radius,
+        this.environment.morra.mesh.rotation.z
       ];
 
     for(
@@ -514,17 +509,14 @@ export class SurfaceFieldEngine {
       of this.environment.radiation.getSources()
     ) {
 
-      const position =
-        source.body.mesh
-          .getWorldPosition(
-            new THREE.Vector3()
-          );
-
       values.push(
-        position.x,
-        position.y,
-        position.z,
         source.body.radius,
+        source.body.orbitRadius,
+        source.body.orbitSpeed,
+        source.body.orbitInclination,
+        source.body.orbitAscendingNode,
+        source.body.orbitEccentricity,
+        source.body.orbitPlaneOffset,
         source.body.mesh.visible
           ? 1
           : 0,
