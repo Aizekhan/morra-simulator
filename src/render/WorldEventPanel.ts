@@ -100,7 +100,7 @@ export class WorldEventPanel {
 
     this.locationInput =
       this.createInput(
-        "Location ID"
+        "Location ID or selected point"
       );
 
     this.descriptionInput =
@@ -156,9 +156,6 @@ export class WorldEventPanel {
         this.titleInput.value =
           "";
 
-        this.locationInput.value =
-          "";
-
         this.descriptionInput.value =
           "";
 
@@ -194,6 +191,14 @@ export class WorldEventPanel {
     );
 
     this.renderList();
+  }
+
+  setLocation(
+    locationId: string
+  ) {
+
+    this.locationInput.value =
+      locationId;
   }
 
   update() {
@@ -232,6 +237,9 @@ export class WorldEventPanel {
     this.list.innerHTML =
       "";
 
+    const yearHours =
+      this.time.getHoursInYear();
+
     for(
       const event of events
     ) {
@@ -261,12 +269,6 @@ export class WorldEventPanel {
           "span"
         );
 
-      const snapshot =
-        this.time.getSnapshot();
-
-      const yearHours =
-        this.time.getHoursInYear();
-
       const year =
         Math.floor(
           event.absoluteHour /
@@ -278,7 +280,12 @@ export class WorldEventPanel {
         yearHours;
 
       text.textContent =
-        `Y${year} +${Math.floor(local)}h · ${event.title}`;
+        "Y" +
+        year +
+        " +" +
+        Math.floor(local) +
+        "h · " +
+        event.title;
 
       text.style.flex =
         "1";
@@ -311,8 +318,6 @@ export class WorldEventPanel {
       this.list.append(
         row
       );
-
-      void snapshot;
     }
   }
 
