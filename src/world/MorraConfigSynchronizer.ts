@@ -48,6 +48,10 @@ export class MorraConfigSynchronizer {
       MORRA_CONFIG.MORRA_COLOR
     );
 
+    this.bodies.morra.setSelfIllumination(
+      MORRA_CONFIG.MORRA_BASE_EMISSIVE
+    );
+
     this.bodies.morra.mesh.visible =
       MORRA_CONFIG.MORRA_VISIBLE;
 
