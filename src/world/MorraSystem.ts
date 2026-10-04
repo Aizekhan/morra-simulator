@@ -469,8 +469,27 @@ export class MorraSystem {
         MORRA_CONFIG.SURFACE_FIELD.latitudeSegments
       );
 
+    this.morra.mesh.userData.presentationMinimumPixels =
+      28;
+
+    this.moonNorth.mesh.userData.presentationMinimumPixels =
+      12;
+
+    this.moonEquator.mesh.userData.presentationMinimumPixels =
+      14;
+
+    this.sunLarge.mesh.userData.presentationMinimumPixels =
+      12;
+
+    this.sunMedium.mesh.userData.presentationMinimumPixels =
+      12;
+
+    this.sunSmall.mesh.userData.presentationMinimumPixels =
+      12;
+
     this.celestialPresentation =
       new CelestialPresentationSystem(
+        scene,
         [
           this.morra,
           this.moonNorth,
@@ -479,12 +498,7 @@ export class MorraSystem {
           this.sunMedium,
           this.sunSmall
         ],
-        {
-          minimumPixels:
-            10,
-          maximumScale:
-            8
-        }
+        20
       );
 
     this.shadowVolumeVisualizer =

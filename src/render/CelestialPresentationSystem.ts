@@ -4,44 +4,96 @@ import {
   CelestialBody
 } from "../astronomy/CelestialBody";
 
-export interface CelestialPresentationConfig {
+interface PresentationProxy {
+
+  body: CelestialBody;
+
+  mesh: THREE.Mesh;
 
   minimumPixels: number;
-
-  maximumScale: number;
 }
 
 export class CelestialPresentationSystem {
 
-  private readonly bodies:
-    CelestialBody[];
+  private readonly scene:
+    THREE.Scene;
 
-  private readonly config:
-    CelestialPresentationConfig;
+  private readonly proxies:
+    PresentationProxy[] = [];
+
+  private readonly maximumScale:
+    number;
 
   constructor(
+    scene:
+      THREE.Scene,
     bodies:
-      CelestialBody[],    config:
-      Partial<CelestialPresentationConfig> = {}
+      CelestialBody[],
+    maximumScale =
+      20
   ) {
 
-    this.bodies =
-      bodies;
+    this.scene =
+      scene;
 
-    this.config = {
-      minimumPixels:
-        Math.max(
-          2,
-          config.minimumPixels ??
-            10
-        ),
-      maximumScale:
-        Math.max(
-          1,
-          config.maximumScale ??
-            8
-        )
-    };
+    this.maximumScale =
+      Math.max(
+        1,
+        maximumScale
+      );
+
+    for(
+      const body
+      of bodies
+    ) {
+
+      const material =
+        new THREE.MeshBasicMaterial({
+          color:
+            body.material.color.clone(),
+          depthWrite:
+            false,
+          depthTest:
+            true
+        });
+
+      const mesh =
+        new THREE.Mesh(
+          new THREE.SphereGeometry(
+            1,
+            16,
+            12
+          ),
+          material
+        );
+
+      mesh.name =
+        "CelestialPresentationProxy";
+
+      mesh.visible =
+        false;
+
+      mesh.renderOrder =
+        5;
+
+      mesh.layers.mask =
+        body.mesh.layers.mask;
+
+      this.scene.add(
+        mesh
+      );
+
+      this.proxies.push({
+        body,
+        mesh,
+        minimumPixels:
+          Math.max(
+            4,
+            body.mesh.userData.presentationMinimumPixels ??
+              10
+          )
+      });
+    }
   }
 
   update(
@@ -65,46 +117,41 @@ export class CelestialPresentationSystem {
         )
       );
 
-    const cameraPosition =
-      camera.position;
-
     for(
-      const body
-      of this.bodies
+      const proxy
+      of this.proxies
     ) {
 
-      const mesh =
-        body.mesh;
+      const bodyMesh =
+        proxy.body.mesh;
 
       if(
-        !mesh.visible
+        !bodyMesh.visible
       ) {
-        mesh.userData.presentationMesh &&
-          (
-            mesh.userData.presentationMesh.visible =
-              false
-          );
+
+        proxy.mesh.visible =
+          false;
 
         continue;
       }
 
       const worldPosition =
-        mesh.getWorldPosition(
+        bodyMesh.getWorldPosition(
           new THREE.Vector3()
         );
 
       const distance =
         Math.max(
           worldPosition.distanceTo(
-            cameraPosition
+            camera.position
           ),
           0.001
         );
 
-      const projectedDiameterPixels =
+      const projectedDiameter =
         (
           2 *
-          body.radius /
+          proxy.body.radius /
           (
             distance *
             cameraTan
@@ -113,55 +160,65 @@ export class CelestialPresentationSystem {
         height *
         0.5;
 
-      const presentationMesh =
-        mesh.userData.presentationMesh as
-        THREE.Mesh | undefined;
+      proxy.mesh.position.copy(
+        worldPosition
+      );
+
+      proxy.mesh.layers.mask =
+        bodyMesh.layers.mask;
 
       if(
-        !presentationMesh
-      ) {
-        continue;
-      }
-
-      if(
-        projectedDiameterPixels >=
-        this.config.minimumPixels
+        projectedDiameter >=
+        proxy.minimumPixels
       ) {
 
-        presentationMesh.visible =
+        proxy.mesh.visible =
           false;
 
         continue;
       }
 
       const targetDiameterWorld =
-        (
-          this.config.minimumPixels /
-          height
-        ) *
+        proxy.minimumPixels /
+        height *
         (
           2 *
           distance *
           cameraTan
         );
 
-      const requiredScale =
-        targetDiameterWorld /
-        Math.max(
-          2 *
-          body.radius,
-          0.001
+      const scale =
+        THREE.MathUtils.clamp(
+          targetDiameterWorld /
+            Math.max(
+              2 *
+              proxy.body.radius,
+              0.001
+            ),
+          1,
+          this.maximumScale
         );
 
-      presentationMesh.scale.setScalar(
-        THREE.MathUtils.clamp(
-          requiredScale,
-          1,
-          this.config.maximumScale
-        )
+      proxy.mesh.scale.set(
+        proxy.body.radius *
+          scale,
+        proxy.body.radius *
+          scale,
+        proxy.body.radius *
+          scale
       );
 
-      presentationMesh.visible =
+      if(
+        proxy.mesh.material instanceof
+        THREE.MeshBasicMaterial
+      ) {
+
+        proxy.mesh.material.color.copy(
+          proxy.body.material.color
+        );
+      }
+
+      proxy.mesh.visible =
         true;
     }
   }
@@ -169,36 +226,25 @@ export class CelestialPresentationSystem {
   dispose() {
 
     for(
-      const body
-      of this.bodies
+      const proxy
+      of this.proxies
     ) {
 
-      const presentationMesh =
-        body.mesh.userData.presentationMesh as
-        THREE.Mesh | undefined;
+      proxy.mesh.geometry.dispose();
 
       if(
-        !presentationMesh
-      ) {
-        continue;
-      }
-
-      body.mesh.remove(
-        presentationMesh
-      );
-
-      presentationMesh.geometry = 
-        body.geometry;
-
-      const material =
-        presentationMesh.material;
-
-      if(
-        material instanceof
+        proxy.mesh.material instanceof
         THREE.Material
       ) {
-        material.dispose();
+        proxy.mesh.material.dispose();
       }
+
+      this.scene.remove(
+        proxy.mesh
+      );
     }
+
+    this.proxies.length =
+      0;
   }
 }
