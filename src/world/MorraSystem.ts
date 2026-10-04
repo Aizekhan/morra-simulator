@@ -119,7 +119,7 @@ export class MorraSystem {
           reverseOrbit:
             MORRA_CONFIG.MOON_NORTH.reverseOrbit,
           emissiveIntensity:
-            0.08
+            0.25
         }
       );
 
