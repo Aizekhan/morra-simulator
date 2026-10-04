@@ -47,6 +47,15 @@ export class CelestialPresentationSystem {
       of bodies
     ) {
 
+      // Morra is the primary world body. It must always use its real
+      // physically lit mesh; switching it to a flat proxy by camera
+      // distance makes the planet appear/disappear when zooming.
+      if(
+        body.mesh.userData.disablePresentationProxy === true
+      ) {
+        continue;
+      }
+
       const material =
         new THREE.MeshBasicMaterial({
           color:
