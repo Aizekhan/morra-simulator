@@ -251,7 +251,7 @@ export const MORRA_CONFIG = {
 
     updateIntervalHours: 0.25,
 
-    channel: "MAGIC" as
+    channel: "SHADOW" as
       "LIGHT" |
       "HEAT" |
       "MAGIC" |
