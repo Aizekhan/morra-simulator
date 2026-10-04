@@ -418,7 +418,9 @@ export class MorraSystem {
           longitudeSegments:
             MORRA_CONFIG.SURFACE_FIELD.longitudeSegments,
           updateIntervalHours:
-            MORRA_CONFIG.SURFACE_FIELD.updateIntervalHours
+            MORRA_CONFIG.SURFACE_FIELD.updateIntervalHours,
+          updateIntervalMilliseconds:
+            100
         }
       );
 
@@ -516,7 +518,9 @@ export class MorraSystem {
       longitudeSegments:
         MORRA_CONFIG.SURFACE_FIELD.longitudeSegments,
       updateIntervalHours:
-        MORRA_CONFIG.SURFACE_FIELD.updateIntervalHours
+        MORRA_CONFIG.SURFACE_FIELD.updateIntervalHours,
+      updateIntervalMilliseconds:
+        100
     });
 
     const fieldMap =

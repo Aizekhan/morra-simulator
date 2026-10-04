@@ -11,6 +11,8 @@ export interface SurfaceFieldConfig {
   longitudeSegments: number;
 
   updateIntervalHours: number;
+
+  updateIntervalMilliseconds: number;
 }
 
 export interface SurfaceFieldSample {
@@ -95,11 +97,8 @@ export class SurfaceFieldEngine {
   private map:
     SurfaceFieldMap | null = null;
 
-  private lastAbsoluteHours:
+  private lastUpdateTimestamp:
     number | null = null;
-
-  private lastWorldSignature:
-    string | null = null;
 
   constructor(
     environment:
@@ -130,6 +129,11 @@ export class SurfaceFieldEngine {
         Math.max(
           0,
           config.updateIntervalHours
+        ),
+      updateIntervalMilliseconds:
+        Math.max(
+          16,
+          config.updateIntervalMilliseconds ?? 100
         )
     };
   }
@@ -150,7 +154,9 @@ export class SurfaceFieldEngine {
       next.longitudeSegments !==
         this.config.longitudeSegments ||
       next.updateIntervalHours !==
-        this.config.updateIntervalHours;
+        this.config.updateIntervalHours ||
+      next.updateIntervalMilliseconds !==
+        this.config.updateIntervalMilliseconds;
 
     this.config = {
       latitudeSegments:
@@ -171,17 +177,16 @@ export class SurfaceFieldEngine {
         Math.max(
           0,
           next.updateIntervalHours
+        ),
+      updateIntervalMilliseconds:
+        Math.max(
+          16,
+          next.updateIntervalMilliseconds
         )
     };
 
     if(changed) {
       this.map =
-        null;
-
-      this.lastAbsoluteHours =
-        null;
-
-      this.lastWorldSignature =
         null;
     }
   }
@@ -203,26 +208,21 @@ export class SurfaceFieldEngine {
     force = false
   ) {
 
-    const signature =
-      this.getWorldSignature();
+    const now =
+      typeof performance !== "undefined"
+        ? performance.now()
+        : Date.now();
 
-    const timeChangedEnough =
-      this.lastAbsoluteHours === null ||
-      Math.abs(
-        absoluteHours -
-        this.lastAbsoluteHours
-      ) >=
-        this.config.updateIntervalHours;
-
-    const worldChanged =
-      signature !==
-      this.lastWorldSignature;
+    const wallClockChangedEnough =
+      this.lastUpdateTimestamp === null ||
+      now -
+        this.lastUpdateTimestamp >=
+        this.config.updateIntervalMilliseconds;
 
     if(
       !force &&
       this.map &&
-      !timeChangedEnough &&
-      !worldChanged
+      !wallClockChangedEnough
     ) {
       return this.map;
     }
@@ -235,11 +235,8 @@ export class SurfaceFieldEngine {
     this.map =
       map;
 
-    this.lastAbsoluteHours =
-      absoluteHours;
-
-    this.lastWorldSignature =
-      signature;
+    this.lastUpdateTimestamp =
+      now;
 
     return map;
   }
@@ -663,45 +660,5 @@ export class SurfaceFieldEngine {
     };
   }
 
-  private getWorldSignature() {
 
-    const values =
-      [
-        this.environment.morra.radius,
-        this.environment.morra.mesh.rotation.z
-      ];
-
-    for(
-      const source
-      of this.environment.radiation.getSources()
-    ) {
-
-      values.push(
-        source.body.radius,
-        source.body.orbitRadius,
-        source.body.orbitSpeed,
-        source.body.orbitInclination,
-        source.body.orbitAscendingNode,
-        source.body.orbitEccentricity,
-        source.body.orbitPlaneOffset,
-        source.body.mesh.visible
-          ? 1
-          : 0,
-        source.lightPower,
-        source.heatPower,
-        source.magicPower
-      );
-    }
-
-    return values
-      .map(
-        value =>
-          value.toFixed(
-            5
-          )
-      )
-      .join(
-        "|"
-      );
-  }
 }

@@ -70,6 +70,12 @@ export class CelestialInteractionSystem {
   private readonly sourceLights:
     THREE.PointLight[] = [];
 
+  private frameCounter =
+    0;
+
+  private readonly shadowUpdateEveryFrames =
+    3;
+
   constructor(
     scene: THREE.Scene,
     morra: CelestialBody,
@@ -196,7 +202,23 @@ export class CelestialInteractionSystem {
 
   update() {
 
+    this.frameCounter++;
+
     this.updateDirectLights();
+
+    if(
+      this.frameCounter %
+      this.shadowUpdateEveryFrames ===
+      0
+    ) {
+      for(
+        const light
+        of this.sourceLights
+      ) {
+        light.shadow.needsUpdate =
+          true;
+      }
+    }
 
     this.updateMoonReflections();
   }
@@ -481,8 +503,8 @@ export class CelestialInteractionSystem {
   ) {
 
     light.shadow.mapSize.set(
-      2048,
-      2048
+      512,
+      512
     );
 
     light.shadow.bias =
@@ -500,11 +522,7 @@ export class CelestialInteractionSystem {
     light.shadow.camera.far =
       10000;
 
-    light.shadow.camera.layers.enable(
-      0
-    );
-
-    light.shadow.camera.layers.enable(
+    light.shadow.camera.layers.set(
       RENDER_LAYERS.MORRA_LIGHT_RECEIVER
     );
 
@@ -513,7 +531,7 @@ export class CelestialInteractionSystem {
     );
 
     light.shadow.autoUpdate =
-      true;
+      false;
   }
 
   private configureMoonReflectionShadow(
@@ -521,8 +539,8 @@ export class CelestialInteractionSystem {
   ) {
 
     light.shadow.mapSize.set(
-      1024,
-      1024
+      512,
+      512
     );
 
     light.shadow.bias =
@@ -540,11 +558,7 @@ export class CelestialInteractionSystem {
     light.shadow.camera.far =
       10000;
 
-    light.shadow.camera.layers.enable(
-      0
-    );
-
-    light.shadow.camera.layers.enable(
+    light.shadow.camera.layers.set(
       RENDER_LAYERS.MORRA_LIGHT_RECEIVER
     );
 
@@ -553,7 +567,7 @@ export class CelestialInteractionSystem {
     );
 
     light.shadow.autoUpdate =
-      true;
+      false;
   }
 
   private updateShadowRange(
