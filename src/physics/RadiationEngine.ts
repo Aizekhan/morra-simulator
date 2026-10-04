@@ -32,6 +32,8 @@ export interface RadiationContribution {
   heat: number;
 
   magic: number;
+
+  blockingOccluderIds: string[];
 }
 
 export interface RadiationSample {
@@ -42,7 +44,17 @@ export interface RadiationSample {
 
   magic: number;
 
+  unobstructedLight: number;
+
+  unobstructedHeat: number;
+
   unobstructedMagic: number;
+
+  lightVisibility: number;
+
+  heatVisibility: number;
+
+  magicVisibility: number;
 
   contributions: RadiationContribution[];
 }
@@ -93,6 +105,10 @@ export class RadiationEngine {
 
     let magic = 0;
 
+    let unobstructedLight = 0;
+
+    let unobstructedHeat = 0;
+
     let unobstructedMagic = 0;
 
     for(
@@ -131,12 +147,15 @@ export class RadiationEngine {
           )
         );
 
-      const visibilityFactor =
-        this.getVisibilityFactor(
+      const visibility =
+        this.getVisibilityDetails(
           worldPoint,
           source,
           occluders
         );
+
+      const visibilityFactor =
+        visibility.factor;
 
       const inverseSquare =
         1 /
@@ -175,6 +194,16 @@ export class RadiationEngine {
       magic +=
         magicContribution;
 
+      unobstructedLight +=
+        source.lightPower *
+        inverseSquare *
+        illuminationFactor;
+
+      unobstructedHeat +=
+        source.heatPower *
+        inverseSquare *
+        illuminationFactor;
+
       unobstructedMagic +=
         unobstructedMagicContribution;
 
@@ -195,7 +224,10 @@ export class RadiationEngine {
           heatContribution,
 
         magic:
-          magicContribution
+          magicContribution,
+
+        blockingOccluderIds:
+          visibility.blockingOccluderIds
       });
     }
 
@@ -203,7 +235,24 @@ export class RadiationEngine {
       light,
       heat,
       magic,
+      unobstructedLight,
+      unobstructedHeat,
       unobstructedMagic,
+      lightVisibility:
+        unobstructedLight >
+        RadiationEngine.EPSILON
+          ? light / unobstructedLight
+          : 1,
+      heatVisibility:
+        unobstructedHeat >
+        RadiationEngine.EPSILON
+          ? heat / unobstructedHeat
+          : 1,
+      magicVisibility:
+        unobstructedMagic >
+        RadiationEngine.EPSILON
+          ? magic / unobstructedMagic
+          : 1,
       contributions
     };
   }
@@ -214,8 +263,24 @@ export class RadiationEngine {
     occluders: CelestialBody[]
   ) {
 
+    return this.getVisibilityDetails(
+      worldPoint,
+      source,
+      occluders
+    ).factor;
+  }
+
+  getVisibilityDetails(
+    worldPoint: THREE.Vector3,
+    source: RadiationSource,
+    occluders: CelestialBody[]
+  ) {
+
     let visibility =
       1;
+
+    const blockingOccluderIds:
+      string[] = [];
 
     const sourcePosition =
       source.body.mesh
@@ -237,7 +302,10 @@ export class RadiationEngine {
       sourceDistance <=
       RadiationEngine.EPSILON
     ) {
-      return 0;
+      return {
+        factor: 0,
+        blockingOccluderIds
+      };
     }
 
     const sourceDirection =
@@ -316,6 +384,18 @@ export class RadiationEngine {
           angularSeparation
         );
 
+      if(
+        blockedFraction >
+        RadiationEngine.EPSILON
+      ) {
+        blockingOccluderIds.push(
+          String(
+            occluder.mesh.userData.radiationId ??
+            occluder.mesh.uuid
+          )
+        );
+      }
+
       visibility *=
         1 -
         blockedFraction;
@@ -324,15 +404,22 @@ export class RadiationEngine {
         visibility <=
         RadiationEngine.EPSILON
       ) {
-        return 0;
+        return {
+          factor: 0,
+          blockingOccluderIds
+        };
       }
     }
 
-    return THREE.MathUtils.clamp(
-      visibility,
-      0,
-      1
-    );
+    return {
+      factor:
+        THREE.MathUtils.clamp(
+          visibility,
+          0,
+          1
+        ),
+      blockingOccluderIds
+    };
   }
 
   private static angularRadius(

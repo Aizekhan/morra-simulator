@@ -465,7 +465,8 @@ export class DebugPanel {
         "HEAT",
         "MAGIC",
         "MAGOSPHERE",
-        "ANOMALY"
+        "ANOMALY",
+        "SHADOW"
       ]
     ).name("CHANNEL").listen();
 
@@ -481,6 +482,11 @@ export class DebugPanel {
       MORRA_CONFIG.DEBUG,
       "showSurfaceField"
     ).name("SHOW FIELD MAP").listen();
+
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showRadiationRays"
+    ).name("SHOW RADIATION RAYS").listen();
 
     folder.open();
   }

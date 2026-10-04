@@ -199,6 +199,8 @@ export class SurfaceFieldHUD {
         return "MAGOSPHERE";
       case "ANOMALY":
         return "ANOMALY";
+      case "SHADOW":
+        return "SHADOW";
     }
   }
 
@@ -234,6 +236,8 @@ export class SurfaceFieldHUD {
               map.anomalyStrength
             )
         };
+      case "SHADOW":
+        return map.shadowStats;
     }
   }
 
@@ -299,6 +303,12 @@ export class SurfaceFieldHUD {
         return {
           low: "#07111f",
           high: "#ff4d00"
+        };
+
+      case "SHADOW":
+        return {
+          low: "#061526",
+          high: "#ff1b24"
         };
 
       case "MAGIC":

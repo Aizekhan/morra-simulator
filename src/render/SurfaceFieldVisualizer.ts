@@ -9,7 +9,8 @@ export type SurfaceFieldChannel =
   | "HEAT"
   | "MAGIC"
   | "MAGOSPHERE"
-  | "ANOMALY";
+  | "ANOMALY"
+  | "SHADOW";
 
 export class SurfaceFieldVisualizer {
 
@@ -265,6 +266,12 @@ export class SurfaceFieldVisualizer {
           high: 0xff4d00
         };
 
+      case "SHADOW":
+        return {
+          low: 0x061526,
+          high: 0xff1b24
+        };
+
       case "MAGIC":
       default:
         return {
@@ -442,6 +449,9 @@ export class SurfaceFieldVisualizer {
       case "ANOMALY":
         return map.anomalyStrength;
 
+      case "SHADOW":
+        return map.shadow;
+
       case "MAGIC":
       default:
         return map.magic;
@@ -476,6 +486,9 @@ export class SurfaceFieldVisualizer {
           max: 1,
           average: 0
         };
+
+      case "SHADOW":
+        return map.shadowStats;
 
       case "MAGIC":
       default:

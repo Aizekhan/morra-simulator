@@ -256,7 +256,8 @@ export const MORRA_CONFIG = {
       "HEAT" |
       "MAGIC" |
       "MAGOSPHERE" |
-      "ANOMALY",
+      "ANOMALY" |
+      "SHADOW",
 
     opacity: 0.62
 
@@ -280,7 +281,9 @@ DEBUG: {
 
   showTimeline: true,
 
-  showSurfaceField: true
+  showSurfaceField: true,
+
+  showRadiationRays: true
 
 },
 
