@@ -483,6 +483,11 @@ export class DebugPanel {
       "showSurfaceField"
     ).name("SHOW FIELD MAP").listen();
 
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showRadiationRays"
+    ).name("SHOW RADIATION RAYS").listen();
+
     folder.open();
   }
 
