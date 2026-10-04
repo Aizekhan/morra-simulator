@@ -5,6 +5,12 @@ export class CameraController {
   camera: THREE.PerspectiveCamera;
 
   distance = 2500;
+
+  // The camera looks at Morra's center. Keep it outside the outer
+  // moon orbit so zooming cannot move the camera inside the celestial
+  // system and push moons outside the 60° viewing frustum.
+  private readonly minimumSystemDistance = 1000;
+
   yaw = 0;
   pitch = 0.3;
 
@@ -77,7 +83,7 @@ export class CameraController {
 
         this.distance =
           Math.max(
-            300,
+            this.minimumSystemDistance,
             Math.min(
               10000,
               this.distance
