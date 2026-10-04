@@ -2,7 +2,6 @@ import * as THREE from "three";
 
 import { CelestialBody } from "../astronomy/CelestialBody";
 import { CelestialSystem } from "../astronomy/CelestialSystem";
-import { MorraLightSystem } from "../astronomy/MorraLightSystem";
 import { OrbitSystem } from "../astronomy/OrbitSystem";
 
 import { MORRA_CONFIG } from "./MorraConfig";
@@ -12,6 +11,10 @@ import { MorraConfigSynchronizer } from "./MorraConfigSynchronizer";
 import {
   MorraEnvironmentEngine
 } from "../physics/MorraEnvironmentEngine";
+
+import {
+  CelestialInteractionSystem
+} from "../physics/CelestialInteractionSystem";
 
 import {
   SurfaceFieldEngine
@@ -25,9 +28,6 @@ import {
   ShadowVolumeVisualizer
 } from "../render/ShadowVolumeVisualizer";
 
-import {
-  MoonReflectionLightSystem
-} from "../astronomy/MoonReflectionLightSystem";
 
 import {
   RENDER_LAYERS
@@ -54,8 +54,8 @@ export class MorraSystem {
   configSynchronizer:
     MorraConfigSynchronizer;
 
-  lightSystem:
-    MorraLightSystem;
+  celestialInteractionSystem:
+    CelestialInteractionSystem;
 
   environmentEngine:
     MorraEnvironmentEngine;
@@ -69,8 +69,6 @@ export class MorraSystem {
   shadowVolumeVisualizer:
     ShadowVolumeVisualizer;
 
-  moonReflectionLightSystem:
-    MoonReflectionLightSystem;
 
   constructor(
     scene: THREE.Scene
@@ -308,42 +306,96 @@ export class MorraSystem {
         sunSmall: this.sunSmall
       });
 
-    this.lightSystem =
-      new MorraLightSystem(
+    this.celestialInteractionSystem =
+      new CelestialInteractionSystem(
         scene,
-        this.sunLarge,
-        this.sunMedium,
-        this.sunSmall
-      );
-
-    this.environmentEngine =
-      new MorraEnvironmentEngine(
         this.morra,
         [
           {
-            id: "large-sun",
+            id:
+              "large-sun",
             body:
               this.sunLarge,
-            ...MORRA_CONFIG.RADIATION_PROFILES[
-              MORRA_CONFIG.SUN_LARGE.radiationRole
-            ]
+            color:
+              MORRA_CONFIG.LIGHTS.LARGE.color,
+            intensity:
+              MORRA_CONFIG.LIGHTS.LARGE.intensity,
+            distance:
+              MORRA_CONFIG.LIGHTS.LARGE.distance,
+            lightPower:
+              MORRA_CONFIG.RADIATION_PROFILES[
+                MORRA_CONFIG.SUN_LARGE.radiationRole
+              ].lightPower,
+            heatPower:
+              MORRA_CONFIG.RADIATION_PROFILES[
+                MORRA_CONFIG.SUN_LARGE.radiationRole
+              ].heatPower,
+            magicPower:
+              MORRA_CONFIG.RADIATION_PROFILES[
+                MORRA_CONFIG.SUN_LARGE.radiationRole
+              ].magicPower,
+            visible:
+              () =>
+                MORRA_CONFIG.SUN_LARGE.visible
           },
           {
-            id: "medium-sun",
+            id:
+              "medium-sun",
             body:
               this.sunMedium,
-            ...MORRA_CONFIG.RADIATION_PROFILES[
-              MORRA_CONFIG.SUN_MEDIUM.radiationRole
-            ]
+            color:
+              MORRA_CONFIG.LIGHTS.MEDIUM.color,
+            intensity:
+              MORRA_CONFIG.LIGHTS.MEDIUM.intensity,
+            distance:
+              MORRA_CONFIG.LIGHTS.MEDIUM.distance,
+            lightPower:
+              MORRA_CONFIG.RADIATION_PROFILES[
+                MORRA_CONFIG.SUN_MEDIUM.radiationRole
+              ].lightPower,
+            heatPower:
+              MORRA_CONFIG.RADIATION_PROFILES[
+                MORRA_CONFIG.SUN_MEDIUM.radiationRole
+              ].heatPower,
+            magicPower:
+              MORRA_CONFIG.RADIATION_PROFILES[
+                MORRA_CONFIG.SUN_MEDIUM.radiationRole
+              ].magicPower,
+            visible:
+              () =>
+                MORRA_CONFIG.SUN_MEDIUM.visible
           },
           {
-            id: "small-sun",
+            id:
+              "small-sun",
             body:
               this.sunSmall,
-            ...MORRA_CONFIG.RADIATION_PROFILES[
-              MORRA_CONFIG.SUN_SMALL.radiationRole
-            ]
+            color:
+              MORRA_CONFIG.LIGHTS.SMALL.color,
+            intensity:
+              MORRA_CONFIG.LIGHTS.SMALL.intensity,
+            distance:
+              MORRA_CONFIG.LIGHTS.SMALL.distance,
+            lightPower:
+              MORRA_CONFIG.RADIATION_PROFILES[
+                MORRA_CONFIG.SUN_SMALL.radiationRole
+              ].lightPower,
+            heatPower:
+              MORRA_CONFIG.RADIATION_PROFILES[
+                MORRA_CONFIG.SUN_SMALL.radiationRole
+              ].heatPower,
+            magicPower:
+              MORRA_CONFIG.RADIATION_PROFILES[
+                MORRA_CONFIG.SUN_SMALL.radiationRole
+              ].magicPower,
+            visible:
+              () =>
+                MORRA_CONFIG.SUN_SMALL.visible
           }
+        ],
+        [
+          this.moonNorth,
+          this.moonEquator
         ],
         [
           this.sunLarge,
@@ -353,6 +405,9 @@ export class MorraSystem {
           this.moonEquator
         ]
       );
+
+    this.environmentEngine =
+      this.celestialInteractionSystem.environment;
 
     this.surfaceFieldEngine =
       new SurfaceFieldEngine(
@@ -387,40 +442,6 @@ export class MorraSystem {
         this.morra.mesh,
         MORRA_CONFIG.SURFACE_FIELD.longitudeSegments,
         MORRA_CONFIG.SURFACE_FIELD.latitudeSegments
-      );
-
-    this.moonReflectionLightSystem =
-      new MoonReflectionLightSystem(
-        scene,
-        this.environmentEngine,
-        this.moonNorth,
-        this.moonEquator,
-        [
-          {
-            body:
-              this.sunLarge,
-            color:
-              MORRA_CONFIG.LIGHTS.LARGE.color,
-            intensity:
-              MORRA_CONFIG.LIGHTS.LARGE.intensity
-          },
-          {
-            body:
-              this.sunMedium,
-            color:
-              MORRA_CONFIG.LIGHTS.MEDIUM.color,
-            intensity:
-              MORRA_CONFIG.LIGHTS.MEDIUM.intensity
-          },
-          {
-            body:
-              this.sunSmall,
-            color:
-              MORRA_CONFIG.LIGHTS.SMALL.color,
-            intensity:
-              MORRA_CONFIG.LIGHTS.SMALL.intensity
-          }
-        ]
       );
 
     this.shadowVolumeVisualizer =
@@ -487,9 +508,7 @@ export class MorraSystem {
       MORRA_CONFIG.DEBUG.showOrbits
     );
 
-    this.lightSystem.update();
-
-    this.moonReflectionLightSystem.update();
+    this.celestialInteractionSystem.update();
 
     this.surfaceFieldEngine.setConfig({
       latitudeSegments:
@@ -545,15 +564,13 @@ export class MorraSystem {
 
     this.orbitSystem.dispose();
 
-    this.lightSystem.dispose();
+    this.celestialInteractionSystem.dispose();
 
     this.surfaceFieldVisualizer.dispose();
 
     this.shadowVolumeVisualizer.dispose();
 
-    this.moonReflectionLightSystem.dispose();
 
-    this.morra.dispose();
 
     this.moonNorth.dispose();
     this.moonEquator.dispose();
