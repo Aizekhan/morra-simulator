@@ -11,6 +11,8 @@ export interface SurfaceFieldConfig {
   longitudeSegments: number;
 
   updateIntervalHours: number;
+
+  updateIntervalMilliseconds: number;
 }
 
 export interface SurfaceFieldSample {
@@ -130,6 +132,11 @@ export class SurfaceFieldEngine {
         Math.max(
           0,
           config.updateIntervalHours
+        ),
+      updateIntervalMilliseconds:
+        Math.max(
+          16,
+          config.updateIntervalMilliseconds ?? 100
         )
     };
   }
@@ -171,6 +178,11 @@ export class SurfaceFieldEngine {
         Math.max(
           0,
           next.updateIntervalHours
+        ),
+      updateIntervalMilliseconds:
+        Math.max(
+          16,
+          next.updateIntervalMilliseconds
         )
     };
 
@@ -206,6 +218,17 @@ export class SurfaceFieldEngine {
     const signature =
       this.getWorldSignature();
 
+    const now =
+      typeof performance !== "undefined"
+        ? performance.now()
+        : Date.now();
+
+    const wallClockChangedEnough =
+      this.lastUpdateTimestamp === null ||
+      now -
+        this.lastUpdateTimestamp >=
+        this.config.updateIntervalMilliseconds;
+
     const timeChangedEnough =
       this.lastAbsoluteHours === null ||
       Math.abs(
@@ -222,7 +245,8 @@ export class SurfaceFieldEngine {
       !force &&
       this.map &&
       !timeChangedEnough &&
-      !worldChanged
+      !worldChanged &&
+      !wallClockChangedEnough
     ) {
       return this.map;
     }
@@ -240,6 +264,9 @@ export class SurfaceFieldEngine {
 
     this.lastWorldSignature =
       signature;
+
+    this.lastUpdateTimestamp =
+      now;
 
     return map;
   }
