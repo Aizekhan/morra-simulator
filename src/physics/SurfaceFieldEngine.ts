@@ -28,6 +28,8 @@ export interface SurfaceFieldSample {
   magosphereStability: number;
 
   anomalyStrength: number;
+
+  shadow: number;
 }
 
 export interface SurfaceFieldStats {
