@@ -9,6 +9,10 @@ import { MORRA_CONFIG } from "./MorraConfig";
 import { MorraAxis } from "./MorraAxis";
 import { MorraConfigSynchronizer } from "./MorraConfigSynchronizer";
 
+import {
+  MorraEnvironmentEngine
+} from "../physics/MorraEnvironmentEngine";
+
 export class MorraSystem {
 
   scene: THREE.Scene;
@@ -32,6 +36,9 @@ export class MorraSystem {
 
   lightSystem:
     MorraLightSystem;
+
+  environmentEngine:
+    MorraEnvironmentEngine;
 
   constructor(
     scene: THREE.Scene
@@ -271,6 +278,44 @@ export class MorraSystem {
         this.sunLarge,
         this.sunMedium,
         this.sunSmall
+      );
+
+    this.environmentEngine =
+      new MorraEnvironmentEngine(
+        this.morra,
+        [
+          {
+            id: "large-sun",
+            body:
+              this.sunLarge,
+            ...MORRA_CONFIG.RADIATION_PROFILES[
+              MORRA_CONFIG.SUN_LARGE.radiationRole
+            ]
+          },
+          {
+            id: "medium-sun",
+            body:
+              this.sunMedium,
+            ...MORRA_CONFIG.RADIATION_PROFILES[
+              MORRA_CONFIG.SUN_MEDIUM.radiationRole
+            ]
+          },
+          {
+            id: "small-sun",
+            body:
+              this.sunSmall,
+            ...MORRA_CONFIG.RADIATION_PROFILES[
+              MORRA_CONFIG.SUN_SMALL.radiationRole
+            ]
+          }
+        ],
+        [
+          this.sunLarge,
+          this.sunMedium,
+          this.sunSmall,
+          this.moonNorth,
+          this.moonEquator
+        ]
       );
   }
 
