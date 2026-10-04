@@ -33,6 +33,10 @@ import {
   RENDER_LAYERS
 } from "../render/RenderLayers";
 
+import {
+  CelestialPresentationSystem
+} from "../render/CelestialPresentationSystem";
+
 export class MorraSystem {
 
   scene: THREE.Scene;
@@ -68,6 +72,9 @@ export class MorraSystem {
 
   shadowVolumeVisualizer:
     ShadowVolumeVisualizer;
+
+  celestialPresentation:
+    CelestialPresentationSystem;
 
 
   constructor(
@@ -462,6 +469,26 @@ export class MorraSystem {
         MORRA_CONFIG.SURFACE_FIELD.latitudeSegments
       );
 
+    this.celestialPresentation =
+      new CelestialPresentationSystem(
+        new THREE.PerspectiveCamera(),
+        () => 1080,
+        [
+          this.morra,
+          this.moonNorth,
+          this.moonEquator,
+          this.sunLarge,
+          this.sunMedium,
+          this.sunSmall
+        ],
+        {
+          minimumPixels:
+            10,
+          maximumScale:
+            8
+        }
+      );
+
     this.shadowVolumeVisualizer =
       new ShadowVolumeVisualizer(
         scene,
@@ -482,7 +509,9 @@ export class MorraSystem {
   }
 
   update(
-    absoluteHours: number
+    absoluteHours: number,
+    camera?: THREE.PerspectiveCamera,
+    viewportHeight?: number
   ) {
 
     this.configSynchronizer.sync();
@@ -578,6 +607,13 @@ export class MorraSystem {
     });
 
     this.shadowVolumeVisualizer.update();
+
+    if(
+      camera &&
+      viewportHeight
+    ) {
+      this.celestialPresentation.update();
+    }
   }
 
   dispose() {
