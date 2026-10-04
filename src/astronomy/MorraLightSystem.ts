@@ -14,10 +14,6 @@ export class MorraLightSystem {
   mediumLight: THREE.PointLight;
   smallLight: THREE.PointLight;
 
-  largeMoonLight: THREE.PointLight;
-  mediumMoonLight: THREE.PointLight;
-  smallMoonLight: THREE.PointLight;
-
   largeSun: CelestialBody;
   mediumSun: CelestialBody;
   smallSun: CelestialBody;
@@ -224,7 +220,16 @@ export class MorraLightSystem {
     this.mediumHelper.dispose();
     this.smallHelper.dispose();
 
+    this.scene.remove(
+      this.largeLight
+    );
 
+    this.scene.remove(
+      this.mediumLight
+    );
 
+    this.scene.remove(
+      this.smallLight
+    );
   }
 }
