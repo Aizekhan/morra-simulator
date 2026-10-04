@@ -264,6 +264,22 @@ export const MORRA_CONFIG = {
   },
 
   // =========================
+  // SHADOW VOLUMES
+  // =========================
+
+  SHADOW_VOLUMES: {
+
+    length: 1600,
+
+    opacity: 0.18,
+
+    showUmbra: true,
+
+    showPenumbra: true
+
+  },
+
+  // =========================
   // DEBUG
   // =========================
 
