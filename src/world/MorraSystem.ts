@@ -347,8 +347,7 @@ export class MorraSystem {
 
     this.surfaceFieldVisualizer =
       new SurfaceFieldVisualizer(
-        this.morra.mesh,
-        this.surfaceFieldEngine
+        this.morra.mesh
       );
   }
 
