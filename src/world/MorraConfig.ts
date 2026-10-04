@@ -320,7 +320,9 @@ DEBUG: {
 
   showSurfaceField: true,
 
-  showRadiationRays: false
+  showRadiationRays: false,
+
+  showDirectIllumination: true
 
 },
 

@@ -14,10 +14,6 @@ export class MorraLightSystem {
   mediumLight: THREE.PointLight;
   smallLight: THREE.PointLight;
 
-  largeMoonLight: THREE.PointLight;
-  mediumMoonLight: THREE.PointLight;
-  smallMoonLight: THREE.PointLight;
-
   largeSun: CelestialBody;
   mediumSun: CelestialBody;
   smallSun: CelestialBody;
@@ -58,8 +54,12 @@ export class MorraLightSystem {
     this.largeLight.castShadow =
       true;
 
-    this.largeLight.layers.set(
+    this.largeLight.layers.enable(
       RENDER_LAYERS.MORRA_LIGHT_RECEIVER
+    );
+
+    this.largeLight.layers.enable(
+      RENDER_LAYERS.MOON_LIGHT_RECEIVER
     );
 
     scene.add(
@@ -76,8 +76,12 @@ export class MorraLightSystem {
     this.mediumLight.castShadow =
       true;
 
-    this.mediumLight.layers.set(
+    this.mediumLight.layers.enable(
       RENDER_LAYERS.MORRA_LIGHT_RECEIVER
+    );
+
+    this.mediumLight.layers.enable(
+      RENDER_LAYERS.MOON_LIGHT_RECEIVER
     );
 
     scene.add(
@@ -94,31 +98,17 @@ export class MorraLightSystem {
     this.smallLight.castShadow =
       true;
 
-    this.smallLight.layers.set(
+    this.smallLight.layers.enable(
       RENDER_LAYERS.MORRA_LIGHT_RECEIVER
+    );
+
+    this.smallLight.layers.enable(
+      RENDER_LAYERS.MOON_LIGHT_RECEIVER
     );
 
     scene.add(
       this.smallLight
     );
-
-    this.largeMoonLight =
-      this.createMoonIlluminationLight(
-        scene,
-        MORRA_CONFIG.LIGHTS.LARGE
-      );
-
-    this.mediumMoonLight =
-      this.createMoonIlluminationLight(
-        scene,
-        MORRA_CONFIG.LIGHTS.MEDIUM
-      );
-
-    this.smallMoonLight =
-      this.createMoonIlluminationLight(
-        scene,
-        MORRA_CONFIG.LIGHTS.SMALL
-      );
 
     this.largeHelper =
       new THREE.PointLightHelper(
@@ -165,18 +155,6 @@ export class MorraLightSystem {
       this.smallSun.mesh.position
     );
 
-    this.largeMoonLight.position.copy(
-      this.largeSun.mesh.position
-    );
-
-    this.mediumMoonLight.position.copy(
-      this.mediumSun.mesh.position
-    );
-
-    this.smallMoonLight.position.copy(
-      this.smallSun.mesh.position
-    );
-
     this.largeLight.color.setHex(
       MORRA_CONFIG.LIGHTS.LARGE.color
     );
@@ -216,45 +194,6 @@ export class MorraLightSystem {
     this.smallLight.visible =
       MORRA_CONFIG.SUN_SMALL.visible;
 
-    this.largeMoonLight.color.setHex(
-      MORRA_CONFIG.LIGHTS.LARGE.color
-    );
-
-    this.mediumMoonLight.color.setHex(
-      MORRA_CONFIG.LIGHTS.MEDIUM.color
-    );
-
-    this.smallMoonLight.color.setHex(
-      MORRA_CONFIG.LIGHTS.SMALL.color
-    );
-
-    this.largeMoonLight.intensity =
-      MORRA_CONFIG.LIGHTS.LARGE.intensity;
-
-    this.mediumMoonLight.intensity =
-      MORRA_CONFIG.LIGHTS.MEDIUM.intensity;
-
-    this.smallMoonLight.intensity =
-      MORRA_CONFIG.LIGHTS.SMALL.intensity;
-
-    this.largeMoonLight.distance =
-      MORRA_CONFIG.LIGHTS.LARGE.distance;
-
-    this.mediumMoonLight.distance =
-      MORRA_CONFIG.LIGHTS.MEDIUM.distance;
-
-    this.smallMoonLight.distance =
-      MORRA_CONFIG.LIGHTS.SMALL.distance;
-
-    this.largeMoonLight.visible =
-      MORRA_CONFIG.SUN_LARGE.visible;
-
-    this.mediumMoonLight.visible =
-      MORRA_CONFIG.SUN_MEDIUM.visible;
-
-    this.smallMoonLight.visible =
-      MORRA_CONFIG.SUN_SMALL.visible;
-
     const helpersVisible =
       MORRA_CONFIG.DEBUG.showLightHelpers;
 
@@ -275,37 +214,6 @@ export class MorraLightSystem {
     this.smallHelper.update();
   }
 
-  private createMoonIlluminationLight(
-    scene: THREE.Scene,
-    config: {
-      color: number;
-      intensity: number;
-      distance: number;
-    }
-  ) {
-
-    const light =
-      new THREE.PointLight(
-        config.color,
-        config.intensity,
-        config.distance,
-        2
-      );
-
-    light.layers.set(
-      RENDER_LAYERS.MOON_LIGHT_RECEIVER
-    );
-
-    light.castShadow =
-      false;
-
-    scene.add(
-      light
-    );
-
-    return light;
-  }
-
   dispose() {
 
     this.largeHelper.dispose();
@@ -313,16 +221,15 @@ export class MorraLightSystem {
     this.smallHelper.dispose();
 
     this.scene.remove(
-      this.largeMoonLight
+      this.largeLight
     );
 
     this.scene.remove(
-      this.mediumMoonLight
+      this.mediumLight
     );
 
     this.scene.remove(
-      this.smallMoonLight
+      this.smallLight
     );
-
   }
 }
