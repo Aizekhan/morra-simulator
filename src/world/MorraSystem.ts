@@ -30,10 +30,6 @@ import {
 
 
 import {
-  RENDER_LAYERS
-} from "../render/RenderLayers";
-
-import {
   CelestialPresentationSystem
 } from "../render/CelestialPresentationSystem";
 
@@ -89,10 +85,6 @@ export class MorraSystem {
         MORRA_CONFIG.MORRA_RADIUS,
         MORRA_CONFIG.MORRA_COLOR
       );
-
-    this.morra.mesh.layers.set(
-      RENDER_LAYERS.MORRA_LIGHT_RECEIVER
-    );
 
     scene.add(
       this.morra.mesh

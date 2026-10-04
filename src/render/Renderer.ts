@@ -2,10 +2,6 @@ import * as THREE from "three";
 
 import { MORRA_CONFIG } from "../world/MorraConfig";
 
-import {
-  RENDER_LAYERS
-} from "./RenderLayers";
-
 export class Renderer {
 
   scene: THREE.Scene;
@@ -13,9 +9,6 @@ export class Renderer {
   renderer: THREE.WebGLRenderer;
 
   private ambientLight: THREE.AmbientLight;
-
-  private planetAmbientLight:
-    THREE.AmbientLight;
 
   constructor() {
 
@@ -40,14 +33,6 @@ export class Renderer {
       0,
       1000,
       2500
-    );
-
-    this.camera.layers.enable(
-      RENDER_LAYERS.MORRA_LIGHT_RECEIVER
-    );
-
-    this.camera.layers.enable(
-      RENDER_LAYERS.MOON_LIGHT_RECEIVER
     );
 
     this.renderer =
@@ -120,20 +105,6 @@ export class Renderer {
       this.ambientLight
     );
 
-    this.planetAmbientLight =
-      new THREE.AmbientLight(
-        0xffffff,
-        MORRA_CONFIG.LIGHTS.ambient
-      );
-
-    this.planetAmbientLight.layers.set(
-      RENDER_LAYERS.MORRA_LIGHT_RECEIVER
-    );
-
-    this.scene.add(
-      this.planetAmbientLight
-    );
-
     window.addEventListener(
       "resize",
       this.handleResize
@@ -145,8 +116,6 @@ export class Renderer {
     this.ambientLight.intensity =
       MORRA_CONFIG.LIGHTS.ambient;
 
-    this.planetAmbientLight.intensity =
-      MORRA_CONFIG.LIGHTS.ambient;
   }
 
   render() {
