@@ -32,6 +32,8 @@ export interface RadiationContribution {
   heat: number;
 
   magic: number;
+
+  blockingOccluderIds: string[];
 }
 
 export interface RadiationSample {
@@ -42,7 +44,17 @@ export interface RadiationSample {
 
   magic: number;
 
+  unobstructedLight: number;
+
+  unobstructedHeat: number;
+
   unobstructedMagic: number;
+
+  lightVisibility: number;
+
+  heatVisibility: number;
+
+  magicVisibility: number;
 
   contributions: RadiationContribution[];
 }
