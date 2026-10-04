@@ -1,13 +1,19 @@
 import * as THREE from "three";
 
 import {
-  AstronomicalEventSystem,
-  AstronomicalEventState
+  AstronomicalEventSystem
 } from "../astronomy/AstronomicalEventSystem";
 
 import {
-  CalendarSnapshot,
   SimulationTime
+} from "./SimulationTime";
+
+import type {
+  AstronomicalEventState
+} from "../astronomy/AstronomicalEventSystem";
+
+import type {
+  CalendarSnapshot
 } from "./SimulationTime";
 
 import {
