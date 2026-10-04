@@ -90,6 +90,10 @@ export class MorraSystem {
       this.morra.mesh
     );
 
+    // Morra is the actual world surface, not a distant-object marker.
+    // Keep it on the real physically lit mesh at every camera distance.
+    this.morra.mesh.userData.disablePresentationProxy = true;
+
     this.axis =
       new MorraAxis(
         scene,
