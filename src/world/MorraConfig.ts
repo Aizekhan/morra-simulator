@@ -256,7 +256,8 @@ export const MORRA_CONFIG = {
       "HEAT" |
       "MAGIC" |
       "MAGOSPHERE" |
-      "ANOMALY",
+      "ANOMALY" |
+      "SHADOW",
 
     opacity: 0.62
 
