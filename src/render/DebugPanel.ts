@@ -465,7 +465,8 @@ export class DebugPanel {
         "HEAT",
         "MAGIC",
         "MAGOSPHERE",
-        "ANOMALY"
+        "ANOMALY",
+        "SHADOW"
       ]
     ).name("CHANNEL").listen();
 
