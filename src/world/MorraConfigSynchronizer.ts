@@ -56,31 +56,31 @@ export class MorraConfigSynchronizer {
     this.syncBody(
       this.bodies.moonNorth,
       MORRA_CONFIG.MOON_NORTH,
-      morraRadius + this.bodies.moonNorth.radius + 10
+      morraRadius + MORRA_CONFIG.MOON_NORTH.radius + 10
     );
 
     this.syncBody(
       this.bodies.moonEquator,
       MORRA_CONFIG.MOON_EQUATOR,
-      morraRadius + this.bodies.moonEquator.radius + 10
+      morraRadius + MORRA_CONFIG.MOON_EQUATOR.radius + 10
     );
 
     this.syncBody(
       this.bodies.sunLarge,
       MORRA_CONFIG.SUN_LARGE,
-      morraRadius + this.bodies.sunLarge.radius + 100
+      morraRadius + MORRA_CONFIG.SUN_LARGE.radius + 100
     );
 
     this.syncBody(
       this.bodies.sunMedium,
       MORRA_CONFIG.SUN_MEDIUM,
-      morraRadius + this.bodies.sunMedium.radius + 100
+      morraRadius + MORRA_CONFIG.SUN_MEDIUM.radius + 100
     );
 
     this.syncBody(
       this.bodies.sunSmall,
       MORRA_CONFIG.SUN_SMALL,
-      morraRadius + this.bodies.sunSmall.radius + 100
+      morraRadius + MORRA_CONFIG.SUN_SMALL.radius + 100
     );
   }
 
