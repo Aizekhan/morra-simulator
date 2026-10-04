@@ -471,8 +471,6 @@ export class MorraSystem {
 
     this.celestialPresentation =
       new CelestialPresentationSystem(
-        new THREE.PerspectiveCamera(),
-        () => 1080,
         [
           this.morra,
           this.moonNorth,
@@ -612,7 +610,10 @@ export class MorraSystem {
       camera &&
       viewportHeight
     ) {
-      this.celestialPresentation.update();
+      this.celestialPresentation.update(
+        camera,
+        viewportHeight
+      );
     }
   }
 
