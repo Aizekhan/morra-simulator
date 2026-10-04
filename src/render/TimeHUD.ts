@@ -114,17 +114,17 @@ export class TimeHUD {
       "<div style=\"font-size:17px;font-weight:700;margin-bottom:8px;height:20px;line-height:20px;white-space:nowrap\">MORRA</div>";
 
     html +=
-      "<div style=\"display:grid;grid-template-columns:repeat(4,1fr);column-gap:0;margin-bottom:6px;height:18px;line-height:18px;white-space:nowrap\">" +
-      "<span style=\"text-align:left\">Y:" +
+      "<div style=\"display:flex;align-items:center;gap:0;margin-bottom:6px;height:18px;line-height:18px;white-space:nowrap;font-variant-numeric:tabular-nums\">" +
+      "<span style=\"display:inline-block;width:7ch;text-align:left\">Y:" +
       snapshot.year +
       "</span>" +
-      "<span style=\"text-align:center\">M:" +
+      "<span style=\"display:inline-block;width:6ch;text-align:left\">M:" +
       snapshot.month +
       "</span>" +
-      "<span style=\"text-align:center\">D:" +
+      "<span style=\"display:inline-block;width:6ch;text-align:left\">D:" +
       snapshot.day +
       "</span>" +
-      "<span style=\"text-align:right\">H:" +
+      "<span style=\"display:inline-block;width:6ch;text-align:left\">H:" +
       Math.floor(snapshot.hour) +
       "</span>" +
       "</div>";
