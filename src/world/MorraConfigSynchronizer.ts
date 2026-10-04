@@ -111,11 +111,17 @@ export class MorraConfigSynchronizer {
       config.radius
     );
 
-    body.setOrbitRadius(
+    const effectiveOrbitRadius =
       Math.max(
         config.orbitRadius,
         minimumOrbitRadius
-      )
+      );
+
+    config.orbitRadius =
+      effectiveOrbitRadius;
+
+    body.setOrbitRadius(
+      effectiveOrbitRadius
     );
 
     body.setOrbitSpeed(
