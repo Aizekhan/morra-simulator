@@ -281,7 +281,9 @@ DEBUG: {
 
   showTimeline: true,
 
-  showSurfaceField: true
+  showSurfaceField: true,
+
+  showRadiationRays: true
 
 },
 
