@@ -35,7 +35,7 @@ export class TimeHUD {
       "245px";
 
     this.element.style.height =
-      "84px";
+      "96px";
 
     this.element.style.padding =
       "10px";
@@ -130,7 +130,7 @@ export class TimeHUD {
       "</div>";
 
     html +=
-      "<div style=\"border-top:1px solid #444;padding-top:6px;margin-top:6px;height:24px;line-height:17px;white-space:nowrap;overflow:hidden;visibility:" +
+      "<div style=\"box-sizing:border-box;border-top:1px solid #444;margin-top:6px;padding-top:6px;height:28px;line-height:17px;white-space:nowrap;overflow:hidden;visibility:" +
       (
         eventText
           ? "visible"
