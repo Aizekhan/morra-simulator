@@ -347,7 +347,9 @@ export class MorraSystem {
 
     this.surfaceFieldVisualizer =
       new SurfaceFieldVisualizer(
-        this.morra.mesh
+        this.morra.mesh,
+        MORRA_CONFIG.SURFACE_FIELD.longitudeSegments,
+        MORRA_CONFIG.SURFACE_FIELD.latitudeSegments
       );
   }
 
