@@ -5,7 +5,10 @@ import {
 } from "./CelestialBody";
 
 import {
-  OrbitRenderer,
+  OrbitRenderer
+} from "../render/OrbitRenderer";
+
+import type {
   OrbitShape
 } from "../render/OrbitRenderer";
 
