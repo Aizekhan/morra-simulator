@@ -6,6 +6,8 @@ import {
 
 export interface ShadowVolumeConfig {
 
+  enabled: boolean;
+
   length: number;
 
   opacity: number;
@@ -76,6 +78,8 @@ export class ShadowVolumeVisualizer {
       engine;
 
     this.config = {
+      enabled:
+        config.enabled,
       length:
         Math.max(
           50,
@@ -137,9 +141,34 @@ export class ShadowVolumeVisualizer {
       Partial<ShadowVolumeConfig>
   ) {
 
-    this.config = {
+    const next = {
       ...this.config,
       ...config
+    };
+
+    const changed =
+      next.enabled !==
+        this.config.enabled ||
+      next.length !==
+        this.config.length ||
+      next.opacity !==
+        this.config.opacity ||
+      next.showUmbra !==
+        this.config.showUmbra ||
+      next.showPenumbra !==
+        this.config.showPenumbra;
+
+    this.config = {
+      enabled:
+        next.enabled,
+      length:
+        next.length,
+      opacity:
+        next.opacity,
+      showUmbra:
+        next.showUmbra,
+      showPenumbra:
+        next.showPenumbra
     };
 
     this.config.length =
@@ -163,8 +192,15 @@ export class ShadowVolumeVisualizer {
       this.config.opacity *
       0.32;
 
-    this.dirty =
-      true;
+    if(
+      changed
+    ) {
+      this.dirty =
+        true;
+    }
+
+    this.root.visible =
+      this.config.enabled;
   }
 
   setVisible(
@@ -187,6 +223,20 @@ export class ShadowVolumeVisualizer {
     ) {
       return;
     }
+
+    if(
+      !this.config.enabled
+    ) {
+      this.clear();
+      this.lastSignature =
+        null;
+      this.root.visible =
+        false;
+      return;
+    }
+
+    this.root.visible =
+      true;
 
     this.clear();
 
