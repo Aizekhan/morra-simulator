@@ -15,6 +15,8 @@ export interface OrbitShape {
   offsetX: number;
   offsetY: number;
   offsetZ: number;
+
+  rotationZ: number;
 }
 
 export class OrbitRenderer {
@@ -25,7 +27,8 @@ export class OrbitRenderer {
     plane: OrbitPlane,
     offsetX = 0,
     offsetY = 0,
-    offsetZ = 0
+    offsetZ = 0,
+    rotationZ = 0
   ) {
 
     const line =
@@ -44,7 +47,8 @@ export class OrbitRenderer {
         plane,
         offsetX,
         offsetY,
-        offsetZ
+        offsetZ,
+        rotationZ
       }
     );
 
@@ -145,14 +149,14 @@ export class OrbitRenderer {
     const oldGeometry =
       line.geometry;
 
-    const geometry =
+    line.geometry =
       new THREE.BufferGeometry()
       .setFromPoints(points);
 
-    line.geometry =
-      geometry;
-
     oldGeometry.dispose();
+
+    line.rotation.z =
+      shape.rotationZ;
 
     const material =
       line.material;
