@@ -56,7 +56,9 @@ export class OrbitSystem {
         offsetX,
         body.orbitOffsetY,
         offsetZ,
-        body.orbitRotationZ
+        body.orbitInclination,
+        body.orbitAscendingNode,
+        body.orbitEccentricity
       );
 
     this.scene.add(
@@ -98,8 +100,14 @@ export class OrbitSystem {
         offsetZ:
           entry.offsetZ,
 
-        rotationZ:
-          body.orbitRotationZ,
+        inclination:
+          body.orbitInclination,
+
+        ascendingNode:
+          body.orbitAscendingNode,
+
+        eccentricity:
+          body.orbitEccentricity,
 
         color:
           entry.colorSource()

@@ -63,7 +63,18 @@ export class MorraSystem {
         MORRA_CONFIG.MOON_NORTH.color,
         MORRA_CONFIG.MOON_NORTH.orbitRadius,
         MORRA_CONFIG.MOON_NORTH.orbitSpeed,
-        MORRA_CONFIG.MOON_NORTH.orbitPlane
+        MORRA_CONFIG.MOON_NORTH.orbitPlane,
+        0,
+        0,
+        0,
+        {
+          orbitInclination:
+            MORRA_CONFIG.MOON_NORTH.orbitInclination,
+          orbitAscendingNode:
+            MORRA_CONFIG.MOON_NORTH.orbitAscendingNode,
+          orbitEccentricity:
+            MORRA_CONFIG.MOON_NORTH.orbitEccentricity
+        }
       );
 
     scene.add(
@@ -76,7 +87,18 @@ export class MorraSystem {
         MORRA_CONFIG.MOON_EQUATOR.color,
         MORRA_CONFIG.MOON_EQUATOR.orbitRadius,
         MORRA_CONFIG.MOON_EQUATOR.orbitSpeed,
-        MORRA_CONFIG.MOON_EQUATOR.orbitPlane
+        MORRA_CONFIG.MOON_EQUATOR.orbitPlane,
+        0,
+        0,
+        0,
+        {
+          orbitInclination:
+            MORRA_CONFIG.MOON_EQUATOR.orbitInclination,
+          orbitAscendingNode:
+            MORRA_CONFIG.MOON_EQUATOR.orbitAscendingNode,
+          orbitEccentricity:
+            MORRA_CONFIG.MOON_EQUATOR.orbitEccentricity
+        }
       );
 
     scene.add(
@@ -92,7 +114,15 @@ export class MorraSystem {
         MORRA_CONFIG.SUN_LARGE.orbitPlane,
         0,
         MORRA_CONFIG.SUN_LARGE.orbitHeight,
-        0
+        0,
+        {
+          orbitInclination:
+            MORRA_CONFIG.SUN_LARGE.orbitInclination,
+          orbitAscendingNode:
+            MORRA_CONFIG.SUN_LARGE.orbitAscendingNode,
+          orbitEccentricity:
+            MORRA_CONFIG.SUN_LARGE.orbitEccentricity
+        }
       );
 
     scene.add(
@@ -108,7 +138,15 @@ export class MorraSystem {
         MORRA_CONFIG.SUN_MEDIUM.orbitPlane,
         0,
         MORRA_CONFIG.SUN_MEDIUM.orbitHeight,
-        0
+        0,
+        {
+          orbitInclination:
+            MORRA_CONFIG.SUN_MEDIUM.orbitInclination,
+          orbitAscendingNode:
+            MORRA_CONFIG.SUN_MEDIUM.orbitAscendingNode,
+          orbitEccentricity:
+            MORRA_CONFIG.SUN_MEDIUM.orbitEccentricity
+        }
       );
 
     scene.add(
@@ -124,7 +162,15 @@ export class MorraSystem {
         MORRA_CONFIG.SUN_SMALL.orbitPlane,
         0,
         MORRA_CONFIG.SUN_SMALL.orbitHeight,
-        0
+        0,
+        {
+          orbitInclination:
+            MORRA_CONFIG.SUN_SMALL.orbitInclination,
+          orbitAscendingNode:
+            MORRA_CONFIG.SUN_SMALL.orbitAscendingNode,
+          orbitEccentricity:
+            MORRA_CONFIG.SUN_SMALL.orbitEccentricity
+        }
       );
 
     scene.add(
@@ -225,14 +271,6 @@ export class MorraSystem {
     this.morra.mesh.rotation.y =
       MORRA_CONFIG.ROTATION_SPEED *
       absoluteHours;
-
-    this.moonNorth.setOrbitRotationZ(
-      axisTilt
-    );
-
-    this.moonEquator.setOrbitRotationZ(
-      axisTilt
-    );
 
     this.axis.update(
       this.morra.radius,

@@ -50,7 +50,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.TIME_SPEED.min,
       MORRA_CONFIG.LIMITS.TIME_SPEED.max,
       MORRA_CONFIG.LIMITS.TIME_SPEED.step
-    ).name("TIME SCALE");
+    ).name("TIME SCALE").listen();
 
     folder.add(
       MORRA_CONFIG,
@@ -58,7 +58,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ROTATION_SPEED.min,
       MORRA_CONFIG.LIMITS.ROTATION_SPEED.max,
       MORRA_CONFIG.LIMITS.ROTATION_SPEED.step
-    );
+    ).listen();
   }
 
   private createTimeFolder() {
@@ -72,7 +72,7 @@ export class DebugPanel {
       1,
       500,
       1
-    );
+    ).listen();
 
     folder.add(
       MORRA_CONFIG,
@@ -80,7 +80,7 @@ export class DebugPanel {
       1,
       500,
       1
-    );
+    ).listen();
 
     folder.add(
       MORRA_CONFIG,
@@ -88,7 +88,7 @@ export class DebugPanel {
       1,
       100,
       1
-    );
+    ).listen();
 
     folder.open();
   }
@@ -104,12 +104,12 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.MORRA_RADIUS.min,
       MORRA_CONFIG.LIMITS.MORRA_RADIUS.max,
       MORRA_CONFIG.LIMITS.MORRA_RADIUS.step
-    );
+    ).listen();
 
-    folder.add(
+    folder.addColor(
       MORRA_CONFIG,
       "MORRA_COLOR"
-    ).name("COLOR");
+    ).name("COLOR").listen();
 
     folder.add(
       MORRA_CONFIG,
@@ -117,7 +117,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.AXIS_TILT.min,
       MORRA_CONFIG.LIMITS.AXIS_TILT.max,
       MORRA_CONFIG.LIMITS.AXIS_TILT.step
-    );
+    ).name("AXIS TILT (°)").listen();
   }
 
   private createSunFolders() {
@@ -148,6 +148,9 @@ export class DebugPanel {
       orbitRadius: number;
       orbitSpeed: number;
       orbitHeight: number;
+      orbitInclination: number;
+      orbitAscendingNode: number;
+      orbitEccentricity: number;
     },
     light: {
       color: number;
@@ -160,7 +163,7 @@ export class DebugPanel {
     folder.addColor(
       light,
       "color"
-    ).name("COLOR");
+    ).name("COLOR").listen();
 
     folder.add(
       sun,
@@ -168,7 +171,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.BODY_RADIUS.min,
       MORRA_CONFIG.LIMITS.BODY_RADIUS.max,
       MORRA_CONFIG.LIMITS.BODY_RADIUS.step
-    );
+    ).listen();
 
     folder.add(
       sun,
@@ -176,7 +179,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.min,
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.max,
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.step
-    );
+    ).listen();
 
     folder.add(
       sun,
@@ -184,7 +187,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.BODY_HEIGHT.min,
       MORRA_CONFIG.LIMITS.BODY_HEIGHT.max,
       MORRA_CONFIG.LIMITS.BODY_HEIGHT.step
-    );
+    ).listen();
 
     folder.add(
       sun,
@@ -192,7 +195,31 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.min,
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.max,
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.step
-    );
+    ).listen();
+
+    folder.add(
+      sun,
+      "orbitInclination",
+      MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.min,
+      MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.max,
+      MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.step
+    ).name("ORBIT INCLINATION (°)").listen();
+
+    folder.add(
+      sun,
+      "orbitAscendingNode",
+      MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.min,
+      MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.max,
+      MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.step
+    ).name("ORBIT NODE (°)").listen();
+
+    folder.add(
+      sun,
+      "orbitEccentricity",
+      MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.min,
+      MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.max,
+      MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.step
+    ).name("ORBIT ELLIPSE").listen();
   }
 
   private createMoonFolders() {
@@ -216,6 +243,9 @@ export class DebugPanel {
       orbitColor: number;
       orbitRadius: number;
       orbitSpeed: number;
+      orbitInclination: number;
+      orbitAscendingNode: number;
+      orbitEccentricity: number;
     }
   ) {
 
@@ -225,12 +255,12 @@ export class DebugPanel {
     folder.addColor(
       moon,
       "color"
-    ).name("COLOR");
+    ).name("COLOR").listen();
 
     folder.addColor(
       moon,
       "orbitColor"
-    ).name("ORBIT COLOR");
+    ).name("ORBIT COLOR").listen();
 
     folder.add(
       moon,
@@ -238,7 +268,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.BODY_RADIUS.min,
       MORRA_CONFIG.LIMITS.BODY_RADIUS.max,
       MORRA_CONFIG.LIMITS.BODY_RADIUS.step
-    );
+    ).listen();
 
     folder.add(
       moon,
@@ -246,7 +276,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.min,
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.max,
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.step
-    );
+    ).listen();
 
     folder.add(
       moon,
@@ -254,7 +284,31 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.min,
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.max,
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.step
-    );
+    ).listen();
+
+    folder.add(
+      moon,
+      "orbitInclination",
+      MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.min,
+      MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.max,
+      MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.step
+    ).name("ORBIT INCLINATION (°)").listen();
+
+    folder.add(
+      moon,
+      "orbitAscendingNode",
+      MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.min,
+      MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.max,
+      MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.step
+    ).name("ORBIT NODE (°)").listen();
+
+    folder.add(
+      moon,
+      "orbitEccentricity",
+      MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.min,
+      MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.max,
+      MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.step
+    ).name("ORBIT ELLIPSE").listen();
   }
 
   private createLightingFolder() {
@@ -268,7 +322,7 @@ export class DebugPanel {
       0,
       10,
       0.01
-    );
+    ).listen();
 
     folder.add(
       MORRA_CONFIG.LIGHTS.LARGE,
@@ -276,7 +330,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.min,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.max,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.step
-    );
+    ).listen();
 
     folder.add(
       MORRA_CONFIG.LIGHTS.MEDIUM,
@@ -284,7 +338,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.min,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.max,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.step
-    );
+    ).listen();
 
     folder.add(
       MORRA_CONFIG.LIGHTS.SMALL,
@@ -292,7 +346,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.min,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.max,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.step
-    );
+    ).listen();
   }
 
   private createDebugFolder() {

@@ -102,6 +102,9 @@ export class MorraConfigSynchronizer {
       orbitRadius: number;
       orbitSpeed: number;
       orbitPlane: "XZ" | "YZ" | "XY";
+      orbitInclination: number;
+      orbitAscendingNode: number;
+      orbitEccentricity: number;
       orbitHeight?: number;
     },
     minimumOrbitRadius: number
@@ -111,11 +114,17 @@ export class MorraConfigSynchronizer {
       config.radius
     );
 
-    body.setOrbitRadius(
+    const effectiveOrbitRadius =
       Math.max(
         config.orbitRadius,
         minimumOrbitRadius
-      )
+      );
+
+    config.orbitRadius =
+      effectiveOrbitRadius;
+
+    body.setOrbitRadius(
+      effectiveOrbitRadius
     );
 
     body.setOrbitSpeed(
@@ -124,6 +133,18 @@ export class MorraConfigSynchronizer {
 
     body.setOrbitPlane(
       config.orbitPlane
+    );
+
+    body.setOrbitInclination(
+      config.orbitInclination
+    );
+
+    body.setOrbitAscendingNode(
+      config.orbitAscendingNode
+    );
+
+    body.setOrbitEccentricity(
+      config.orbitEccentricity
     );
 
     if(
