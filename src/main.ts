@@ -154,8 +154,7 @@ function animate() {
 
   debugPanel.update();
 
-  simulation.morraSystem.update(
-    frame.time.absoluteHours,
+  simulation.morraSystem.updatePresentation(
     renderer.camera,
     renderer.renderer.domElement.clientHeight
   );
