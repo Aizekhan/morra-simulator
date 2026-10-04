@@ -1,5 +1,9 @@
 import * as THREE from "three";
 
+import {
+  OrbitMath
+} from "./OrbitMath";
+
 export type OrbitPlane =
   | "XZ"
   | "YZ"
@@ -13,7 +17,11 @@ export interface CelestialBodyOptions {
 
   emissiveIntensity?: number;
 
-  orbitRotationZ?: number;
+  orbitInclination?: number;
+
+  orbitAscendingNode?: number;
+
+  orbitEccentricity?: number;
 }
 
 export class CelestialBody {
@@ -37,7 +45,11 @@ export class CelestialBody {
   orbitOffsetY: number;
   orbitOffsetZ: number;
 
-  orbitRotationZ: number;
+  orbitInclination: number;
+
+  orbitAscendingNode: number;
+
+  orbitEccentricity: number;
 
   readonly initialAngle: number;
 
@@ -108,8 +120,14 @@ export class CelestialBody {
     this.orbitOffsetZ =
       orbitOffsetZ;
 
-    this.orbitRotationZ =
-      options.orbitRotationZ ?? 0;
+    this.orbitInclination =
+      options.orbitInclination ?? 0;
+
+    this.orbitAscendingNode =
+      options.orbitAscendingNode ?? 0;
+
+    this.orbitEccentricity =
+      options.orbitEccentricity ?? 0;
 
     this.initialAngle =
       options.initialAngle ?? 0;
@@ -199,12 +217,32 @@ export class CelestialBody {
       plane;
   }
 
-  setOrbitRotationZ(
-    rotation: number
+  setOrbitInclination(
+    inclination: number
   ) {
 
-    this.orbitRotationZ =
-      rotation;
+    this.orbitInclination =
+      inclination;
+  }
+
+  setOrbitAscendingNode(
+    angle: number
+  ) {
+
+    this.orbitAscendingNode =
+      angle;
+  }
+
+  setOrbitEccentricity(
+    eccentricity: number
+  ) {
+
+    this.orbitEccentricity =
+      THREE.MathUtils.clamp(
+        eccentricity,
+        0,
+        0.999999
+      );
   }
 
   updateAtTime(
@@ -216,15 +254,50 @@ export class CelestialBody {
       this.orbitSpeed *
       absoluteHours;
 
-    const cosine =
-      Math.cos(
-        this.angle
+    const eccentricAnomaly =
+      OrbitMath.solveEccentricAnomaly(
+        this.angle,
+        this.orbitEccentricity
       );
 
-    const sine =
-      Math.sin(
-        this.angle
+    const ellipsePoint =
+      OrbitMath.getEllipsePoint(
+        this.orbitRadius,
+        this.orbitEccentricity,
+        eccentricAnomaly
       );
+
+    const basis =
+      OrbitMath.getBasis(
+        this.orbitPlane,
+        this.orbitInclination,
+        this.orbitAscendingNode
+      );
+
+    this.mesh.position
+      .copy(
+        basis.primary
+          .clone()
+          .multiplyScalar(
+            ellipsePoint.primary
+          )
+          .add(
+            basis.secondary
+              .clone()
+              .multiplyScalar(
+                ellipsePoint.secondary
+              )
+          )
+      )
+      .add(
+        new THREE.Vector3(
+          this.orbitOffsetX,
+          this.orbitOffsetY,
+          this.orbitOffsetZ
+        )
+      );
+
+    return;
 
     switch(
       this.orbitPlane
@@ -279,19 +352,6 @@ export class CelestialBody {
         break;
     }
 
-    if(
-      this.orbitRotationZ !== 0
-    ) {
-
-      this.mesh.position.applyAxisAngle(
-        new THREE.Vector3(
-          0,
-          0,
-          1
-        ),
-        this.orbitRotationZ
-      );
-    }
   }
 
   dispose() {
