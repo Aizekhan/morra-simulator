@@ -4,6 +4,8 @@ import {
 
 export class TimeControls {
 
+  private readonly time: SimulationTime;
+
   pause: () => void;
 
   speed1: () => void;
@@ -15,9 +17,10 @@ export class TimeControls {
   addDay: () => void;
 
   constructor(
-    private readonly time:
-      SimulationTime
+    time: SimulationTime
   ) {
+
+    this.time = time;
 
     this.pause =
       () => this.time.pause();
