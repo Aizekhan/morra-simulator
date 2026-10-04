@@ -21,6 +21,10 @@ import {
   SurfaceFieldVisualizer
 } from "../render/SurfaceFieldVisualizer";
 
+import {
+  ShadowVolumeVisualizer
+} from "../render/ShadowVolumeVisualizer";
+
 export class MorraSystem {
 
   scene: THREE.Scene;
@@ -53,6 +57,9 @@ export class MorraSystem {
 
   surfaceFieldVisualizer:
     SurfaceFieldVisualizer;
+
+  shadowVolumeVisualizer:
+    ShadowVolumeVisualizer;
 
   constructor(
     scene: THREE.Scene
@@ -366,6 +373,22 @@ export class MorraSystem {
         MORRA_CONFIG.SURFACE_FIELD.longitudeSegments,
         MORRA_CONFIG.SURFACE_FIELD.latitudeSegments
       );
+
+    this.shadowVolumeVisualizer =
+      new ShadowVolumeVisualizer(
+        scene,
+        this.environmentEngine,
+        {
+          length:
+            MORRA_CONFIG.SHADOW_VOLUMES.length,
+          opacity:
+            MORRA_CONFIG.SHADOW_VOLUMES.opacity,
+          showUmbra:
+            MORRA_CONFIG.SHADOW_VOLUMES.showUmbra,
+          showPenumbra:
+            MORRA_CONFIG.SHADOW_VOLUMES.showPenumbra
+        }
+      );
   }
 
   update(
@@ -448,6 +471,19 @@ export class MorraSystem {
     this.surfaceFieldVisualizer.update(
       fieldMap
     );
+
+    this.shadowVolumeVisualizer.setConfig({
+      length:
+        MORRA_CONFIG.SHADOW_VOLUMES.length,
+      opacity:
+        MORRA_CONFIG.SHADOW_VOLUMES.opacity,
+      showUmbra:
+        MORRA_CONFIG.SHADOW_VOLUMES.showUmbra,
+      showPenumbra:
+        MORRA_CONFIG.SHADOW_VOLUMES.showPenumbra
+    });
+
+    this.shadowVolumeVisualizer.update();
   }
 
   dispose() {
@@ -457,6 +493,8 @@ export class MorraSystem {
     this.lightSystem.dispose();
 
     this.surfaceFieldVisualizer.dispose();
+
+    this.shadowVolumeVisualizer.dispose();
 
     this.morra.dispose();
 
