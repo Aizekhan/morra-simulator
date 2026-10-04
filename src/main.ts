@@ -1,15 +1,36 @@
 import "./style.css";
 
-import { Simulation } from "./core/Simulation";
+import {
+  Simulation
+} from "./core/Simulation";
 
-import { CameraController }
-from "./render/CameraController";
+import {
+  CameraController
+} from "./render/CameraController";
 
-import { DebugPanel }
-from "./render/DebugPanel";
+import {
+  DebugPanel
+} from "./render/DebugPanel";
 
-import { Renderer }
-from "./render/Renderer";
+import {
+  Renderer
+} from "./render/Renderer";
+
+import {
+  TimeHUD
+} from "./render/TimeHUD";
+
+import {
+  TimelineUI
+} from "./render/TimelineUI";
+
+import {
+  WorldEventPanel
+} from "./render/WorldEventPanel";
+
+import {
+  WorldInteractionSystem
+} from "./world/WorldInteractionSystem";
 
 const renderer =
   new Renderer();
@@ -30,6 +51,34 @@ const debugPanel =
     simulation.timeControls
   );
 
+const timeHud =
+  new TimeHUD();
+
+const timeline =
+  new TimelineUI(
+    simulation.timeSystem,
+    simulation.worldEventSystem
+  );
+
+const eventPanel =
+  new WorldEventPanel(
+    simulation.timeSystem,
+    simulation.worldEventSystem
+  );
+
+const worldInteraction =
+  new WorldInteractionSystem(
+    renderer.camera,
+    renderer.renderer.domElement,
+    simulation.morraSystem.morra,
+    simulation.worldLocationSystem,
+    selection => {
+      eventPanel.setLocation(
+        selection.location.id
+      );
+    }
+  );
+
 function animate() {
 
   requestAnimationFrame(
@@ -38,7 +87,17 @@ function animate() {
 
   renderer.update();
 
-  simulation.update();
+  const frame =
+    simulation.update();
+
+  timeHud.update(
+    frame.time,
+    frame.astronomy
+  );
+
+  timeline.update(
+    frame.time
+  );
 
   cameraController.update();
 
@@ -51,7 +110,18 @@ window.addEventListener(
   "beforeunload",
   () => {
 
+    worldInteraction.dispose();
+
+    eventPanel.dispose();
+
+    timeline.dispose();
+
+    timeHud.dispose();
+
     debugPanel.destroy();
+
+    simulation.dispose();
+
     renderer.dispose();
   }
 );
