@@ -153,10 +153,6 @@ export class CelestialInteractionSystem {
       moons.map(
         (body, index) => {
 
-          body.mesh.layers.set(
-            RENDER_LAYERS.MOON_LIGHT_RECEIVER
-          );
-
           const reflectedLight =
             new THREE.PointLight(
               0xffffff,
