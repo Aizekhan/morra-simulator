@@ -507,6 +507,7 @@ export class SurfaceFieldEngine {
       magic,
       magosphereStability,
       anomalyStrength,
+      shadow,
       lightStats: {
         min:
           lightMin,
