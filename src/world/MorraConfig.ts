@@ -13,7 +13,7 @@ export const MORRA_CONFIG = {
   // Render-only base emissive so Morra remains visually readable
   // when the physical light sources are on the far side.
   // Keep the real Morra mesh visibly readable at system scale; this is render-only and does not change physical radiation.
-  MORRA_BASE_EMISSIVE: 1.0,
+  MORRA_BASE_EMISSIVE: 0.35,
 
   AXIS_TILT: 23,
 
