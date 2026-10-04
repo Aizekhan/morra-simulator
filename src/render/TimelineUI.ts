@@ -1,6 +1,9 @@
 import {
-  CalendarSnapshot,
   SimulationTime
+} from "../core/SimulationTime";
+
+import type {
+  CalendarSnapshot
 } from "../core/SimulationTime";
 
 import {
