@@ -231,18 +231,6 @@ export class SurfaceFieldEngine {
         this.lastUpdateTimestamp >=
         this.config.updateIntervalMilliseconds;
 
-    const timeChangedEnough =
-      this.lastAbsoluteHours === null ||
-      Math.abs(
-        absoluteHours -
-        this.lastAbsoluteHours
-      ) >=
-        this.config.updateIntervalHours;
-
-    const worldChanged =
-      signature !==
-      this.lastWorldSignature;
-
     if(
       !force &&
       this.map &&
