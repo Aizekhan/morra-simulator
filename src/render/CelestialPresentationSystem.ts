@@ -13,12 +13,6 @@ export interface CelestialPresentationConfig {
 
 export class CelestialPresentationSystem {
 
-  private readonly camera:
-    THREE.PerspectiveCamera;
-
-  private readonly viewport:
-    () => number;
-
   private readonly bodies:
     CelestialBody[];
 
@@ -26,20 +20,10 @@ export class CelestialPresentationSystem {
     CelestialPresentationConfig;
 
   constructor(
-    camera: THREE.PerspectiveCamera,
-    viewportHeight:
-      () => number,
     bodies:
-      CelestialBody[],
-    config:
+      CelestialBody[],    config:
       Partial<CelestialPresentationConfig> = {}
   ) {
-
-    this.camera =
-      camera;
-
-    this.viewport =
-      viewportHeight;
 
     this.bodies =
       bodies;
@@ -60,24 +44,29 @@ export class CelestialPresentationSystem {
     };
   }
 
-  update() {
+  update(
+    camera:
+      THREE.PerspectiveCamera,
+    viewportHeight:
+      number
+  ) {
 
     const height =
       Math.max(
         1,
-        this.viewport()
+        viewportHeight
       );
 
     const cameraTan =
       Math.tan(
         THREE.MathUtils.degToRad(
-          this.camera.fov *
+          camera.fov *
           0.5
         )
       );
 
     const cameraPosition =
-      this.camera.position;
+      camera.position;
 
     for(
       const body
