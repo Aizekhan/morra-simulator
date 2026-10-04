@@ -297,62 +297,7 @@ export class CelestialBody {
         )
       );
 
-    return;
 
-    switch(
-      this.orbitPlane
-    ) {
-
-      case "XZ":
-
-        this.mesh.position.set(
-          cosine *
-            this.orbitRadius +
-            this.orbitOffsetX,
-
-          this.orbitOffsetY,
-
-          sine *
-            this.orbitRadius +
-            this.orbitOffsetZ
-        );
-
-        break;
-
-      case "YZ":
-
-        this.mesh.position.set(
-          this.orbitOffsetX,
-
-          cosine *
-            this.orbitRadius +
-            this.orbitOffsetY,
-
-          sine *
-            this.orbitRadius +
-            this.orbitOffsetZ
-        );
-
-        break;
-
-      case "XY":
-
-        this.mesh.position.set(
-          cosine *
-            this.orbitRadius +
-            this.orbitOffsetX,
-
-          sine *
-            this.orbitRadius +
-            this.orbitOffsetY,
-
-          this.orbitOffsetZ
-        );
-
-        break;
-    }
-
-  }
 
   dispose() {
 
