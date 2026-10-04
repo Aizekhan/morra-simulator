@@ -131,6 +131,39 @@ export class CelestialBody {
     this.mesh.userData.renderMode =
       renderMode;
 
+    const presentationMesh =
+      new THREE.Mesh(
+        this.geometry,
+        new THREE.MeshBasicMaterial({
+          color
+        })
+      );
+
+    presentationMesh.name =
+      "CelestialPresentation";
+
+    presentationMesh.visible =
+      false;
+
+    presentationMesh.castShadow =
+      false;
+
+    presentationMesh.receiveShadow =
+      false;
+
+    presentationMesh.renderOrder =
+      10;
+
+    presentationMesh.userData.isPresentation =
+      true;
+
+    this.mesh.add(
+      presentationMesh
+    );
+
+    this.mesh.userData.presentationMesh =
+      presentationMesh;
+
     this.mesh.castShadow =
       true;
 
@@ -229,6 +262,17 @@ export class CelestialBody {
 
     this.mesh.geometry =
       this.geometry;
+
+    const presentationMesh =
+      this.mesh.userData.presentationMesh as
+      THREE.Mesh | undefined;
+
+    if(
+      presentationMesh
+    ) {
+      presentationMesh.geometry =
+        this.geometry;
+    }
   }
 
   setColor(
@@ -238,6 +282,20 @@ export class CelestialBody {
     this.material.color.setHex(
       color
     );
+
+    const presentationMesh =
+      this.mesh.userData.presentationMesh as
+      THREE.Mesh | undefined;
+
+    if(
+      presentationMesh &&
+      presentationMesh.material instanceof
+      THREE.MeshBasicMaterial
+    ) {
+      presentationMesh.material.color.setHex(
+        color
+      );
+    }
 
     if(
       this.material instanceof
@@ -360,6 +418,18 @@ export class CelestialBody {
   dispose() {
 
     this.geometry.dispose();
+
+    const presentationMesh =
+      this.mesh.userData.presentationMesh as
+      THREE.Mesh | undefined;
+
+    if(
+      presentationMesh &&
+      presentationMesh.material instanceof
+      THREE.Material
+    ) {
+      presentationMesh.material.dispose();
+    }
 
     this.material.dispose();
   }

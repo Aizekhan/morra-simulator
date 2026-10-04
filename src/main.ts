@@ -126,6 +126,8 @@ function animate() {
   const frame =
     simulation.update();
 
+  cameraController.update();
+
   timeHud.update(
     frame.time,
     frame.astronomy
@@ -152,7 +154,10 @@ function animate() {
 
   debugPanel.update();
 
-  cameraController.update();
+  simulation.morraSystem.updatePresentation(
+    renderer.camera,
+    renderer.renderer.domElement.clientHeight
+  );
 
   renderer.render();
 }
