@@ -2,6 +2,10 @@ import * as THREE from "three";
 
 import { MORRA_CONFIG } from "../world/MorraConfig";
 
+import {
+  RENDER_LAYERS
+} from "./RenderLayers";
+
 export class Renderer {
 
   scene: THREE.Scene;
@@ -33,6 +37,10 @@ export class Renderer {
       0,
       1000,
       2500
+    );
+
+    this.camera.layers.enable(
+      RENDER_LAYERS.MORRA_LIGHT_RECEIVER
     );
 
     this.renderer =
