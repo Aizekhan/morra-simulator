@@ -143,32 +143,50 @@ export class OrbitMath {
       m += Math.PI * 2;
     }
 
+    if (Math.abs(e) < 1e-12) {
+      return m;
+    }
+
     let eccentricAnomaly =
       e < 0.8
         ? m
-        : Math.PI;
+        : Math.sign(m || 1) * Math.PI;
+
+    let converged =
+      false;
 
     for (
       let i = 0;
-      i < 12;
+      i < 32;
       i++
     ) {
 
+      const f =
+        eccentricAnomaly -
+        e *
+        Math.sin(
+          eccentricAnomaly
+        ) -
+        m;
+
+      const derivative =
+        1 -
+        e *
+        Math.cos(
+          eccentricAnomaly
+        );
+
+      if (
+        Math.abs(derivative) < 1e-8
+      ) {
+        break;
+      }
+
       const correction =
-        (
-          eccentricAnomaly -
-          e *
-          Math.sin(
-            eccentricAnomaly
-          ) -
-          m
-        ) /
-        (
-          1 -
-          e *
-          Math.cos(
-            eccentricAnomaly
-          )
+        THREE.MathUtils.clamp(
+          f / derivative,
+          -Math.PI / 2,
+          Math.PI / 2
         );
 
       eccentricAnomaly -=
@@ -177,13 +195,76 @@ export class OrbitMath {
       if (
         Math.abs(
           correction
-        ) < 1e-10
+        ) < 1e-11
       ) {
+        converged = true;
         break;
       }
     }
 
+    if (!converged) {
+
+      let low = -Math.PI;
+      let high = Math.PI;
+
+      for (
+        let i = 0;
+        i < 48;
+        i++
+      ) {
+
+        const middle =
+          (low + high) * 0.5;
+
+        const value =
+          middle -
+          e *
+          Math.sin(
+            middle
+          ) -
+          m;
+
+        if (value > 0) {
+          high = middle;
+        } else {
+          low = middle;
+        }
+      }
+
+      eccentricAnomaly =
+        (low + high) * 0.5;
+    }
+
     return eccentricAnomaly;
+  }
+
+  static getMaxEccentricity(
+    semiMajorAxis: number,
+    minimumPeriapsisDistance: number
+  ): number {
+
+    const a =
+      Math.max(
+        0,
+        semiMajorAxis
+      );
+
+    const periapsis =
+      Math.max(
+        0,
+        minimumPeriapsisDistance
+      );
+
+    if (a <= 0) {
+      return 0;
+    }
+
+    return THREE.MathUtils.clamp(
+      1 -
+      periapsis / a,
+      0,
+      0.99
+    );
   }
 
   static getEllipsePoint(
