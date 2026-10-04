@@ -117,7 +117,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.AXIS_TILT.min,
       MORRA_CONFIG.LIMITS.AXIS_TILT.max,
       MORRA_CONFIG.LIMITS.AXIS_TILT.step
-    ).listen();
+    ).name("AXIS TILT (°)").listen();
   }
 
   private createSunFolders() {
