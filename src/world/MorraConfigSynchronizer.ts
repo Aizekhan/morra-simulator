@@ -52,6 +52,10 @@ export class MorraConfigSynchronizer {
       MORRA_CONFIG.MORRA_BASE_EMISSIVE
     );
 
+    this.bodies.morra.mesh.layers.set(
+      0
+    );
+
     this.bodies.morra.mesh.visible =
       MORRA_CONFIG.MORRA_VISIBLE;
 
@@ -185,6 +189,10 @@ export class MorraConfigSynchronizer {
 
     body.setReverseOrbit(
       config.reverseOrbit
+    );
+
+    body.mesh.layers.set(
+      0
     );
 
     body.mesh.visible =

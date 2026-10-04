@@ -29,6 +29,10 @@ export class Renderer {
         50000
       );
 
+    this.camera.layers.set(
+      0
+    );
+
     this.camera.position.set(
       0,
       1000,
