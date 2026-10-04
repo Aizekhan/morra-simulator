@@ -6,8 +6,17 @@ import {
 
 export class MorraConfigSynchronizer {
 
+  private readonly bodies: {
+    morra: CelestialBody;
+    moonNorth: CelestialBody;
+    moonEquator: CelestialBody;
+    sunLarge: CelestialBody;
+    sunMedium: CelestialBody;
+    sunSmall: CelestialBody;
+  };
+
   constructor(
-    private readonly bodies: {
+    bodies: {
       morra: CelestialBody;
       moonNorth: CelestialBody;
       moonEquator: CelestialBody;
@@ -15,7 +24,9 @@ export class MorraConfigSynchronizer {
       sunMedium: CelestialBody;
       sunSmall: CelestialBody;
     }
-  ) {}
+  ) {
+    this.bodies = bodies;
+  }
 
   sync() {
 
