@@ -14,6 +14,9 @@ export class Renderer {
 
   private ambientLight: THREE.AmbientLight;
 
+  private planetAmbientLight:
+    THREE.AmbientLight;
+
   constructor() {
 
     this.scene =
@@ -110,6 +113,20 @@ export class Renderer {
       this.ambientLight
     );
 
+    this.planetAmbientLight =
+      new THREE.AmbientLight(
+        0xffffff,
+        MORRA_CONFIG.LIGHTS.ambient
+      );
+
+    this.planetAmbientLight.layers.set(
+      RENDER_LAYERS.MORRA_LIGHT_RECEIVER
+    );
+
+    this.scene.add(
+      this.planetAmbientLight
+    );
+
     window.addEventListener(
       "resize",
       this.handleResize
@@ -119,6 +136,9 @@ export class Renderer {
   update() {
 
     this.ambientLight.intensity =
+      MORRA_CONFIG.LIGHTS.ambient;
+
+    this.planetAmbientLight.intensity =
       MORRA_CONFIG.LIGHTS.ambient;
   }
 
