@@ -20,7 +20,11 @@ export class RadiationRayVisualizer {
 
   private localPoint:
     THREE.Vector3 | null =
-    null;
+    new THREE.Vector3(
+      1,
+      0,
+      0
+    );
 
   private enabled =
     true;
