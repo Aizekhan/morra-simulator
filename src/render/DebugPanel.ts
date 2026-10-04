@@ -20,27 +20,37 @@ export class DebugPanel {
         width: 420
       });
 
-    this.createWorldFolder();
-    this.createTimeFolder(timeControls);
+    this.createWorldFolder(
+      timeControls
+    );
+
+    this.createTimeFolder();
+
     this.createMorraFolder();
+
     this.createSunFolders();
+
     this.createMoonFolders();
+
     this.createLightingFolder();
+
     this.createDebugFolder();
   }
 
-  private createWorldFolder() {
+  private createWorldFolder(
+    timeControls: TimeControls
+  ) {
 
     const folder =
       this.gui.addFolder("World");
 
     folder.add(
-      MORRA_CONFIG,
-      "TIME_SPEED",
+      timeControls,
+      "timeScale",
       MORRA_CONFIG.LIMITS.TIME_SPEED.min,
       MORRA_CONFIG.LIMITS.TIME_SPEED.max,
       MORRA_CONFIG.LIMITS.TIME_SPEED.step
-    );
+    ).name("TIME SCALE");
 
     folder.add(
       MORRA_CONFIG,
@@ -51,9 +61,7 @@ export class DebugPanel {
     );
   }
 
-  private createTimeFolder(
-    timeControls: TimeControls
-  ) {
+  private createTimeFolder() {
 
     const folder =
       this.gui.addFolder("Time");
@@ -82,51 +90,6 @@ export class DebugPanel {
       1
     );
 
-    folder.add(
-      MORRA_CONFIG.DEBUG,
-      "showTimePanel"
-    );
-
-    folder.add(
-      MORRA_CONFIG.DEBUG,
-      "showTimeline"
-    );
-
-    folder.add(
-      timeControls,
-      "pause"
-    ).name("Pause / Resume");
-
-    folder.add(
-      timeControls,
-      "speed1"
-    ).name("1x");
-
-    folder.add(
-      timeControls,
-      "speed10"
-    ).name("10x");
-
-    folder.add(
-      timeControls,
-      "speed100"
-    ).name("100x");
-
-    folder.add(
-      timeControls,
-      "speed1000"
-    ).name("1000x");
-
-    folder.add(
-      timeControls,
-      "addHour"
-    ).name("+ 1 Hour");
-
-    folder.add(
-      timeControls,
-      "addDay"
-    ).name("+ 1 Day");
-
     folder.open();
   }
 
@@ -145,6 +108,11 @@ export class DebugPanel {
 
     folder.add(
       MORRA_CONFIG,
+      "MORRA_COLOR"
+    ).name("COLOR");
+
+    folder.add(
+      MORRA_CONFIG,
       "AXIS_TILT",
       MORRA_CONFIG.LIMITS.AXIS_TILT.min,
       MORRA_CONFIG.LIMITS.AXIS_TILT.max,
@@ -156,17 +124,20 @@ export class DebugPanel {
 
     this.createSunFolder(
       "Large Sun",
-      MORRA_CONFIG.SUN_LARGE
+      MORRA_CONFIG.SUN_LARGE,
+      MORRA_CONFIG.LIGHTS.LARGE
     );
 
     this.createSunFolder(
       "Medium Sun",
-      MORRA_CONFIG.SUN_MEDIUM
+      MORRA_CONFIG.SUN_MEDIUM,
+      MORRA_CONFIG.LIGHTS.MEDIUM
     );
 
     this.createSunFolder(
       "Small Sun",
-      MORRA_CONFIG.SUN_SMALL
+      MORRA_CONFIG.SUN_SMALL,
+      MORRA_CONFIG.LIGHTS.SMALL
     );
   }
 
@@ -177,11 +148,19 @@ export class DebugPanel {
       orbitRadius: number;
       orbitSpeed: number;
       orbitHeight: number;
+    },
+    light: {
+      color: number;
     }
   ) {
 
     const folder =
       this.gui.addFolder(name);
+
+    folder.addColor(
+      light,
+      "color"
+    ).name("COLOR");
 
     folder.add(
       sun,
@@ -233,6 +212,8 @@ export class DebugPanel {
     name: string,
     moon: {
       radius: number;
+      color: number;
+      orbitColor: number;
       orbitRadius: number;
       orbitSpeed: number;
     }
@@ -240,6 +221,16 @@ export class DebugPanel {
 
     const folder =
       this.gui.addFolder(name);
+
+    folder.addColor(
+      moon,
+      "color"
+    ).name("COLOR");
+
+    folder.addColor(
+      moon,
+      "orbitColor"
+    ).name("ORBIT COLOR");
 
     folder.add(
       moon,
@@ -282,25 +273,25 @@ export class DebugPanel {
     folder.add(
       MORRA_CONFIG.LIGHTS.LARGE,
       "intensity",
-      0,
-      500,
-      1
+      MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.min,
+      MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.max,
+      MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.step
     );
 
     folder.add(
       MORRA_CONFIG.LIGHTS.MEDIUM,
       "intensity",
-      0,
-      500,
-      1
+      MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.min,
+      MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.max,
+      MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.step
     );
 
     folder.add(
       MORRA_CONFIG.LIGHTS.SMALL,
       "intensity",
-      0,
-      500,
-      1
+      MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.min,
+      MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.max,
+      MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.step
     );
   }
 
@@ -327,6 +318,16 @@ export class DebugPanel {
     folder.add(
       MORRA_CONFIG.DEBUG,
       "showLightHelpers"
+    );
+
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showTimePanel"
+    );
+
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showTimeline"
     );
   }
 
