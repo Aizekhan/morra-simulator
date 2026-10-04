@@ -180,7 +180,9 @@ export class MorraSystem {
           reverseOrbit:
             MORRA_CONFIG.SUN_LARGE.reverseOrbit,
           emissiveIntensity:
-            1.2
+            1.2,
+          renderMode:
+            "SELF_LUMINOUS"
         }
       );
 
@@ -210,7 +212,9 @@ export class MorraSystem {
           reverseOrbit:
             MORRA_CONFIG.SUN_MEDIUM.reverseOrbit,
           emissiveIntensity:
-            1.2
+            1.2,
+          renderMode:
+            "SELF_LUMINOUS"
         }
       );
 
@@ -240,7 +244,9 @@ export class MorraSystem {
           reverseOrbit:
             MORRA_CONFIG.SUN_SMALL.reverseOrbit,
           emissiveIntensity:
-            1.2
+            1.2,
+          renderMode:
+            "SELF_LUMINOUS"
         }
       );
 
