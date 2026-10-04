@@ -132,6 +132,11 @@ export const MORRA_CONFIG = {
 
   SUN_LARGE: {
 
+    // Provisional source-role binding for the physical engine.
+    // The canonical mapping of "large/medium/small" to
+    // first/second/third celestial bodies is still editable here.
+    radiationRole: "MAGIC" as const,
+
     radius: 50,
 
     orbitRadius: 1800,
@@ -155,6 +160,8 @@ export const MORRA_CONFIG = {
   },
 
   SUN_MEDIUM: {
+
+    radiationRole: "LIFE" as const,
 
     radius: 40,
 
@@ -180,6 +187,8 @@ export const MORRA_CONFIG = {
 
   SUN_SMALL: {
 
+    radiationRole: "FIRE" as const,
+
     radius: 25,
 
     orbitRadius: 700,
@@ -199,6 +208,34 @@ export const MORRA_CONFIG = {
     reverseOrbit: false,
 
     visible: true
+
+  },
+
+  // =========================
+  // RADIATION CALIBRATION
+  // =========================
+
+  // Relative source strengths used by the new physical engine.
+  // These are implementation calibration values, not new canon.
+  RADIATION_PROFILES: {
+
+    MAGIC: {
+      lightPower: 1,
+      heatPower: 0,
+      magicPower: 1
+    },
+
+    LIFE: {
+      lightPower: 1,
+      heatPower: 1,
+      magicPower: 0
+    },
+
+    FIRE: {
+      lightPower: 0.25,
+      heatPower: 2,
+      magicPower: 0
+    }
 
   },
 
