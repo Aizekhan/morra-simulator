@@ -15,10 +15,9 @@ interface OrbitEntry {
 
   line: THREE.LineLoop;
 
-  color: number;
+  colorSource: () => number;
 
   offsetX: number;
-  offsetY: number;
   offsetZ: number;
 
   lastKey: string;
@@ -34,11 +33,13 @@ export class OrbitSystem {
 
   add(
     body: CelestialBody,
-    color: number,
+    colorSource: () => number,
     offsetX = 0,
-    offsetY = 0,
     offsetZ = 0
   ) {
+
+    const color =
+      colorSource();
 
     const line =
       OrbitRenderer.createOrbit(
@@ -46,7 +47,7 @@ export class OrbitSystem {
         color,
         body.orbitPlane,
         offsetX,
-        offsetY,
+        body.orbitOffsetY,
         offsetZ
       );
 
@@ -57,9 +58,8 @@ export class OrbitSystem {
     this.entries.push({
       body,
       line,
-      color,
+      colorSource,
       offsetX,
-      offsetY,
       offsetZ,
       lastKey: ""
     });
@@ -91,7 +91,7 @@ export class OrbitSystem {
           entry.offsetZ,
 
         color:
-          entry.color
+          entry.colorSource()
       };
 
       const key =
