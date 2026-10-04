@@ -45,15 +45,26 @@ export class DebugPanel {
 
     this.gui =
       new GUI({
-        title: "MORRA Simulator",
-        width: 420
+        title: "MORRA CONTROL CENTER",
+        width: 360
       });
 
-    this.createWorldFolder(
+    this.injectPanelStyle();
+
+    this.gui.domElement.style.maxHeight =
+      "calc(100vh - 24px)";
+
+    this.gui.domElement.style.overflowY =
+      "auto";
+
+    this.gui.domElement.style.overflowX =
+      "hidden";
+
+    this.createSimulationFolder(
       timeControls
     );
 
-    this.createTimeFolder();
+    this.createCalendarFolder();
 
     this.createMorraFolder();
 
@@ -68,12 +79,58 @@ export class DebugPanel {
     this.createDebugFolder();
   }
 
-  private createWorldFolder(
+  private injectPanelStyle() {
+
+    const style =
+      document.createElement(
+        "style"
+      );
+
+    style.textContent = `
+      .lil-gui.root {
+        --background-color: rgba(15, 17, 22, 0.96);
+        --widget-color: #242832;
+        --hover-color: #303642;
+        --focus-color: #343b49;
+        --text-color: #e8ecf2;
+        --number-color: #7fd7ff;
+        --string-color: #9ee7c6;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        box-shadow: 0 18px 50px rgba(0,0,0,0.45);
+        backdrop-filter: blur(10px);
+      }
+
+      .lil-gui.root > .title {
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        padding: 9px 11px;
+      }
+
+      .lil-gui .title {
+        font-weight: 700;
+      }
+
+      .lil-gui .folder > .title {
+        min-height: 28px;
+        line-height: 28px;
+      }
+    `;
+
+    document.head.appendChild(
+      style
+    );
+  }
+
+  private createSimulationFolder(
     timeControls: TimeControls
   ) {
 
     const folder =
-      this.gui.addFolder("World");
+      this.gui.addFolder(
+        "⚙ SIMULATION"
+      );
 
     folder.add(
       timeControls,
@@ -89,13 +146,17 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ROTATION_SPEED.min,
       MORRA_CONFIG.LIMITS.ROTATION_SPEED.max,
       MORRA_CONFIG.LIMITS.ROTATION_SPEED.step
-    ).listen();
+    ).name("MORRA ROTATION").listen();
+
+    folder.close();
   }
 
-  private createTimeFolder() {
+  private createCalendarFolder() {
 
     const folder =
-      this.gui.addFolder("Time");
+      this.gui.addFolder(
+        "📅 CALENDAR"
+      );
 
     folder.add(
       MORRA_CONFIG,
@@ -103,7 +164,7 @@ export class DebugPanel {
       1,
       500,
       1
-    ).listen();
+    ).name("HOURS / DAY").listen();
 
     folder.add(
       MORRA_CONFIG,
@@ -111,7 +172,7 @@ export class DebugPanel {
       1,
       500,
       1
-    ).listen();
+    ).name("DAYS / MONTH").listen();
 
     folder.add(
       MORRA_CONFIG,
@@ -119,15 +180,17 @@ export class DebugPanel {
       1,
       100,
       1
-    ).listen();
+    ).name("MONTHS / YEAR").listen();
 
-    folder.open();
+    folder.close();
   }
 
   private createMorraFolder() {
 
     const folder =
-      this.gui.addFolder("Morra");
+      this.gui.addFolder(
+        "🌍 MORRA"
+      );
 
     folder.add(
       MORRA_CONFIG,
@@ -135,7 +198,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.MORRA_RADIUS.min,
       MORRA_CONFIG.LIMITS.MORRA_RADIUS.max,
       MORRA_CONFIG.LIMITS.MORRA_RADIUS.step
-    ).listen();
+    ).name("RADIUS").listen();
 
     folder.add(
       MORRA_CONFIG,
@@ -154,31 +217,46 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.AXIS_TILT.max,
       MORRA_CONFIG.LIMITS.AXIS_TILT.step
     ).name("AXIS TILT (°)").listen();
+
+    folder.close();
   }
 
   private createSunFolders() {
 
+    const root =
+      this.gui.addFolder(
+        "☀ LIGHTS / STARS"
+      );
+
     this.createSunFolder(
-      "Large Sun",
+      root,
+      "☀ Large Sun",
       MORRA_CONFIG.SUN_LARGE,
       MORRA_CONFIG.LIGHTS.LARGE
     );
 
     this.createSunFolder(
-      "Medium Sun",
+      root,
+      "☀ Medium Sun",
       MORRA_CONFIG.SUN_MEDIUM,
       MORRA_CONFIG.LIGHTS.MEDIUM
     );
 
     this.createSunFolder(
-      "Small Sun",
+      root,
+      "☀ Small Sun",
       MORRA_CONFIG.SUN_SMALL,
       MORRA_CONFIG.LIGHTS.SMALL
     );
+
+    root.close();
   }
 
   private createSunFolder(
-    name: string,
+    parent:
+      GUI,
+    name:
+      string,
     sun: {
       radius: number;
       orbitRadius: number;
@@ -196,7 +274,9 @@ export class DebugPanel {
   ) {
 
     const folder =
-      this.gui.addFolder(name);
+      parent.addFolder(
+        name
+      );
 
     folder.add(
       sun,
@@ -214,7 +294,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.BODY_RADIUS.min,
       MORRA_CONFIG.LIMITS.BODY_RADIUS.max,
       MORRA_CONFIG.LIMITS.BODY_RADIUS.step
-    ).listen();
+    ).name("RADIUS").listen();
 
     folder.add(
       sun,
@@ -222,7 +302,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.min,
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.max,
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.step
-    ).listen();
+    ).name("ORBIT RADIUS").listen();
 
     folder.add(
       sun,
@@ -230,7 +310,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_PLANE_OFFSET.min,
       MORRA_CONFIG.LIMITS.ORBIT_PLANE_OFFSET.max,
       MORRA_CONFIG.LIMITS.ORBIT_PLANE_OFFSET.step
-    ).name("ORBIT PLANE OFFSET").listen();
+    ).name("PLANE OFFSET").listen();
 
     folder.add(
       sun,
@@ -238,7 +318,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.min,
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.max,
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.step
-    ).listen();
+    ).name("ORBIT SPEED").listen();
 
     folder.add(
       sun,
@@ -246,7 +326,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.min,
       MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.max,
       MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.step
-    ).name("ORBIT INCLINATION (°)").listen();
+    ).name("INCLINATION (°)").listen();
 
     folder.add(
       sun,
@@ -254,7 +334,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.min,
       MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.max,
       MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.step
-    ).name("ORBIT NODE (°)").listen();
+    ).name("NODE (°)").listen();
 
     folder.add(
       sun,
@@ -268,7 +348,7 @@ export class DebugPanel {
         MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.min,
         MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.max,
         MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.step
-      ).name("ORBIT ECCENTRICITY").listen();
+      ).name("ECCENTRICITY").listen();
 
     this.eccentricityControls.push({
       controller:
@@ -278,23 +358,37 @@ export class DebugPanel {
       clearance:
         100
     });
+
+    folder.close();
   }
 
   private createMoonFolders() {
 
+    const root =
+      this.gui.addFolder(
+        "🌙 MOONS"
+      );
+
     this.createMoonFolder(
-      "North Moon",
+      root,
+      "🌙 North Moon",
       MORRA_CONFIG.MOON_NORTH
     );
 
     this.createMoonFolder(
-      "Equator Moon",
+      root,
+      "🌙 Equator Moon",
       MORRA_CONFIG.MOON_EQUATOR
     );
+
+    root.close();
   }
 
   private createMoonFolder(
-    name: string,
+    parent:
+      GUI,
+    name:
+      string,
     moon: {
       radius: number;
       color: number;
@@ -311,7 +405,9 @@ export class DebugPanel {
   ) {
 
     const folder =
-      this.gui.addFolder(name);
+      parent.addFolder(
+        name
+      );
 
     folder.add(
       moon,
@@ -334,7 +430,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.BODY_RADIUS.min,
       MORRA_CONFIG.LIMITS.BODY_RADIUS.max,
       MORRA_CONFIG.LIMITS.BODY_RADIUS.step
-    ).listen();
+    ).name("RADIUS").listen();
 
     folder.add(
       moon,
@@ -342,7 +438,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.min,
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.max,
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.step
-    ).listen();
+    ).name("ORBIT RADIUS").listen();
 
     folder.add(
       moon,
@@ -350,7 +446,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.min,
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.max,
       MORRA_CONFIG.LIMITS.ORBIT_SPEED.step
-    ).listen();
+    ).name("ORBIT SPEED").listen();
 
     folder.add(
       moon,
@@ -358,7 +454,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_PLANE_OFFSET.min,
       MORRA_CONFIG.LIMITS.ORBIT_PLANE_OFFSET.max,
       MORRA_CONFIG.LIMITS.ORBIT_PLANE_OFFSET.step
-    ).name("ORBIT PLANE OFFSET").listen();
+    ).name("PLANE OFFSET").listen();
 
     folder.add(
       moon,
@@ -371,7 +467,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.min,
       MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.max,
       MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.step
-    ).name("ORBIT INCLINATION (°)").listen();
+    ).name("INCLINATION (°)").listen();
 
     folder.add(
       moon,
@@ -379,7 +475,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.min,
       MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.max,
       MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.step
-    ).name("ORBIT NODE (°)").listen();
+    ).name("NODE (°)").listen();
 
     folder.add(
       moon,
@@ -387,13 +483,17 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.min,
       MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.max,
       MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.step
-    ).name("ORBIT ECCENTRICITY").listen();
+    ).name("ECCENTRICITY").listen();
+
+    folder.close();
   }
 
   private createLightingFolder() {
 
     const folder =
-      this.gui.addFolder("Lighting");
+      this.gui.addFolder(
+        "💡 LIGHTING"
+      );
 
     folder.add(
       MORRA_CONFIG.LIGHTS,
@@ -401,7 +501,7 @@ export class DebugPanel {
       0,
       10,
       0.01
-    ).name("AMBIENT LIGHT").listen();
+    ).name("AMBIENT").listen();
 
     folder.add(
       MORRA_CONFIG.LIGHTS.LARGE,
@@ -409,7 +509,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.min,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.max,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.step
-    ).name("LARGE SUN INTENSITY").listen();
+    ).name("LARGE SUN").listen();
 
     folder.add(
       MORRA_CONFIG.LIGHTS.MEDIUM,
@@ -417,7 +517,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.min,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.max,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.step
-    ).name("MEDIUM SUN INTENSITY").listen();
+    ).name("MEDIUM SUN").listen();
 
     folder.add(
       MORRA_CONFIG.LIGHTS.SMALL,
@@ -425,13 +525,17 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.min,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.max,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.step
-    ).name("SMALL SUN INTENSITY").listen();
+    ).name("SMALL SUN").listen();
+
+    folder.close();
   }
 
   private createSurfaceFieldFolder() {
 
     const folder =
-      this.gui.addFolder("Surface Field");
+      this.gui.addFolder(
+        "🧭 PHYSICS / SURFACE"
+      );
 
     folder.add(
       MORRA_CONFIG.SURFACE_FIELD,
@@ -455,7 +559,7 @@ export class DebugPanel {
       0,
       10,
       0.05
-    ).name("UPDATE INTERVAL (H)").listen();
+    ).name("UPDATE INTERVAL").listen();
 
     folder.add(
       MORRA_CONFIG.SURFACE_FIELD,
@@ -470,7 +574,7 @@ export class DebugPanel {
         "UMBRA",
         "PENUMBRA"
       ]
-    ).name("CHANNEL").listen();
+    ).name("FIELD").listen();
 
     folder.add(
       MORRA_CONFIG.SURFACE_FIELD,
@@ -478,25 +582,72 @@ export class DebugPanel {
       0,
       1,
       0.01
-    ).name("OPACITY").listen();
+    ).name("MAP OPACITY").listen();
+
+    folder.add(
+      MORRA_CONFIG.MOON_REFLECTION,
+      "enabled"
+    ).name("MOON REFLECTION").listen();
+
+    folder.close();
+  }
+
+  private createDebugFolder() {
+
+    const folder =
+      this.gui.addFolder(
+        "🛠 VISUAL DEBUG"
+      );
+
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showAxis"
+    ).name("AXIS").listen();
+
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showEquator"
+    ).name("EQUATOR").listen();
+
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showOrbits"
+    ).name("ORBITS").listen();
+
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showLightHelpers"
+    ).name("LIGHT HELPERS").listen();
+
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showTimePanel"
+    ).name("TIME PANEL").listen();
+
+    folder.add(
+      MORRA_CONFIG.DEBUG,
+      "showTimeline"
+    ).name("TIMELINE").listen();
 
     folder.add(
       MORRA_CONFIG.DEBUG,
       "showSurfaceField"
-    ).name("SHOW FIELD MAP").listen();
+    ).name("SURFACE MAP").listen();
 
     folder.add(
       MORRA_CONFIG.DEBUG,
       "showRadiationRays"
-    ).name("SHOW RADIATION RAYS").listen();
+    ).name("DIRECT RAY DEBUG").listen();
 
     const shadowFolder =
-      this.gui.addFolder("Shadow Volumes");
+      folder.addFolder(
+        "SHADOW VOLUMES"
+      );
 
     shadowFolder.add(
       MORRA_CONFIG.SHADOW_VOLUMES,
       "enabled"
-    ).name("SHOW SHADOW VOLUMES").listen();
+    ).name("VISIBLE").listen();
 
     shadowFolder.add(
       MORRA_CONFIG.SHADOW_VOLUMES,
@@ -517,50 +668,16 @@ export class DebugPanel {
     shadowFolder.add(
       MORRA_CONFIG.SHADOW_VOLUMES,
       "showUmbra"
-    ).name("SHOW UMBRA").listen();
+    ).name("UMBRA").listen();
 
     shadowFolder.add(
       MORRA_CONFIG.SHADOW_VOLUMES,
       "showPenumbra"
-    ).name("SHOW PENUMBRA").listen();
+    ).name("PENUMBRA").listen();
 
-    folder.open();
-  }
+    shadowFolder.close();
 
-  private createDebugFolder() {
-
-    const folder =
-      this.gui.addFolder("Debug");
-
-    folder.add(
-      MORRA_CONFIG.DEBUG,
-      "showAxis"
-    );
-
-    folder.add(
-      MORRA_CONFIG.DEBUG,
-      "showEquator"
-    );
-
-    folder.add(
-      MORRA_CONFIG.DEBUG,
-      "showOrbits"
-    );
-
-    folder.add(
-      MORRA_CONFIG.DEBUG,
-      "showLightHelpers"
-    );
-
-    folder.add(
-      MORRA_CONFIG.DEBUG,
-      "showTimePanel"
-    );
-
-    folder.add(
-      MORRA_CONFIG.DEBUG,
-      "showTimeline"
-    );
+    folder.close();
   }
 
   update() {
