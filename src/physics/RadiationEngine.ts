@@ -410,7 +410,7 @@ export class RadiationEngine {
       occluderRadius;
 
     const alpha =
-      THREE.MathUtils.acos(
+      Math.acos(
         THREE.MathUtils.clamp(
           (
             separation *
@@ -429,7 +429,7 @@ export class RadiationEngine {
       );
 
     const beta =
-      THREE.MathUtils.acos(
+      Math.acos(
         THREE.MathUtils.clamp(
           (
             separation *
