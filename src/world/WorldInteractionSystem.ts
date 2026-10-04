@@ -21,6 +21,17 @@ export interface SelectedWorldLocation {
 
 export class WorldInteractionSystem {
 
+  private readonly camera: THREE.PerspectiveCamera;
+
+  private readonly domElement: HTMLElement;
+
+  private readonly morra: CelestialBody;
+
+  private readonly locations: WorldLocationSystem;
+
+  private readonly onSelect:
+    (selection: SelectedWorldLocation) => void;
+
   private readonly raycaster =
     new THREE.Raycaster();
 
@@ -34,21 +45,19 @@ export class WorldInteractionSystem {
   private pointerDownY = 0;
 
   constructor(
-    private readonly camera:
-      THREE.PerspectiveCamera,
-
-    private readonly domElement:
-      HTMLElement,
-
-    private readonly morra:
-      CelestialBody,
-
-    private readonly locations:
-      WorldLocationSystem,
-
-    private readonly onSelect:
+    camera: THREE.PerspectiveCamera,
+    domElement: HTMLElement,
+    morra: CelestialBody,
+    locations: WorldLocationSystem,
+    onSelect:
       (selection: SelectedWorldLocation) => void
   ) {
+
+    this.camera = camera;
+    this.domElement = domElement;
+    this.morra = morra;
+    this.locations = locations;
+    this.onSelect = onSelect;
 
     this.marker =
       new THREE.Mesh(
