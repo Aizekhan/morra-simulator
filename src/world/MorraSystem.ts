@@ -118,7 +118,9 @@ export class MorraSystem {
           orbitPlaneOffset:
             MORRA_CONFIG.MOON_NORTH.orbitPlaneOffset,
           reverseOrbit:
-            MORRA_CONFIG.MOON_NORTH.reverseOrbit
+            MORRA_CONFIG.MOON_NORTH.reverseOrbit,
+          emissiveIntensity:
+            0.08
         }
       );
 
@@ -146,7 +148,9 @@ export class MorraSystem {
           orbitPlaneOffset:
             MORRA_CONFIG.MOON_EQUATOR.orbitPlaneOffset,
           reverseOrbit:
-            MORRA_CONFIG.MOON_EQUATOR.reverseOrbit
+            MORRA_CONFIG.MOON_EQUATOR.reverseOrbit,
+          emissiveIntensity:
+            0.08
         }
       );
 
@@ -174,7 +178,9 @@ export class MorraSystem {
           orbitPlaneOffset:
             MORRA_CONFIG.SUN_LARGE.orbitPlaneOffset,
           reverseOrbit:
-            MORRA_CONFIG.SUN_LARGE.reverseOrbit
+            MORRA_CONFIG.SUN_LARGE.reverseOrbit,
+          emissiveIntensity:
+            1.2
         }
       );
 
@@ -202,7 +208,9 @@ export class MorraSystem {
           orbitPlaneOffset:
             MORRA_CONFIG.SUN_MEDIUM.orbitPlaneOffset,
           reverseOrbit:
-            MORRA_CONFIG.SUN_MEDIUM.reverseOrbit
+            MORRA_CONFIG.SUN_MEDIUM.reverseOrbit,
+          emissiveIntensity:
+            1.2
         }
       );
 
@@ -230,7 +238,9 @@ export class MorraSystem {
           orbitPlaneOffset:
             MORRA_CONFIG.SUN_SMALL.orbitPlaneOffset,
           reverseOrbit:
-            MORRA_CONFIG.SUN_SMALL.reverseOrbit
+            MORRA_CONFIG.SUN_SMALL.reverseOrbit,
+          emissiveIntensity:
+            1.2
         }
       );
 
