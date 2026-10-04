@@ -33,6 +33,14 @@ import {
 } from "./render/EnvironmentInspectorPanel";
 
 import {
+  SurfaceFieldHUD
+} from "./render/SurfaceFieldHUD";
+
+import {
+  MORRA_CONFIG
+} from "./world/MorraConfig";
+
+import {
   WorldInteractionSystem
 } from "./world/WorldInteractionSystem";
 
@@ -75,6 +83,9 @@ const environmentPanel =
     simulation.morraSystem.environmentEngine
   );
 
+const surfaceFieldHUD =
+  new SurfaceFieldHUD();
+
 const worldInteraction =
   new WorldInteractionSystem(
     renderer.camera,
@@ -116,6 +127,11 @@ function animate() {
     frame.time
   );
 
+  surfaceFieldHUD.update(
+    simulation.morraSystem.surfaceFieldEngine.getMap(),
+    MORRA_CONFIG.SURFACE_FIELD.channel
+  );
+
   debugPanel.update();
 
   cameraController.update();
@@ -134,6 +150,8 @@ window.addEventListener(
     eventPanel.dispose();
 
     environmentPanel.dispose();
+
+    surfaceFieldHUD.dispose();
 
     timeline.dispose();
 

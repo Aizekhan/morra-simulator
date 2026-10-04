@@ -258,7 +258,7 @@ export const MORRA_CONFIG = {
       "MAGOSPHERE" |
       "ANOMALY",
 
-    opacity: 0.48
+    opacity: 0.62
 
   },
 
@@ -280,7 +280,7 @@ DEBUG: {
 
   showTimeline: true,
 
-  showSurfaceField: false
+  showSurfaceField: true
 
 },
 
