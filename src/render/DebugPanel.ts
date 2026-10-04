@@ -636,8 +636,13 @@ export class DebugPanel {
 
     folder.add(
       MORRA_CONFIG.DEBUG,
+      "showDirectIllumination"
+    ).name("LIGHT → MORRA").listen();
+
+    folder.add(
+      MORRA_CONFIG.DEBUG,
       "showRadiationRays"
-    ).name("DIRECT RAY DEBUG").listen();
+    ).name("POINT DEBUG").listen();
 
     const shadowFolder =
       folder.addFolder(
