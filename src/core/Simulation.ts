@@ -1,58 +1,104 @@
 import * as THREE from "three";
 
-import { MorraSystem }
-from "../world/MorraSystem";
+import {
+  AstronomicalEventSystem,
+  AstronomicalEventState
+} from "../astronomy/AstronomicalEventSystem";
 
-import { MorraTimeSystem }
-from "../world/MorraTimeSystem";
+import {
+  CalendarSnapshot,
+  SimulationTime
+} from "./SimulationTime";
 
-import { TimeHUD }
-from "../render/TimeHUD";
+import {
+  MorraSystem
+} from "../world/MorraSystem";
 
-import { TimeControls }
-from "../render/TimeControls";
+import {
+  TimeControls
+} from "../render/TimeControls";
+
+import {
+  WorldEventSystem
+} from "../world/WorldEventSystem";
+
+import {
+  WorldLocationSystem
+} from "../world/WorldLocationSystem";
+
+export interface SimulationFrame {
+
+  time: CalendarSnapshot;
+
+  astronomy: AstronomicalEventState;
+}
 
 export class Simulation {
 
-  scene: THREE.Scene;
+  readonly timeSystem:
+    SimulationTime;
 
-  morraSystem: MorraSystem;
+  readonly timeControls:
+    TimeControls;
 
-  timeSystem: MorraTimeSystem;
+  readonly morraSystem:
+    MorraSystem;
 
-  timeControls: TimeControls;
+  readonly worldEventSystem:
+    WorldEventSystem;
 
-  timeHud: TimeHUD;
+  readonly worldLocationSystem:
+    WorldLocationSystem;
 
-  clock: THREE.Clock;
+  readonly astronomicalEventSystem:
+    AstronomicalEventSystem;
+
+  readonly clock:
+    THREE.Clock;
 
   constructor(
     scene: THREE.Scene
   ) {
 
-    this.scene = scene;
-
     this.clock =
       new THREE.Clock();
 
     this.timeSystem =
-      new MorraTimeSystem();
+      new SimulationTime();
 
     this.timeControls =
       new TimeControls(
         this.timeSystem
       );
 
-    this.timeHud =
-      new TimeHUD();
-
     this.morraSystem =
       new MorraSystem(
         scene
       );
+
+    this.worldEventSystem =
+      new WorldEventSystem();
+
+    this.worldLocationSystem =
+      new WorldLocationSystem();
+
+    this.astronomicalEventSystem =
+      new AstronomicalEventSystem(
+        this.morraSystem.morra,
+        [
+          this.morraSystem.sunLarge,
+          this.morraSystem.sunMedium,
+          this.morraSystem.sunSmall
+        ],
+        [
+          this.morraSystem.moonNorth,
+          this.morraSystem.moonEquator
+        ]
+      );
   }
 
-  update() {
+  update():
+    SimulationFrame {
 
     const delta =
       this.clock.getDelta();
@@ -62,14 +108,20 @@ export class Simulation {
     );
 
     this.morraSystem.update(
-      delta
+      this.timeSystem.totalHours
     );
 
-    this.timeHud.update(
-      this.timeSystem.currentYear,
-      this.timeSystem.currentMonth,
-      this.timeSystem.currentDay,
-      this.timeSystem.currentHour
-    );
+    return {
+      time:
+        this.timeSystem.getSnapshot(),
+
+      astronomy:
+        this.astronomicalEventSystem.evaluate()
+    };
+  }
+
+  dispose() {
+
+    this.morraSystem.dispose();
   }
 }
