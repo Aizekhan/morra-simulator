@@ -1,22 +1,75 @@
 import * as THREE from "three";
 
+import {
+  OrbitPlane
+} from "../astronomy/CelestialBody";
+
+export interface OrbitShape {
+
+  radius: number;
+
+  color: number;
+
+  plane: OrbitPlane;
+
+  offsetX: number;
+  offsetY: number;
+  offsetZ: number;
+}
+
 export class OrbitRenderer {
 
   static createOrbit(
     radius: number,
     color: number,
-    plane: "XZ" | "YZ" | "XY",
+    plane: OrbitPlane,
     offsetX = 0,
     offsetY = 0,
     offsetZ = 0
   ) {
 
-    const points: THREE.Vector3[] = [];
+    const line =
+      new THREE.LineLoop(
+        new THREE.BufferGeometry(),
+        new THREE.LineBasicMaterial({
+          color
+        })
+      );
 
-    for(let i=0;i<=256;i++){
+    OrbitRenderer.updateOrbit(
+      line,
+      {
+        radius,
+        color,
+        plane,
+        offsetX,
+        offsetY,
+        offsetZ
+      }
+    );
 
-      const a =
-        (i / 256) *
+    return line;
+  }
+
+  static updateOrbit(
+    line: THREE.LineLoop,
+    shape: OrbitShape
+  ) {
+
+    const points:
+      THREE.Vector3[] = [];
+
+    for(
+      let i = 0;
+      i <= 256;
+      i++
+    ) {
+
+      const angle =
+        (
+          i /
+          256
+        ) *
         Math.PI *
         2;
 
@@ -24,46 +77,60 @@ export class OrbitRenderer {
       let y = 0;
       let z = 0;
 
-      if(plane === "XZ"){
+      switch(
+        shape.plane
+      ) {
 
-        x =
-          Math.cos(a) * radius +
-          offsetX;
+        case "XZ":
 
-        y =
-          offsetY;
+          x =
+            Math.cos(angle) *
+            shape.radius +
+            shape.offsetX;
 
-        z =
-          Math.sin(a) * radius +
-          offsetZ;
-      }
+          y =
+            shape.offsetY;
 
-      if(plane === "YZ"){
+          z =
+            Math.sin(angle) *
+            shape.radius +
+            shape.offsetZ;
 
-        x =
-          offsetX;
+          break;
 
-        y =
-          Math.cos(a) * radius +
-          offsetY;
+        case "YZ":
 
-        z =
-          Math.sin(a) * radius +
-          offsetZ;
-      }
+          x =
+            shape.offsetX;
 
-      if(plane === "XY"){
+          y =
+            Math.cos(angle) *
+            shape.radius +
+            shape.offsetY;
 
-        x =
-          Math.cos(a) * radius +
-          offsetX;
+          z =
+            Math.sin(angle) *
+            shape.radius +
+            shape.offsetZ;
 
-        y =
-          Math.sin(a) * radius +
-          offsetY;
+          break;
 
-        z =
-          offsetZ;
+        case "XY":
+
+          x =
+            Math.cos(angle) *
+            shape.radius +
+            shape.offsetX;
+
+          y =
+            Math.sin(angle) *
+            shape.radius +
+            shape.offsetY;
+
+          z =
+            shape.offsetZ;
+
+          break;
       }
 
       points.push(
@@ -75,18 +142,28 @@ export class OrbitRenderer {
       );
     }
 
+    const oldGeometry =
+      line.geometry;
+
     const geometry =
       new THREE.BufferGeometry()
       .setFromPoints(points);
 
-    const material =
-      new THREE.LineBasicMaterial({
-        color
-      });
+    line.geometry =
+      geometry;
 
-    return new THREE.LineLoop(
-      geometry,
-      material
-    );
+    oldGeometry.dispose();
+
+    const material =
+      line.material;
+
+    if(
+      material instanceof THREE.LineBasicMaterial
+    ) {
+
+      material.color.setHex(
+        shape.color
+      );
+    }
   }
 }
