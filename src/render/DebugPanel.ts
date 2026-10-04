@@ -135,6 +135,11 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.MORRA_RADIUS.step
     ).listen();
 
+    folder.add(
+      MORRA_CONFIG,
+      "MORRA_VISIBLE"
+    ).name("VISIBLE").listen();
+
     folder.addColor(
       MORRA_CONFIG,
       "MORRA_COLOR"
@@ -176,10 +181,12 @@ export class DebugPanel {
       radius: number;
       orbitRadius: number;
       orbitSpeed: number;
-      orbitHeight: number;
+      orbitPlaneOffset: number;
       orbitInclination: number;
       orbitAscendingNode: number;
       orbitEccentricity: number;
+      reverseOrbit: boolean;
+      visible: boolean;
     },
     light: {
       color: number;
@@ -188,6 +195,11 @@ export class DebugPanel {
 
     const folder =
       this.gui.addFolder(name);
+
+    folder.add(
+      sun,
+      "visible"
+    ).name("VISIBLE").listen();
 
     folder.addColor(
       light,
@@ -212,11 +224,11 @@ export class DebugPanel {
 
     folder.add(
       sun,
-      "orbitHeight",
-      MORRA_CONFIG.LIMITS.BODY_HEIGHT.min,
-      MORRA_CONFIG.LIMITS.BODY_HEIGHT.max,
-      MORRA_CONFIG.LIMITS.BODY_HEIGHT.step
-    ).listen();
+      "orbitPlaneOffset",
+      MORRA_CONFIG.LIMITS.ORBIT_PLANE_OFFSET.min,
+      MORRA_CONFIG.LIMITS.ORBIT_PLANE_OFFSET.max,
+      MORRA_CONFIG.LIMITS.ORBIT_PLANE_OFFSET.step
+    ).name("ORBIT PLANE OFFSET").listen();
 
     folder.add(
       sun,
@@ -241,6 +253,11 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.max,
       MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.step
     ).name("ORBIT NODE (°)").listen();
+
+    folder.add(
+      sun,
+      "reverseOrbit"
+    ).name("REVERSE ORBIT").listen();
 
     const eccentricityController =
       folder.add(
@@ -285,11 +302,19 @@ export class DebugPanel {
       orbitInclination: number;
       orbitAscendingNode: number;
       orbitEccentricity: number;
+      orbitPlaneOffset: number;
+      reverseOrbit: boolean;
+      visible: boolean;
     }
   ) {
 
     const folder =
       this.gui.addFolder(name);
+
+    folder.add(
+      moon,
+      "visible"
+    ).name("VISIBLE").listen();
 
     folder.addColor(
       moon,
@@ -327,6 +352,19 @@ export class DebugPanel {
 
     folder.add(
       moon,
+      "orbitPlaneOffset",
+      MORRA_CONFIG.LIMITS.ORBIT_PLANE_OFFSET.min,
+      MORRA_CONFIG.LIMITS.ORBIT_PLANE_OFFSET.max,
+      MORRA_CONFIG.LIMITS.ORBIT_PLANE_OFFSET.step
+    ).name("ORBIT PLANE OFFSET").listen();
+
+    folder.add(
+      moon,
+      "reverseOrbit"
+    ).name("REVERSE ORBIT").listen();
+
+    folder.add(
+      moon,
       "orbitInclination",
       MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.min,
       MORRA_CONFIG.LIMITS.ORBIT_INCLINATION.max,
@@ -347,7 +385,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.min,
       MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.max,
       MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.step
-    ).name("ORBIT ELLIPSE").listen();
+    ).name("ORBIT ECCENTRICITY").listen();
   }
 
   private createLightingFolder() {

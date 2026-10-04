@@ -8,6 +8,8 @@ export const MORRA_CONFIG = {
 
   MORRA_COLOR: 0x3366ff,
 
+  MORRA_VISIBLE: true,
+
   AXIS_TILT: 23,
 
   ROTATION_SPEED: 0.01,
@@ -86,7 +88,13 @@ export const MORRA_CONFIG = {
 
     orbitAscendingNode: 0,
 
-    orbitEccentricity: 0
+    orbitEccentricity: 0,
+
+    orbitPlaneOffset: 0,
+
+    reverseOrbit: false,
+
+    visible: true
 
   },
 
@@ -108,7 +116,13 @@ export const MORRA_CONFIG = {
 
     orbitAscendingNode: 0,
 
-    orbitEccentricity: 0
+    orbitEccentricity: 0,
+
+    orbitPlaneOffset: 0,
+
+    reverseOrbit: false,
+
+    visible: true
 
   },
 
@@ -124,7 +138,7 @@ export const MORRA_CONFIG = {
 
     orbitSpeed: 0.0015,
 
-    orbitHeight: 300,
+    orbitPlaneOffset: 300,
 
     orbitPlane: "XZ" as const,
 
@@ -132,7 +146,11 @@ export const MORRA_CONFIG = {
 
     orbitAscendingNode: 0,
 
-    orbitEccentricity: 0
+    orbitEccentricity: 0,
+
+    reverseOrbit: false,
+
+    visible: true
 
   },
 
@@ -144,7 +162,7 @@ export const MORRA_CONFIG = {
 
     orbitSpeed: 0.002,
 
-    orbitHeight: 150,
+    orbitPlaneOffset: 150,
 
     orbitPlane: "XZ" as const,
 
@@ -152,7 +170,11 @@ export const MORRA_CONFIG = {
 
     orbitAscendingNode: 0,
 
-    orbitEccentricity: 0
+    orbitEccentricity: 0,
+
+    reverseOrbit: false,
+
+    visible: true
 
   },
 
@@ -164,7 +186,7 @@ export const MORRA_CONFIG = {
 
     orbitSpeed: 0.003,
 
-    orbitHeight: 0,
+    orbitPlaneOffset: 0,
 
     orbitPlane: "YZ" as const,
 
@@ -172,7 +194,11 @@ export const MORRA_CONFIG = {
 
     orbitAscendingNode: 0,
 
-    orbitEccentricity: 0
+    orbitEccentricity: 0,
+
+    reverseOrbit: false,
+
+    visible: true
 
   },
 
@@ -224,11 +250,21 @@ DEBUG: {
 
     ORBIT_INCLINATION: {
 
-      min: 0,
+      min: -180,
 
       max: 180,
 
       step: 0.1
+
+    },
+
+    ORBIT_PLANE_OFFSET: {
+
+      min: -5000,
+
+      max: 5000,
+
+      step: 1
 
     },
 

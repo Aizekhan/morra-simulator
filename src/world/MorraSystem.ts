@@ -73,7 +73,11 @@ export class MorraSystem {
           orbitAscendingNode:
             MORRA_CONFIG.MOON_NORTH.orbitAscendingNode,
           orbitEccentricity:
-            MORRA_CONFIG.MOON_NORTH.orbitEccentricity
+            MORRA_CONFIG.MOON_NORTH.orbitEccentricity,
+          orbitPlaneOffset:
+            MORRA_CONFIG.MOON_NORTH.orbitPlaneOffset,
+          reverseOrbit:
+            MORRA_CONFIG.MOON_NORTH.reverseOrbit
         }
       );
 
@@ -97,7 +101,11 @@ export class MorraSystem {
           orbitAscendingNode:
             MORRA_CONFIG.MOON_EQUATOR.orbitAscendingNode,
           orbitEccentricity:
-            MORRA_CONFIG.MOON_EQUATOR.orbitEccentricity
+            MORRA_CONFIG.MOON_EQUATOR.orbitEccentricity,
+          orbitPlaneOffset:
+            MORRA_CONFIG.MOON_EQUATOR.orbitPlaneOffset,
+          reverseOrbit:
+            MORRA_CONFIG.MOON_EQUATOR.reverseOrbit
         }
       );
 
@@ -113,7 +121,7 @@ export class MorraSystem {
         MORRA_CONFIG.SUN_LARGE.orbitSpeed,
         MORRA_CONFIG.SUN_LARGE.orbitPlane,
         0,
-        MORRA_CONFIG.SUN_LARGE.orbitHeight,
+        0,
         0,
         {
           orbitInclination:
@@ -121,7 +129,11 @@ export class MorraSystem {
           orbitAscendingNode:
             MORRA_CONFIG.SUN_LARGE.orbitAscendingNode,
           orbitEccentricity:
-            MORRA_CONFIG.SUN_LARGE.orbitEccentricity
+            MORRA_CONFIG.SUN_LARGE.orbitEccentricity,
+          orbitPlaneOffset:
+            MORRA_CONFIG.SUN_LARGE.orbitPlaneOffset,
+          reverseOrbit:
+            MORRA_CONFIG.SUN_LARGE.reverseOrbit
         }
       );
 
@@ -137,7 +149,7 @@ export class MorraSystem {
         MORRA_CONFIG.SUN_MEDIUM.orbitSpeed,
         MORRA_CONFIG.SUN_MEDIUM.orbitPlane,
         0,
-        MORRA_CONFIG.SUN_MEDIUM.orbitHeight,
+        0,
         0,
         {
           orbitInclination:
@@ -145,7 +157,11 @@ export class MorraSystem {
           orbitAscendingNode:
             MORRA_CONFIG.SUN_MEDIUM.orbitAscendingNode,
           orbitEccentricity:
-            MORRA_CONFIG.SUN_MEDIUM.orbitEccentricity
+            MORRA_CONFIG.SUN_MEDIUM.orbitEccentricity,
+          orbitPlaneOffset:
+            MORRA_CONFIG.SUN_MEDIUM.orbitPlaneOffset,
+          reverseOrbit:
+            MORRA_CONFIG.SUN_MEDIUM.reverseOrbit
         }
       );
 
@@ -161,7 +177,7 @@ export class MorraSystem {
         MORRA_CONFIG.SUN_SMALL.orbitSpeed,
         MORRA_CONFIG.SUN_SMALL.orbitPlane,
         0,
-        MORRA_CONFIG.SUN_SMALL.orbitHeight,
+        0,
         0,
         {
           orbitInclination:
@@ -169,7 +185,11 @@ export class MorraSystem {
           orbitAscendingNode:
             MORRA_CONFIG.SUN_SMALL.orbitAscendingNode,
           orbitEccentricity:
-            MORRA_CONFIG.SUN_SMALL.orbitEccentricity
+            MORRA_CONFIG.SUN_SMALL.orbitEccentricity,
+          orbitPlaneOffset:
+            MORRA_CONFIG.SUN_SMALL.orbitPlaneOffset,
+          reverseOrbit:
+            MORRA_CONFIG.SUN_SMALL.reverseOrbit
         }
       );
 

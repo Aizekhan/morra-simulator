@@ -48,6 +48,9 @@ export class MorraConfigSynchronizer {
       MORRA_CONFIG.MORRA_COLOR
     );
 
+    this.bodies.morra.mesh.visible =
+      MORRA_CONFIG.MORRA_VISIBLE;
+
     this.bodies.moonNorth.setColor(
       MORRA_CONFIG.MOON_NORTH.color
     );
@@ -109,7 +112,9 @@ export class MorraConfigSynchronizer {
       orbitInclination: number;
       orbitAscendingNode: number;
       orbitEccentricity: number;
-      orbitHeight?: number;
+      orbitPlaneOffset: number;
+      reverseOrbit: boolean;
+      visible: boolean;
     },
     minimumOrbitRadius: number
   ) {
@@ -163,13 +168,15 @@ export class MorraConfigSynchronizer {
       config.orbitEccentricity
     );
 
-    if(
-      config.orbitHeight !== undefined
-    ) {
+    body.setOrbitPlaneOffset(
+      config.orbitPlaneOffset
+    );
 
-      body.setOrbitHeight(
-        config.orbitHeight
-      );
-    }
+    body.setReverseOrbit(
+      config.reverseOrbit
+    );
+
+    body.mesh.visible =
+      config.visible;
   }
 }
