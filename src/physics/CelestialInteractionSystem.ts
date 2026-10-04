@@ -16,6 +16,9 @@ import type {
   RadiationSource
 } from "./RadiationEngine";
 
+const VISUAL_LIGHT_INTENSITY_SCALE =
+  50000;
+
 interface CelestialSourceConfig {
 
   id: string;
@@ -125,8 +128,10 @@ export class CelestialInteractionSystem {
       const light =
         new THREE.PointLight(
           source.color,
-          source.intensity,
-          source.distance
+          source.intensity *
+            VISUAL_LIGHT_INTENSITY_SCALE,
+          source.distance,
+          2
         );
 
       light.castShadow =
@@ -256,7 +261,8 @@ export class CelestialInteractionSystem {
       );
 
       light.intensity =
-        source.intensity;
+        source.intensity *
+        VISUAL_LIGHT_INTENSITY_SCALE;
 
       light.distance =
         source.distance;
