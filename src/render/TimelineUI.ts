@@ -29,6 +29,9 @@ export class TimelineUI {
   private readonly dateLabel:
     HTMLSpanElement;
 
+  private readonly playPauseButton:
+    HTMLButtonElement;
+
   private readonly slider:
     HTMLInputElement;
 
@@ -154,6 +157,150 @@ export class TimelineUI {
     track.style.paddingTop =
       "5px";
 
+    const controls =
+      document.createElement(
+        "div"
+      );
+
+    controls.style.display =
+      "flex";
+
+    controls.style.alignItems =
+      "center";
+
+    controls.style.gap =
+      "6px";
+
+    controls.style.marginBottom =
+      "8px";
+
+    const addButton =
+      (
+        label: string,
+        title: string,
+        onClick: () => void
+      ) => {
+
+        const button =
+          document.createElement(
+            "button"
+          );
+
+        button.textContent =
+          label;
+
+        button.title =
+          title;
+
+        button.addEventListener(
+          "click",
+          onClick
+        );
+
+        button.style.background =
+          "#202328";
+
+        button.style.color =
+          "#ddd";
+
+        button.style.border =
+          "1px solid #3a3f46";
+
+        button.style.borderRadius =
+          "5px";
+
+        button.style.cursor =
+          "pointer";
+
+        button.style.minWidth =
+          "34px";
+
+        button.style.height =
+          "26px";
+
+        return button;
+      };
+
+    this.playPauseButton =
+      addButton(
+        "▶",
+        "Play",
+        () => {
+
+          this.time.pause();
+        }
+      );
+
+    const slower =
+      addButton(
+        "×1",
+        "Normal speed",
+        () => {
+
+          this.time.setTimeScale(1);
+        }
+      );
+
+    const speed10 =
+      addButton(
+        "×10",
+        "10x speed",
+        () => {
+
+          this.time.setTimeScale(10);
+        }
+      );
+
+    const speed100 =
+      addButton(
+        "×100",
+        "100x speed",
+        () => {
+
+          this.time.setTimeScale(100);
+        }
+      );
+
+    const speed1000 =
+      addButton(
+        "×1000",
+        "1000x speed",
+        () => {
+
+          this.time.setTimeScale(1000);
+        }
+      );
+
+    const previousHour =
+      addButton(
+        "−1H",
+        "Previous hour",
+        () => {
+
+          this.time.addHours(-1);
+        }
+      );
+
+    const nextHour =
+      addButton(
+        "+1H",
+        "Next hour",
+        () => {
+
+          this.time.addHours(1);
+        }
+      );
+
+    controls.append(
+      this.playPauseButton,
+      slower,
+      speed10,
+      speed100,
+      speed1000,
+      previousHour,
+      nextHour
+    );
+
     this.slider =
       document.createElement(
         "input"
@@ -278,6 +425,7 @@ export class TimelineUI {
 
     this.root.append(
       header,
+      controls,
       track
     );
 
@@ -315,6 +463,16 @@ export class TimelineUI {
     this.yearLabel.textContent =
       "YEAR " +
       snapshot.year;
+
+    this.playPauseButton.textContent =
+      this.time.isPaused
+        ? "▶"
+        : "⏸";
+
+    this.playPauseButton.title =
+      this.time.isPaused
+        ? "Play"
+        : "Pause";
 
     this.dateLabel.textContent =
       "M:" +
