@@ -399,7 +399,7 @@ export class DebugPanel {
       0,
       10,
       0.01
-    ).listen();
+    ).name("AMBIENT LIGHT").listen();
 
     folder.add(
       MORRA_CONFIG.LIGHTS.LARGE,
@@ -407,7 +407,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.min,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.max,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.step
-    ).listen();
+    ).name("LARGE SUN INTENSITY").listen();
 
     folder.add(
       MORRA_CONFIG.LIGHTS.MEDIUM,
@@ -415,7 +415,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.min,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.max,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.step
-    ).listen();
+    ).name("MEDIUM SUN INTENSITY").listen();
 
     folder.add(
       MORRA_CONFIG.LIGHTS.SMALL,
@@ -423,7 +423,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.min,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.max,
       MORRA_CONFIG.LIMITS.LIGHT_INTENSITY.step
-    ).listen();
+    ).name("SMALL SUN INTENSITY").listen();
   }
 
   private createDebugFolder() {
