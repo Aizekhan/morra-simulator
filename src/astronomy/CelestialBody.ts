@@ -125,6 +125,10 @@ export class CelestialBody {
         this.material
       );
 
+    this.mesh.layers.set(
+      0
+    );
+
     this.mesh.frustumCulled =
       false;
 
