@@ -104,12 +104,12 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.MORRA_RADIUS.min,
       MORRA_CONFIG.LIMITS.MORRA_RADIUS.max,
       MORRA_CONFIG.LIMITS.MORRA_RADIUS.step
-    );
+    ).listen();
 
-    folder.add(
+    folder.addColor(
       MORRA_CONFIG,
       "MORRA_COLOR"
-    ).name("COLOR");
+    ).name("COLOR").listen();
 
     folder.add(
       MORRA_CONFIG,
@@ -117,7 +117,7 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.AXIS_TILT.min,
       MORRA_CONFIG.LIMITS.AXIS_TILT.max,
       MORRA_CONFIG.LIMITS.AXIS_TILT.step
-    );
+    ).listen();
   }
 
   private createSunFolders() {
