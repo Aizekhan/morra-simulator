@@ -10,7 +10,9 @@ export type SurfaceFieldChannel =
   | "MAGIC"
   | "MAGOSPHERE"
   | "ANOMALY"
-  | "SHADOW";
+  | "SHADOW"
+  | "UMBRA"
+  | "PENUMBRA";
 
 export class SurfaceFieldVisualizer {
 
@@ -272,6 +274,18 @@ export class SurfaceFieldVisualizer {
           high: 0xff1b24
         };
 
+      case "UMBRA":
+        return {
+          low: 0x120000,
+          high: 0xff1020
+        };
+
+      case "PENUMBRA":
+        return {
+          low: 0x2b1600,
+          high: 0xffc247
+        };
+
       case "MAGIC":
       default:
         return {
@@ -452,6 +466,12 @@ export class SurfaceFieldVisualizer {
       case "SHADOW":
         return map.shadow;
 
+      case "UMBRA":
+        return map.umbra;
+
+      case "PENUMBRA":
+        return map.penumbra;
+
       case "MAGIC":
       default:
         return map.magic;
@@ -489,6 +509,20 @@ export class SurfaceFieldVisualizer {
 
       case "SHADOW":
         return map.shadowStats;
+
+      case "UMBRA":
+        return {
+          min: 0,
+          max: 1,
+          average: 0
+        };
+
+      case "PENUMBRA":
+        return {
+          min: 0,
+          max: 1,
+          average: 0
+        };
 
       case "MAGIC":
       default:
