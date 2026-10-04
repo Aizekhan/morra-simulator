@@ -40,13 +40,41 @@ export class Renderer {
         antialias: true
       });
 
-    this.renderer.shadowMap.enabled =
-      true;
+    this.renderer.setPixelRatio(
+      Math.min(
+        window.devicePixelRatio,
+        2
+      )
+    );
 
     this.renderer.setSize(
       window.innerWidth,
       window.innerHeight
     );
+
+    this.renderer.shadowMap.enabled =
+      true;
+
+    const canvas =
+      this.renderer.domElement;
+
+    canvas.style.position =
+      "fixed";
+
+    canvas.style.inset =
+      "0";
+
+    canvas.style.width =
+      "100vw";
+
+    canvas.style.height =
+      "100vh";
+
+    canvas.style.display =
+      "block";
+
+    canvas.style.zIndex =
+      "0";
 
     document.body.style.margin =
       "0";
@@ -54,8 +82,14 @@ export class Renderer {
     document.body.style.overflow =
       "hidden";
 
+    document.body.style.width =
+      "100vw";
+
+    document.body.style.height =
+      "100vh";
+
     document.body.appendChild(
-      this.renderer.domElement
+      canvas
     );
 
     this.ambientLight =
@@ -94,6 +128,10 @@ export class Renderer {
       "resize",
       this.handleResize
     );
+
+    this.renderer.dispose();
+
+    this.renderer.domElement.remove();
   }
 
   private handleResize = () => {
