@@ -61,6 +61,10 @@ export class ShadowVolumeVisualizer {
   private dirty =
     true;
 
+  private lastSignature:
+    string | null =
+    null;
+
   constructor(
     scene: THREE.Scene,
     engine: MorraEnvironmentEngine,
@@ -163,12 +167,24 @@ export class ShadowVolumeVisualizer {
       true;
   }
 
+  setVisible(
+    visible: boolean
+  ) {
+
+    this.root.visible =
+      visible;
+  }
+
   update() {
 
+    const signature =
+      this.getSceneSignature();
+
     if(
-      !this.dirty
+      !this.dirty &&
+      signature ===
+        this.lastSignature
     ) {
-      this.updateTransforms();
       return;
     }
 
@@ -228,6 +244,9 @@ export class ShadowVolumeVisualizer {
         );
       }
     }
+
+    this.lastSignature =
+      signature;
 
     this.dirty =
       false;
@@ -560,37 +579,73 @@ export class ShadowVolumeVisualizer {
     );
   }
 
-  private updateTransforms() {
+  private getSceneSignature() {
+
+    const values:
+      number[] = [
+        this.config.length,
+        this.config.showUmbra ? 1 : 0,
+        this.config.showPenumbra ? 1 : 0
+      ];
+
+    const sources =
+      this.engine.radiation.getSources();
+
+    const occluders =
+      this.engine.getOccluders();
 
     for(
-      const pair
-      of this.pairs
+      const source
+      of sources
     ) {
 
-      this.updateMeshTransform(
-        pair.penumbra
-      );
+      const position =
+        source.body.mesh.getWorldPosition(
+          new THREE.Vector3()
+        );
 
-      this.updateMeshTransform(
-        pair.umbra
+      values.push(
+        position.x,
+        position.y,
+        position.z,
+        source.body.radius,
+        source.body.mesh.visible
+          ? 1
+          : 0
       );
     }
-  }
 
-  private updateMeshTransform(
-    mesh:
-      THREE.Mesh | null
-  ) {
-
-    if(
-      !mesh
+    for(
+      const occluder
+      of occluders
     ) {
-      return;
+
+      const position =
+        occluder.mesh.getWorldPosition(
+          new THREE.Vector3()
+        );
+
+      values.push(
+        position.x,
+        position.y,
+        position.z,
+        occluder.radius,
+        occluder.mesh.visible
+          ? 1
+          : 0
+      );
     }
 
-    // Rebuild is required when object radii/positions
-    // change; mark dirty externally through setConfig.
-    // This branch intentionally keeps transforms cheap.
+    return values
+      .map(
+        value =>
+          value.toFixed(
+            4
+          )
+      )
+      .join(
+        "|"
+      );
   }
 
   private clear() {
