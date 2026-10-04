@@ -4,6 +4,10 @@ import { CelestialBody } from "./CelestialBody";
 
 import { MORRA_CONFIG } from "../world/MorraConfig";
 
+import {
+  RENDER_LAYERS
+} from "../render/RenderLayers";
+
 export class MorraLightSystem {
 
   largeLight: THREE.PointLight;
@@ -44,6 +48,10 @@ export class MorraLightSystem {
     this.largeLight.castShadow =
       true;
 
+    this.largeLight.layers.set(
+      RENDER_LAYERS.MORRA_LIGHT_RECEIVER
+    );
+
     scene.add(
       this.largeLight
     );
@@ -58,6 +66,10 @@ export class MorraLightSystem {
     this.mediumLight.castShadow =
       true;
 
+    this.mediumLight.layers.set(
+      RENDER_LAYERS.MORRA_LIGHT_RECEIVER
+    );
+
     scene.add(
       this.mediumLight
     );
@@ -71,6 +83,10 @@ export class MorraLightSystem {
 
     this.smallLight.castShadow =
       true;
+
+    this.smallLight.layers.set(
+      RENDER_LAYERS.MORRA_LIGHT_RECEIVER
+    );
 
     scene.add(
       this.smallLight
