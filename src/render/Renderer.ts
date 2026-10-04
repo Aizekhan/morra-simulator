@@ -70,6 +70,9 @@ export class Renderer {
     this.renderer.shadowMap.enabled =
       true;
 
+    this.renderer.shadowMap.type =
+      THREE.PCFSoftShadowMap;
+
     const canvas =
       this.renderer.domElement;
 
