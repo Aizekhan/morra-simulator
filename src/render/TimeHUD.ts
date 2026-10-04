@@ -34,8 +34,14 @@ export class TimeHUD {
     this.element.style.width =
       "245px";
 
+    this.element.style.height =
+      "84px";
+
     this.element.style.padding =
       "10px";
+
+    this.element.style.overflow =
+      "hidden";
 
     this.element.style.background =
       "rgba(0,0,0,0.78)";
@@ -99,34 +105,40 @@ export class TimeHUD {
       );
     }
 
+    const eventText =
+      events.length > 0
+        ? events.join(" · ")
+        : "";
+
     let html =
-      "<div style=\"font-size:17px;font-weight:700;margin-bottom:8px\">MORRA</div>";
+      "<div style=\"font-size:17px;font-weight:700;margin-bottom:8px;height:20px;line-height:20px;white-space:nowrap\">MORRA</div>";
 
     html +=
-      "<div style=\"display:flex;justify-content:space-between;margin-bottom:6px\">" +
-      "<span>Y:" +
+      "<div style=\"display:grid;grid-template-columns:repeat(4,1fr);column-gap:0;margin-bottom:6px;height:18px;line-height:18px;white-space:nowrap\">" +
+      "<span style=\"text-align:left\">Y:" +
       snapshot.year +
       "</span>" +
-      "<span>M:" +
+      "<span style=\"text-align:center\">M:" +
       snapshot.month +
       "</span>" +
-      "<span>D:" +
+      "<span style=\"text-align:center\">D:" +
       snapshot.day +
       "</span>" +
-      "<span>H:" +
+      "<span style=\"text-align:right\">H:" +
       Math.floor(snapshot.hour) +
       "</span>" +
       "</div>";
 
-    if(
-      events.length > 0
-    ) {
-
-      html +=
-        "<div style=\"border-top:1px solid #444;padding-top:6px;margin-top:6px\">" +
-        events.join(" · ") +
-        "</div>";
-    }
+    html +=
+      "<div style=\"border-top:1px solid #444;padding-top:6px;margin-top:6px;height:24px;line-height:17px;white-space:nowrap;overflow:hidden;visibility:" +
+      (
+        eventText
+          ? "visible"
+          : "hidden"
+      ) +
+      "\">" +
+      eventText +
+      "</div>";
 
     this.element.innerHTML =
       html;
