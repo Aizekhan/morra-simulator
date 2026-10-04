@@ -174,8 +174,5 @@ export class MorraLightSystem {
     this.mediumHelper.dispose();
     this.smallHelper.dispose();
 
-    this.largeLight.dispose();
-    this.mediumLight.dispose();
-    this.smallLight.dispose();
   }
 }
