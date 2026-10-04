@@ -466,7 +466,9 @@ export class DebugPanel {
         "MAGIC",
         "MAGOSPHERE",
         "ANOMALY",
-        "SHADOW"
+        "SHADOW",
+        "UMBRA",
+        "PENUMBRA"
       ]
     ).name("CHANNEL").listen();
 
@@ -487,6 +489,35 @@ export class DebugPanel {
       MORRA_CONFIG.DEBUG,
       "showRadiationRays"
     ).name("SHOW RADIATION RAYS").listen();
+
+    const shadowFolder =
+      this.gui.addFolder("Shadow Volumes");
+
+    shadowFolder.add(
+      MORRA_CONFIG.SHADOW_VOLUMES,
+      "length",
+      100,
+      10000,
+      25
+    ).name("LENGTH").listen();
+
+    shadowFolder.add(
+      MORRA_CONFIG.SHADOW_VOLUMES,
+      "opacity",
+      0,
+      1,
+      0.01
+    ).name("OPACITY").listen();
+
+    shadowFolder.add(
+      MORRA_CONFIG.SHADOW_VOLUMES,
+      "showUmbra"
+    ).name("SHOW UMBRA").listen();
+
+    shadowFolder.add(
+      MORRA_CONFIG.SHADOW_VOLUMES,
+      "showPenumbra"
+    ).name("SHOW PENUMBRA").listen();
 
     folder.open();
   }
