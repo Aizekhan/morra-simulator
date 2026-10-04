@@ -178,6 +178,5 @@ export class MorraConfigSynchronizer {
 
     body.mesh.visible =
       config.visible;
-
-      }
+  }
 }
