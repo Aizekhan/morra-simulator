@@ -16,6 +16,10 @@ import {
 
 export class TimelineUI {
 
+  private readonly time: SimulationTime;
+
+  private readonly events: WorldEventSystem;
+
   private readonly root:
     HTMLDivElement;
 
@@ -32,12 +36,12 @@ export class TimelineUI {
     HTMLDivElement;
 
   constructor(
-    private readonly time:
-      SimulationTime,
-
-    private readonly events:
-      WorldEventSystem
+    time: SimulationTime,
+    events: WorldEventSystem
   ) {
+
+    this.time = time;
+    this.events = events;
 
     this.root =
       document.createElement(
