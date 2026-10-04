@@ -145,23 +145,35 @@ export class MorraLightSystem {
     this.largeLight.distance =
       MORRA_CONFIG.LIGHTS.LARGE.distance;
 
+    this.largeLight.visible =
+      MORRA_CONFIG.SUN_LARGE.visible;
+
     this.mediumLight.distance =
       MORRA_CONFIG.LIGHTS.MEDIUM.distance;
 
+    this.mediumLight.visible =
+      MORRA_CONFIG.SUN_MEDIUM.visible;
+
     this.smallLight.distance =
       MORRA_CONFIG.LIGHTS.SMALL.distance;
+
+    this.smallLight.visible =
+      MORRA_CONFIG.SUN_SMALL.visible;
 
     const helpersVisible =
       MORRA_CONFIG.DEBUG.showLightHelpers;
 
     this.largeHelper.visible =
-      helpersVisible;
+      helpersVisible &&
+      MORRA_CONFIG.SUN_LARGE.visible;
 
     this.mediumHelper.visible =
-      helpersVisible;
+      helpersVisible &&
+      MORRA_CONFIG.SUN_MEDIUM.visible;
 
     this.smallHelper.visible =
-      helpersVisible;
+      helpersVisible &&
+      MORRA_CONFIG.SUN_SMALL.visible;
 
     this.largeHelper.update();
     this.mediumHelper.update();
