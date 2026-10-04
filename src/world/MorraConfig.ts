@@ -80,7 +80,13 @@ export const MORRA_CONFIG = {
 
     orbitSpeed: 0.02,
 
-    orbitPlane: "YZ" as const
+    orbitPlane: "YZ" as const,
+
+    orbitInclination: 0,
+
+    orbitAscendingNode: 0,
+
+    orbitEccentricity: 0
 
   },
 
@@ -96,7 +102,13 @@ export const MORRA_CONFIG = {
 
     orbitSpeed: 0.01,
 
-    orbitPlane: "XZ" as const
+    orbitPlane: "XZ" as const,
+
+    orbitInclination: 0,
+
+    orbitAscendingNode: 0,
+
+    orbitEccentricity: 0
 
   },
 
@@ -114,7 +126,13 @@ export const MORRA_CONFIG = {
 
     orbitHeight: 300,
 
-    orbitPlane: "XZ" as const
+    orbitPlane: "XZ" as const,
+
+    orbitInclination: 0,
+
+    orbitAscendingNode: 0,
+
+    orbitEccentricity: 0
 
   },
 
@@ -128,7 +146,13 @@ export const MORRA_CONFIG = {
 
     orbitHeight: 150,
 
-    orbitPlane: "XZ" as const
+    orbitPlane: "XZ" as const,
+
+    orbitInclination: 0,
+
+    orbitAscendingNode: 0,
+
+    orbitEccentricity: 0
 
   },
 
@@ -142,7 +166,13 @@ export const MORRA_CONFIG = {
 
     orbitHeight: 0,
 
-    orbitPlane: "YZ" as const
+    orbitPlane: "YZ" as const,
+
+    orbitInclination: 0,
+
+    orbitAscendingNode: 0,
+
+    orbitEccentricity: 0
 
   },
 
@@ -189,6 +219,36 @@ DEBUG: {
       max: 90,
 
       step: 0.1
+
+    },
+
+    ORBIT_INCLINATION: {
+
+      min: 0,
+
+      max: 180,
+
+      step: 0.1
+
+    },
+
+    ORBIT_ASCENDING_NODE: {
+
+      min: 0,
+
+      max: 360,
+
+      step: 0.1
+
+    },
+
+    ORBIT_ECCENTRICITY: {
+
+      min: 0,
+
+      max: 0.99,
+
+      step: 0.001
 
     },
 
