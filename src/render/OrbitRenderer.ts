@@ -4,6 +4,10 @@ import type {
   OrbitPlane
 } from "../astronomy/CelestialBody";
 
+import {
+  OrbitMath
+} from "../astronomy/OrbitMath";
+
 export interface OrbitShape {
 
   radius: number;
@@ -16,7 +20,11 @@ export interface OrbitShape {
   offsetY: number;
   offsetZ: number;
 
-  rotationZ: number;
+  inclination: number;
+
+  ascendingNode: number;
+
+  eccentricity: number;
 }
 
 export class OrbitRenderer {
@@ -28,7 +36,9 @@ export class OrbitRenderer {
     offsetX = 0,
     offsetY = 0,
     offsetZ = 0,
-    rotationZ = 0
+    inclination = 0,
+    ascendingNode = 0,
+    eccentricity = 0
   ) {
 
     const line =
@@ -48,7 +58,9 @@ export class OrbitRenderer {
         offsetX,
         offsetY,
         offsetZ,
-        rotationZ
+        inclination,
+        ascendingNode,
+        eccentricity
       }
     );
 
@@ -60,6 +72,13 @@ export class OrbitRenderer {
     shape: OrbitShape
   ) {
 
+    const basis =
+      OrbitMath.getBasis(
+        shape.plane,
+        shape.inclination,
+        shape.ascendingNode
+      );
+
     const points:
       THREE.Vector3[] = [];
 
@@ -69,7 +88,7 @@ export class OrbitRenderer {
       i++
     ) {
 
-      const angle =
+      const eccentricAnomaly =
         (
           i /
           256
@@ -77,72 +96,33 @@ export class OrbitRenderer {
         Math.PI *
         2;
 
-      let x = 0;
-      let y = 0;
-      let z = 0;
-
-      switch(
-        shape.plane
-      ) {
-
-        case "XZ":
-
-          x =
-            Math.cos(angle) *
-            shape.radius +
-            shape.offsetX;
-
-          y =
-            shape.offsetY;
-
-          z =
-            Math.sin(angle) *
-            shape.radius +
-            shape.offsetZ;
-
-          break;
-
-        case "YZ":
-
-          x =
-            shape.offsetX;
-
-          y =
-            Math.cos(angle) *
-            shape.radius +
-            shape.offsetY;
-
-          z =
-            Math.sin(angle) *
-            shape.radius +
-            shape.offsetZ;
-
-          break;
-
-        case "XY":
-
-          x =
-            Math.cos(angle) *
-            shape.radius +
-            shape.offsetX;
-
-          y =
-            Math.sin(angle) *
-            shape.radius +
-            shape.offsetY;
-
-          z =
-            shape.offsetZ;
-
-          break;
-      }
+      const ellipsePoint =
+        OrbitMath.getEllipsePoint(
+          shape.radius,
+          shape.eccentricity,
+          eccentricAnomaly
+        );
 
       points.push(
-        new THREE.Vector3(
-          x,
-          y,
-          z
-        )
+        basis.primary
+          .clone()
+          .multiplyScalar(
+            ellipsePoint.primary
+          )
+          .add(
+            basis.secondary
+              .clone()
+              .multiplyScalar(
+                ellipsePoint.secondary
+              )
+          )
+          .add(
+            new THREE.Vector3(
+              shape.offsetX,
+              shape.offsetY,
+              shape.offsetZ
+            )
+          )
       );
     }
 
@@ -154,9 +134,6 @@ export class OrbitRenderer {
       .setFromPoints(points);
 
     oldGeometry.dispose();
-
-    line.rotation.z =
-      shape.rotationZ;
 
     const material =
       line.material;
