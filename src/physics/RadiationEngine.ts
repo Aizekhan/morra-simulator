@@ -377,7 +377,10 @@ export class RadiationEngine {
         RadiationEngine.EPSILON
       ) {
         blockingOccluderIds.push(
-          occluder.mesh.uuid
+          String(
+            occluder.mesh.userData.radiationId ??
+            occluder.mesh.uuid
+          )
         );
       }
 
