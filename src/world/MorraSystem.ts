@@ -1,32 +1,13 @@
 import * as THREE from "three";
 
-import {
-  CelestialBody
-} from "../astronomy/CelestialBody";
+import { CelestialBody } from "../astronomy/CelestialBody";
+import { CelestialSystem } from "../astronomy/CelestialSystem";
+import { MorraLightSystem } from "../astronomy/MorraLightSystem";
+import { OrbitSystem } from "../astronomy/OrbitSystem";
 
-import {
-  CelestialSystem
-} from "../astronomy/CelestialSystem";
-
-import {
-  MorraLightSystem
-} from "../astronomy/MorraLightSystem";
-
-import {
-  OrbitSystem
-} from "../astronomy/OrbitSystem";
-
-import {
-  MORRA_CONFIG
-} from "./MorraConfig";
-
-import {
-  MorraAxis
-} from "./MorraAxis";
-
-import {
-  MorraConfigSynchronizer
-} from "./MorraConfigSynchronizer";
+import { MORRA_CONFIG } from "./MorraConfig";
+import { MorraAxis } from "./MorraAxis";
+import { MorraConfigSynchronizer } from "./MorraConfigSynchronizer";
 
 export class MorraSystem {
 
@@ -44,7 +25,6 @@ export class MorraSystem {
   sunSmall: CelestialBody;
 
   celestialSystem: CelestialSystem;
-
   orbitSystem: OrbitSystem;
 
   configSynchronizer:
@@ -181,27 +161,32 @@ export class MorraSystem {
 
     this.orbitSystem.add(
       this.sunLarge,
-      MORRA_CONFIG.LIGHTS.LARGE.color
+      () =>
+        MORRA_CONFIG.LIGHTS.LARGE.color
     );
 
     this.orbitSystem.add(
       this.sunMedium,
-      MORRA_CONFIG.LIGHTS.MEDIUM.color
+      () =>
+        MORRA_CONFIG.LIGHTS.MEDIUM.color
     );
 
     this.orbitSystem.add(
       this.sunSmall,
-      MORRA_CONFIG.LIGHTS.SMALL.color
+      () =>
+        MORRA_CONFIG.LIGHTS.SMALL.color
     );
 
     this.orbitSystem.add(
       this.moonNorth,
-      MORRA_CONFIG.MOON_NORTH.orbitColor
+      () =>
+        MORRA_CONFIG.MOON_NORTH.orbitColor
     );
 
     this.orbitSystem.add(
       this.moonEquator,
-      MORRA_CONFIG.MOON_EQUATOR.orbitColor
+      () =>
+        MORRA_CONFIG.MOON_EQUATOR.orbitColor
     );
 
     this.configSynchronizer =
@@ -272,9 +257,7 @@ export class MorraSystem {
 
     this.orbitSystem.dispose();
 
-    this.lightSystem.largeHelper.dispose();
-    this.lightSystem.mediumHelper.dispose();
-    this.lightSystem.smallHelper.dispose();
+    this.lightSystem.dispose();
 
     this.morra.dispose();
 
@@ -286,5 +269,29 @@ export class MorraSystem {
     this.sunSmall.dispose();
 
     this.axis.dispose();
+
+    this.scene.remove(
+      this.morra.mesh
+    );
+
+    this.scene.remove(
+      this.moonNorth.mesh
+    );
+
+    this.scene.remove(
+      this.moonEquator.mesh
+    );
+
+    this.scene.remove(
+      this.sunLarge.mesh
+    );
+
+    this.scene.remove(
+      this.sunMedium.mesh
+    );
+
+    this.scene.remove(
+      this.sunSmall.mesh
+    );
   }
 }
