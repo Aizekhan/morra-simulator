@@ -1,10 +1,8 @@
 import * as THREE from "three";
 
-import { CelestialBody }
-from "./CelestialBody";
+import { CelestialBody } from "./CelestialBody";
 
-import { MORRA_CONFIG }
-from "../world/MorraConfig";
+import { MORRA_CONFIG } from "../world/MorraConfig";
 
 export class MorraLightSystem {
 
@@ -36,10 +34,6 @@ export class MorraLightSystem {
     this.smallSun =
       smallSun;
 
-    // =====================
-    // LARGE
-    // =====================
-
     this.largeLight =
       new THREE.PointLight(
         MORRA_CONFIG.LIGHTS.LARGE.color,
@@ -53,10 +47,6 @@ export class MorraLightSystem {
     scene.add(
       this.largeLight
     );
-
-    // =====================
-    // MEDIUM
-    // =====================
 
     this.mediumLight =
       new THREE.PointLight(
@@ -72,10 +62,6 @@ export class MorraLightSystem {
       this.mediumLight
     );
 
-    // =====================
-    // SMALL
-    // =====================
-
     this.smallLight =
       new THREE.PointLight(
         MORRA_CONFIG.LIGHTS.SMALL.color,
@@ -89,10 +75,6 @@ export class MorraLightSystem {
     scene.add(
       this.smallLight
     );
-
-    // =====================
-    // HELPERS
-    // =====================
 
     this.largeHelper =
       new THREE.PointLightHelper(
@@ -127,10 +109,6 @@ export class MorraLightSystem {
 
   update() {
 
-    // =====================
-    // POSITIONS
-    // =====================
-
     this.largeLight.position.copy(
       this.largeSun.mesh.position
     );
@@ -142,10 +120,6 @@ export class MorraLightSystem {
     this.smallLight.position.copy(
       this.smallSun.mesh.position
     );
-
-    // =====================
-    // LIVE CONFIG
-    // =====================
 
     this.largeLight.color.setHex(
       MORRA_CONFIG.LIGHTS.LARGE.color
@@ -177,10 +151,6 @@ export class MorraLightSystem {
     this.smallLight.distance =
       MORRA_CONFIG.LIGHTS.SMALL.distance;
 
-    // =====================
-    // HELPERS
-    // =====================
-
     const helpersVisible =
       MORRA_CONFIG.DEBUG.showLightHelpers;
 
@@ -194,9 +164,15 @@ export class MorraLightSystem {
       helpersVisible;
 
     this.largeHelper.update();
-
     this.mediumHelper.update();
-
     this.smallHelper.update();
+  }
+
+  dispose() {
+
+    this.largeHelper.dispose();
+    this.mediumHelper.dispose();
+    this.smallHelper.dispose();
+
   }
 }

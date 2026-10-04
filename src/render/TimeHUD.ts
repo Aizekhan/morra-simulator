@@ -1,9 +1,19 @@
-import { MORRA_CONFIG }
-from "../world/MorraConfig";
+import type {
+  CalendarSnapshot
+} from "../core/SimulationTime";
+
+import type {
+  AstronomicalEventState
+} from "../astronomy/AstronomicalEventSystem";
+
+import {
+  MORRA_CONFIG
+} from "../world/MorraConfig";
 
 export class TimeHUD {
 
-  element: HTMLDivElement;
+  readonly element:
+    HTMLDivElement;
 
   constructor() {
 
@@ -13,7 +23,7 @@ export class TimeHUD {
       );
 
     this.element.style.position =
-      "absolute";
+      "fixed";
 
     this.element.style.top =
       "10px";
@@ -22,13 +32,13 @@ export class TimeHUD {
       "10px";
 
     this.element.style.width =
-      "260px";
+      "245px";
 
     this.element.style.padding =
       "10px";
 
     this.element.style.background =
-      "rgba(0,0,0,0.75)";
+      "rgba(0,0,0,0.78)";
 
     this.element.style.color =
       "#ffffff";
@@ -37,7 +47,7 @@ export class TimeHUD {
       "monospace";
 
     this.element.style.fontSize =
-      "14px";
+      "13px";
 
     this.element.style.border =
       "1px solid #444";
@@ -46,7 +56,7 @@ export class TimeHUD {
       "8px";
 
     this.element.style.zIndex =
-      "1000";
+      "800";
 
     document.body.appendChild(
       this.element
@@ -54,10 +64,8 @@ export class TimeHUD {
   }
 
   update(
-    year:number,
-    month:number,
-    day:number,
-    hour:number
+    snapshot: CalendarSnapshot,
+    astronomy: AstronomicalEventState
   ) {
 
     this.element.style.display =
@@ -65,111 +73,67 @@ export class TimeHUD {
         ? "block"
         : "none";
 
-    const percent =
-      (
-        hour /
-        MORRA_CONFIG.HOURS_IN_DAY
-      ) * 100;
+    if(
+      !MORRA_CONFIG.DEBUG.showTimePanel
+    ) {
+      return;
+    }
 
-    const timelineVisible =
-      MORRA_CONFIG.DEBUG.showTimeline
-        ? "block"
-        : "none";
+    const events: string[] = [];
+
+    if(
+      astronomy.solarEclipses.length > 0
+    ) {
+
+      events.push(
+        "SOLAR ECLIPSE"
+      );
+    }
+
+    if(
+      astronomy.lunarEclipses.length > 0
+    ) {
+
+      events.push(
+        "LUNAR ECLIPSE"
+      );
+    }
+
+    let html =
+      "<div style=\"font-size:17px;font-weight:700;margin-bottom:8px\">MORRA</div>";
+
+    html +=
+      "<div style=\"display:flex;justify-content:space-between;margin-bottom:6px\">" +
+      "<span>Y:" +
+      snapshot.year +
+      "</span>" +
+      "<span>M:" +
+      snapshot.month +
+      "</span>" +
+      "<span>D:" +
+      snapshot.day +
+      "</span>" +
+      "<span>H:" +
+      Math.floor(snapshot.hour) +
+      "</span>" +
+      "</div>";
+
+    if(
+      events.length > 0
+    ) {
+
+      html +=
+        "<div style=\"border-top:1px solid #444;padding-top:6px;margin-top:6px\">" +
+        events.join(" · ") +
+        "</div>";
+    }
 
     this.element.innerHTML =
-`
-<div
-style="
-font-size:18px;
-margin-bottom:8px;
-font-weight:bold;
-"
->
-MORRA
-</div>
+      html;
+  }
 
-<div
-style="
-display:flex;
-justify-content:space-between;
-margin-bottom:12px;
-"
->
+  dispose() {
 
-<span>
-Y:${year}
-</span>
-
-<span>
-M:${month}
-</span>
-
-<span>
-D:${day}
-</span>
-
-<span>
-H:${Math.floor(hour)}
-</span>
-
-</div>
-
-<div
-style="
-display:${timelineVisible};
-"
->
-
-<div
-style="
-height:8px;
-background:#222;
-border:1px solid #555;
-position:relative;
-"
->
-
-<div
-style="
-position:absolute;
-left:${percent}%;
-top:-3px;
-width:2px;
-height:14px;
-background:#00ffff;
-"
->
-</div>
-
-</div>
-
-<div
-style="
-display:flex;
-justify-content:space-between;
-margin-top:4px;
-font-size:10px;
-color:#777;
-"
->
-
-<span>
-0
-</span>
-
-<span>
-${Math.floor(
-  MORRA_CONFIG.HOURS_IN_DAY / 2
-)}
-</span>
-
-<span>
-${MORRA_CONFIG.HOURS_IN_DAY}
-</span>
-
-</div>
-
-</div>
-`;
+    this.element.remove();
   }
 }
