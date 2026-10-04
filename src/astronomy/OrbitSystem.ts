@@ -56,6 +56,7 @@ export class OrbitSystem {
         offsetX,
         body.orbitOffsetY,
         offsetZ,
+        body.orbitPlaneOffset,
         body.orbitInclination,
         body.orbitAscendingNode,
         body.orbitEccentricity
