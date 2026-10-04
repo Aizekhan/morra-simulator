@@ -98,6 +98,9 @@ export class CelestialBody {
           options.emissiveIntensity ?? 0.05
       });
 
+    this.material.emissiveIntensity =
+      options.emissiveIntensity ?? 0.05;
+
     this.mesh =
       new THREE.Mesh(
         this.geometry,
