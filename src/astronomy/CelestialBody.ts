@@ -26,6 +26,8 @@ export interface CelestialBodyOptions {
   orbitPlaneOffset?: number;
 
   reverseOrbit?: boolean;
+
+  renderMode?: "STANDARD" | "SELF_LUMINOUS";
 }
 
 export class CelestialBody {
@@ -34,7 +36,9 @@ export class CelestialBody {
 
   geometry: THREE.SphereGeometry;
 
-  material: THREE.MeshStandardMaterial;
+  material:
+    THREE.MeshStandardMaterial |
+    THREE.MeshBasicMaterial;
 
   radius: number;
 
@@ -88,18 +92,32 @@ export class CelestialBody {
         this.segments
       );
 
-    this.material =
-      new THREE.MeshStandardMaterial({
-        color,
-        roughness: 1,
-        metalness: 0,
-        emissive: color,
-        emissiveIntensity:
-          options.emissiveIntensity ?? 0.05
-      });
+    const renderMode =
+      options.renderMode ??
+      "STANDARD";
 
-    this.material.emissiveIntensity =
-      options.emissiveIntensity ?? 0.05;
+    if(
+      renderMode ===
+      "SELF_LUMINOUS"
+    ) {
+
+      this.material =
+        new THREE.MeshBasicMaterial({
+          color
+        });
+    }
+    else {
+
+      this.material =
+        new THREE.MeshStandardMaterial({
+          color,
+          roughness: 1,
+          metalness: 0,
+          emissive: color,
+          emissiveIntensity:
+            options.emissiveIntensity ?? 0.05
+        });
+    }
 
     this.mesh =
       new THREE.Mesh(
@@ -107,13 +125,11 @@ export class CelestialBody {
         this.material
       );
 
-    if(
-      (options.emissiveIntensity ?? 0.05) >
-      0.5
-    ) {
-      this.material.emissiveIntensity =
-        options.emissiveIntensity ?? 0.05;
-    }
+    this.mesh.frustumCulled =
+      false;
+
+    this.mesh.userData.renderMode =
+      renderMode;
 
     this.mesh.castShadow =
       true;
@@ -165,15 +181,21 @@ export class CelestialBody {
     intensity: number
   ) {
 
-    this.material.emissiveIntensity =
-      Math.max(
-        0,
-        intensity
-      );
+    if(
+      this.material instanceof
+      THREE.MeshStandardMaterial
+    ) {
 
-    this.material.emissive.setHex(
-      this.material.color.getHex()
-    );
+      this.material.emissiveIntensity =
+        Math.max(
+          0,
+          intensity
+        );
+
+      this.material.emissive.set(
+        this.material.color
+      );
+    }
   }
 
   setRadius(
@@ -217,9 +239,14 @@ export class CelestialBody {
       color
     );
 
-    this.material.emissive.setHex(
-      color
-    );
+    if(
+      this.material instanceof
+      THREE.MeshStandardMaterial
+    ) {
+      this.material.emissive.setHex(
+        color
+      );
+    }
   }
 
   setOrbitRadius(
