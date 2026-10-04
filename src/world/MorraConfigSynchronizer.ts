@@ -83,8 +83,8 @@ export class MorraConfigSynchronizer {
     this.bodies.sunMedium.setSelfIllumination(1.8);
     this.bodies.sunSmall.setSelfIllumination(1.8);
 
-    this.bodies.moonNorth.setSelfIllumination(0.15);
-    this.bodies.moonEquator.setSelfIllumination(0.15);
+    this.bodies.moonNorth.setSelfIllumination(0.35);
+    this.bodies.moonEquator.setSelfIllumination(0.35);
 
     this.syncBody(
       this.bodies.moonNorth,
