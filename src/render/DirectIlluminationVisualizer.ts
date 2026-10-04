@@ -45,9 +45,6 @@ export class DirectIlluminationVisualizer {
   private enabled =
     true;
 
-  private lastRadius =
-    Number.NaN;
-
   constructor(
     scene: THREE.Scene,
     engine: MorraEnvironmentEngine
@@ -224,6 +221,7 @@ export class DirectIlluminationVisualizer {
 
       const direction =
         sourcePosition
+          .clone()
           .sub(
             center
           );
@@ -309,13 +307,7 @@ export class DirectIlluminationVisualizer {
         apparentRadius
       );
 
-      visual.position.copy(
-        sourcePosition
-      );
     }
-
-    this.lastRadius =
-      radius;
   }
 
   dispose() {
