@@ -278,7 +278,7 @@ export const MORRA_CONFIG = {
       "UMBRA" |
       "PENUMBRA",
 
-    opacity: 0.62
+    opacity: 0.22
 
   },
 
@@ -318,7 +318,7 @@ DEBUG: {
 
   showTimeline: true,
 
-  showSurfaceField: true,
+  showSurfaceField: false,
 
   showRadiationRays: false,
 
