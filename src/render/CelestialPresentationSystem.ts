@@ -76,8 +76,9 @@ export class CelestialPresentationSystem {
       mesh.renderOrder =
         5;
 
-      mesh.layers.mask =
-        body.mesh.layers.mask;
+      mesh.layers.set(
+        0
+      );
 
       this.scene.add(
         mesh
@@ -164,8 +165,9 @@ export class CelestialPresentationSystem {
         worldPosition
       );
 
-      proxy.mesh.layers.mask =
-        bodyMesh.layers.mask;
+      proxy.mesh.layers.set(
+        0
+      );
 
       if(
         projectedDiameter >=
