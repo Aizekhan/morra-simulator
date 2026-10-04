@@ -271,6 +271,8 @@ export const MORRA_CONFIG = {
 
   SHADOW_VOLUMES: {
 
+    enabled: true,
+
     length: 1600,
 
     opacity: 0.18,
