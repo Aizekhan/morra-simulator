@@ -76,13 +76,6 @@ export class OrbitRenderer {
     shape: OrbitShape
   ) {
 
-    const basis =
-      OrbitMath.getBasis(
-        shape.plane,
-        shape.inclination,
-        shape.ascendingNode
-      );
-
     const points:
       THREE.Vector3[] = [];
 
@@ -92,7 +85,7 @@ export class OrbitRenderer {
       i++
     ) {
 
-      const eccentricAnomaly =
+      const anomaly =
         (
           i /
           256
@@ -100,40 +93,19 @@ export class OrbitRenderer {
         Math.PI *
         2;
 
-      const ellipsePoint =
-        OrbitMath.getEllipsePoint(
+      points.push(
+        OrbitMath.getPosition(
           shape.radius,
           shape.eccentricity,
-          eccentricAnomaly
-        );
-
-      points.push(
-        basis.primary
-          .clone()
-          .multiplyScalar(
-            ellipsePoint.primary
-          )
-          .add(
-            basis.secondary
-              .clone()
-              .multiplyScalar(
-                ellipsePoint.secondary
-              )
-          )
-          .add(
-            new THREE.Vector3(
-              shape.offsetX,
-              shape.offsetY,
-              shape.offsetZ
-            )
-          )
-          .add(
-            basis.normal
-              .clone()
-              .multiplyScalar(
-                shape.planeOffset
-              )
-          )
+          anomaly,
+          shape.plane,
+          shape.inclination,
+          shape.ascendingNode,
+          shape.planeOffset,
+          shape.offsetX,
+          shape.offsetY,
+          shape.offsetZ
+        )
       );
     }
 

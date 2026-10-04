@@ -267,6 +267,67 @@ export class OrbitMath {
     );
   }
 
+  static getPosition(
+    radius: number,
+    eccentricity: number,
+    anomaly: number,
+    plane: OrbitPlane,
+    inclinationDegrees: number,
+    ascendingNodeDegrees: number,
+    planeOffset: number,
+    offsetX = 0,
+    offsetY = 0,
+    offsetZ = 0
+  ): THREE.Vector3 {
+
+    const eccentricAnomaly =
+      this.solveEccentricAnomaly(
+        anomaly,
+        eccentricity
+      );
+
+    const ellipsePoint =
+      this.getEllipsePoint(
+        radius,
+        eccentricity,
+        eccentricAnomaly
+      );
+
+    const basis =
+      this.getBasis(
+        plane,
+        inclinationDegrees,
+        ascendingNodeDegrees
+      );
+
+    return basis.primary
+      .clone()
+      .multiplyScalar(
+        ellipsePoint.primary
+      )
+      .add(
+        basis.secondary
+          .clone()
+          .multiplyScalar(
+            ellipsePoint.secondary
+          )
+      )
+      .add(
+        new THREE.Vector3(
+          offsetX,
+          offsetY,
+          offsetZ
+        )
+      )
+      .add(
+        basis.normal
+          .clone()
+          .multiplyScalar(
+            planeOffset
+          )
+      );
+  }
+
   static getEllipsePoint(
     radius: number,
     eccentricity: number,
