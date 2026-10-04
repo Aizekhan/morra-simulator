@@ -12,6 +12,10 @@ import {
 
 export class WorldEventPanel {
 
+  private readonly time: SimulationTime;
+
+  private readonly events: WorldEventSystem;
+
   private readonly root:
     HTMLDivElement;
 
@@ -28,12 +32,12 @@ export class WorldEventPanel {
     HTMLDivElement;
 
   constructor(
-    private readonly time:
-      SimulationTime,
-
-    private readonly events:
-      WorldEventSystem
+    time: SimulationTime,
+    events: WorldEventSystem
   ) {
+
+    this.time = time;
+    this.events = events;
 
     this.root =
       document.createElement(
