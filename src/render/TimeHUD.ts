@@ -1,8 +1,8 @@
-import {
+import type {
   CalendarSnapshot
 } from "../core/SimulationTime";
 
-import {
+import type {
   AstronomicalEventState
 } from "../astronomy/AstronomicalEventSystem";
 
