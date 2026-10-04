@@ -1,10 +1,26 @@
 import * as THREE from "three";
 
+export type OrbitPlane =
+  | "XZ"
+  | "YZ"
+  | "XY";
+
+export interface CelestialBodyOptions {
+
+  initialAngle?: number;
+
+  segments?: number;
+
+  emissiveIntensity?: number;
+}
+
 export class CelestialBody {
 
   mesh: THREE.Mesh;
 
   geometry: THREE.SphereGeometry;
+
+  material: THREE.MeshStandardMaterial;
 
   radius: number;
 
@@ -13,46 +29,55 @@ export class CelestialBody {
 
   angle: number;
 
-  orbitPlane: "XZ" | "YZ" | "XY";
+  orbitPlane: OrbitPlane;
 
   orbitOffsetX: number;
   orbitOffsetY: number;
   orbitOffsetZ: number;
+
+  readonly initialAngle: number;
+
+  private readonly segments: number;
 
   constructor(
     radius: number,
     color: number,
     orbitRadius = 0,
     orbitSpeed = 0,
-    orbitPlane: "XZ" | "YZ" | "XY" = "XZ",
+    orbitPlane: OrbitPlane = "XZ",
     orbitOffsetX = 0,
     orbitOffsetY = 0,
-    orbitOffsetZ = 0
+    orbitOffsetZ = 0,
+    options: CelestialBodyOptions = {}
   ) {
 
     this.radius =
       radius;
 
+    this.segments =
+      options.segments ?? 32;
+
     this.geometry =
       new THREE.SphereGeometry(
         radius,
-        32,
-        32
+        this.segments,
+        this.segments
       );
 
-    const material =
+    this.material =
       new THREE.MeshStandardMaterial({
         color,
         roughness: 1,
         metalness: 0,
         emissive: color,
-        emissiveIntensity: 0.05
+        emissiveIntensity:
+          options.emissiveIntensity ?? 0.05
       });
 
     this.mesh =
       new THREE.Mesh(
         this.geometry,
-        material
+        this.material
       );
 
     this.mesh.castShadow =
@@ -79,48 +104,72 @@ export class CelestialBody {
     this.orbitOffsetZ =
       orbitOffsetZ;
 
+    this.initialAngle =
+      options.initialAngle ?? 0;
+
     this.angle =
-      Math.random() *
-      Math.PI *
-      2;
+      this.initialAngle;
   }
 
   setRadius(
-    radius:number
+    radius: number
   ) {
 
+    const nextRadius =
+      Math.max(
+        0.1,
+        radius
+      );
+
     if(
-      this.radius === radius
-    ){
+      this.radius ===
+      nextRadius
+    ) {
       return;
     }
 
     this.radius =
-      radius;
+      nextRadius;
 
     this.geometry.dispose();
 
     this.geometry =
       new THREE.SphereGeometry(
-        radius,
-        32,
-        32
+        nextRadius,
+        this.segments,
+        this.segments
       );
 
     this.mesh.geometry =
       this.geometry;
   }
 
+  setColor(
+    color: number
+  ) {
+
+    this.material.color.setHex(
+      color
+    );
+
+    this.material.emissive.setHex(
+      color
+    );
+  }
+
   setOrbitRadius(
-    radius:number
+    radius: number
   ) {
 
     this.orbitRadius =
-      radius;
+      Math.max(
+        0,
+        radius
+      );
   }
 
   setOrbitSpeed(
-    speed:number
+    speed: number
   ) {
 
     this.orbitSpeed =
@@ -128,80 +177,106 @@ export class CelestialBody {
   }
 
   setOrbitHeight(
-    height:number
+    height: number
   ) {
 
     this.orbitOffsetY =
       height;
   }
 
-  update(
-    delta:number
+  setOrbitPlane(
+    plane: OrbitPlane
   ) {
 
-    this.angle +=
-      this.orbitSpeed *
-      delta;
+    this.orbitPlane =
+      plane;
+  }
 
-    const c =
+  setInitialAngle(
+    angle: number
+  ) {
+
+    this.angle =
+      angle;
+  }
+
+  updateAtTime(
+    absoluteHours: number
+  ) {
+
+    this.angle =
+      this.initialAngle +
+      this.orbitSpeed *
+      absoluteHours;
+
+    const cosine =
       Math.cos(
         this.angle
       );
 
-    const s =
+    const sine =
       Math.sin(
         this.angle
       );
 
-    if(
-      this.orbitPlane === "XZ"
-    ){
+    switch(
+      this.orbitPlane
+    ) {
 
-      this.mesh.position.set(
-        c *
-          this.orbitRadius +
-          this.orbitOffsetX,
+      case "XZ":
 
-        this.orbitOffsetY,
+        this.mesh.position.set(
+          cosine *
+            this.orbitRadius +
+            this.orbitOffsetX,
 
-        s *
-          this.orbitRadius +
-          this.orbitOffsetZ
-      );
-    }
-
-    if(
-      this.orbitPlane === "YZ"
-    ){
-
-      this.mesh.position.set(
-        this.orbitOffsetX,
-
-        c *
-          this.orbitRadius +
           this.orbitOffsetY,
 
-        s *
-          this.orbitRadius +
-          this.orbitOffsetZ
-      );
-    }
+          sine *
+            this.orbitRadius +
+            this.orbitOffsetZ
+        );
 
-    if(
-      this.orbitPlane === "XY"
-    ){
+        break;
 
-      this.mesh.position.set(
-        c *
-          this.orbitRadius +
+      case "YZ":
+
+        this.mesh.position.set(
           this.orbitOffsetX,
 
-        s *
-          this.orbitRadius +
-          this.orbitOffsetY,
+          cosine *
+            this.orbitRadius +
+            this.orbitOffsetY,
 
-        this.orbitOffsetZ
-      );
+          sine *
+            this.orbitRadius +
+            this.orbitOffsetZ
+        );
+
+        break;
+
+      case "XY":
+
+        this.mesh.position.set(
+          cosine *
+            this.orbitRadius +
+            this.orbitOffsetX,
+
+          sine *
+            this.orbitRadius +
+            this.orbitOffsetY,
+
+          this.orbitOffsetZ
+        );
+
+        break;
     }
+  }
+
+  dispose() {
+
+    this.geometry.dispose();
+
+    this.material.dispose();
   }
 }
