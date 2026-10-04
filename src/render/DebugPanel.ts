@@ -59,6 +59,30 @@ export class DebugPanel {
       this.gui.addFolder("Time");
 
     folder.add(
+      MORRA_CONFIG,
+      "HOURS_IN_DAY",
+      1,
+      500,
+      1
+    );
+
+    folder.add(
+      MORRA_CONFIG,
+      "DAYS_IN_MONTH",
+      1,
+      500,
+      1
+    );
+
+    folder.add(
+      MORRA_CONFIG,
+      "MONTHS_IN_YEAR",
+      1,
+      100,
+      1
+    );
+
+    folder.add(
       MORRA_CONFIG.DEBUG,
       "showTimePanel"
     );
@@ -303,16 +327,6 @@ export class DebugPanel {
     folder.add(
       MORRA_CONFIG.DEBUG,
       "showLightHelpers"
-    );
-
-    folder.add(
-      MORRA_CONFIG.DEBUG,
-      "showTimePanel"
-    );
-
-    folder.add(
-      MORRA_CONFIG.DEBUG,
-      "showTimeline"
     );
   }
 
