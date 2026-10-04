@@ -3,6 +3,14 @@ import {
   SimulationTime
 } from "../core/SimulationTime";
 
+import {
+  MORRA_CONFIG
+} from "../world/MorraConfig";
+
+import {
+  WorldEventSystem
+} from "../world/WorldEventSystem";
+
 export class TimelineUI {
 
   private readonly root:
@@ -17,15 +25,15 @@ export class TimelineUI {
   private readonly slider:
     HTMLInputElement;
 
-  private readonly previousButton:
-    HTMLButtonElement;
-
-  private readonly nextButton:
-    HTMLButtonElement;
+  private readonly markerLayer:
+    HTMLDivElement;
 
   constructor(
     private readonly time:
-      SimulationTime
+      SimulationTime,
+
+    private readonly events:
+      WorldEventSystem
   ) {
 
     this.root =
@@ -94,9 +102,6 @@ export class TimelineUI {
     previous.title =
       "Previous year";
 
-    this.previousButton =
-      previous;
-
     const next =
       document.createElement(
         "button"
@@ -107,9 +112,6 @@ export class TimelineUI {
 
     next.title =
       "Next year";
-
-    this.nextButton =
-      next;
 
     this.yearLabel =
       document.createElement(
@@ -134,6 +136,17 @@ export class TimelineUI {
       this.dateLabel
     );
 
+    const track =
+      document.createElement(
+        "div"
+      );
+
+    track.style.position =
+      "relative";
+
+    track.style.paddingTop =
+      "5px";
+
     this.slider =
       document.createElement(
         "input"
@@ -151,6 +164,34 @@ export class TimelineUI {
     this.slider.style.width =
       "100%";
 
+    this.markerLayer =
+      document.createElement(
+        "div"
+      );
+
+    this.markerLayer.style.position =
+      "absolute";
+
+    this.markerLayer.style.left =
+      "7px";
+
+    this.markerLayer.style.right =
+      "7px";
+
+    this.markerLayer.style.top =
+      "16px";
+
+    this.markerLayer.style.height =
+      "12px";
+
+    this.markerLayer.style.pointerEvents =
+      "none";
+
+    track.append(
+      this.slider,
+      this.markerLayer
+    );
+
     this.slider.addEventListener(
       "input",
       () => {
@@ -159,17 +200,14 @@ export class TimelineUI {
           this.time.getSnapshot()
             .year;
 
-        const value =
-          Number(
-            this.slider.value
-          );
-
         this.time.setAbsoluteHours(
           (
             year - 1
           ) *
           this.time.getHoursInYear() +
-          value
+          Number(
+            this.slider.value
+          )
         );
       }
     );
@@ -233,7 +271,7 @@ export class TimelineUI {
 
     this.root.append(
       header,
-      this.slider
+      track
     );
 
     document.body.appendChild(
@@ -244,6 +282,11 @@ export class TimelineUI {
   update(
     snapshot: CalendarSnapshot
   ) {
+
+    this.root.style.display =
+      MORRA_CONFIG.DEBUG.showTimeline
+        ? "block"
+        : "none";
 
     const yearHours =
       this.time.getHoursInYear();
@@ -263,10 +306,111 @@ export class TimelineUI {
       );
 
     this.yearLabel.textContent =
-      `YEAR ${snapshot.year}`;
+      "YEAR " +
+      snapshot.year;
 
     this.dateLabel.textContent =
-      `M:${snapshot.month} D:${snapshot.day} H:${Math.floor(snapshot.hour)}`;
+      "M:" +
+      snapshot.month +
+      " D:" +
+      snapshot.day +
+      " H:" +
+      Math.floor(
+        snapshot.hour
+      );
+
+    this.renderMarkers(
+      snapshot.year,
+      yearHours
+    );
+  }
+
+  private renderMarkers(
+    year: number,
+    yearHours: number
+  ) {
+
+    this.markerLayer.innerHTML =
+      "";
+
+    const events =
+      this.events.getEvents()
+        .filter(
+          event =>
+            Math.floor(
+              event.absoluteHour /
+              yearHours
+            ) + 1 ===
+            year
+        );
+
+    for(
+      const event of events
+    ) {
+
+      const localHours =
+        event.absoluteHour %
+        yearHours;
+
+      const marker =
+        document.createElement(
+          "button"
+        );
+
+      marker.title =
+        event.title;
+
+      marker.style.position =
+        "absolute";
+
+      marker.style.left =
+        (
+          (
+            localHours /
+            yearHours
+          ) *
+          100
+        ) +
+        "%";
+
+      marker.style.top =
+        "0";
+
+      marker.style.width =
+        "5px";
+
+      marker.style.height =
+        "12px";
+
+      marker.style.padding =
+        "0";
+
+      marker.style.border =
+        "0";
+
+      marker.style.cursor =
+        "pointer";
+
+      marker.style.pointerEvents =
+        "auto";
+
+      marker.style.background =
+        "#ffffff";
+
+      marker.addEventListener(
+        "click",
+        () => {
+
+          this.time.setAbsoluteHours(
+            event.absoluteHour
+          );
+        }
+      );
+
+      this.markerLayer.append(
+        marker
+      );
+    }
   }
 
   dispose() {
