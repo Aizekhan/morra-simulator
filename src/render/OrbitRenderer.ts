@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import {
+import type {
   OrbitPlane
 } from "../astronomy/CelestialBody";
 
