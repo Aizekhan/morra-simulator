@@ -379,6 +379,8 @@ export class MorraSystem {
         scene,
         this.environmentEngine,
         {
+          enabled:
+            MORRA_CONFIG.SHADOW_VOLUMES.enabled,
           length:
             MORRA_CONFIG.SHADOW_VOLUMES.length,
           opacity:
@@ -473,6 +475,8 @@ export class MorraSystem {
     );
 
     this.shadowVolumeVisualizer.setConfig({
+      enabled:
+        MORRA_CONFIG.SHADOW_VOLUMES.enabled,
       length:
         MORRA_CONFIG.SHADOW_VOLUMES.length,
       opacity:
