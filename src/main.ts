@@ -99,6 +99,8 @@ function animate() {
     frame.time
   );
 
+  debugPanel.update();
+
   cameraController.update();
 
   renderer.render();

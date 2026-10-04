@@ -1,6 +1,10 @@
 import { CelestialBody } from "../astronomy/CelestialBody";
 
 import {
+  OrbitMath
+} from "../astronomy/OrbitMath";
+
+import {
   MORRA_CONFIG
 } from "./MorraConfig";
 
@@ -142,6 +146,18 @@ export class MorraConfigSynchronizer {
     body.setOrbitAscendingNode(
       config.orbitAscendingNode
     );
+
+    const maxEccentricity =
+      OrbitMath.getMaxEccentricity(
+        effectiveOrbitRadius,
+        minimumOrbitRadius
+      );
+
+    config.orbitEccentricity =
+      Math.min(
+        config.orbitEccentricity,
+        maxEccentricity
+      );
 
     body.setOrbitEccentricity(
       config.orbitEccentricity
