@@ -39,15 +39,15 @@ export class CelestialSystem {
   }
 
   update(
-    delta: number
+    absoluteHours: number
   ) {
 
     for(
       const body of this.bodies
     ) {
 
-      body.update(
-        delta
+      body.updateAtTime(
+        absoluteHours
       );
     }
   }
