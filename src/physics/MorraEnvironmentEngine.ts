@@ -57,6 +57,13 @@ export class MorraEnvironmentEngine {
     );
   }
 
+  getOccluders() {
+
+    return [
+      ...this.occluders
+    ];
+  }
+
   evaluateLocalPoint(
     localPoint: THREE.Vector3
   ): MorraEnvironmentSample {

@@ -201,6 +201,10 @@ export class SurfaceFieldHUD {
         return "ANOMALY";
       case "SHADOW":
         return "SHADOW";
+      case "UMBRA":
+        return "UMBRA";
+      case "PENUMBRA":
+        return "PENUMBRA";
     }
   }
 
@@ -238,6 +242,24 @@ export class SurfaceFieldHUD {
         };
       case "SHADOW":
         return map.shadowStats;
+      case "UMBRA":
+        return {
+          min: 0,
+          max: 1,
+          average:
+            this.average(
+              map.umbra
+            )
+        };
+      case "PENUMBRA":
+        return {
+          min: 0,
+          max: 1,
+          average:
+            this.average(
+              map.penumbra
+            )
+        };
     }
   }
 
@@ -309,6 +331,18 @@ export class SurfaceFieldHUD {
         return {
           low: "#061526",
           high: "#ff1b24"
+        };
+
+      case "UMBRA":
+        return {
+          low: "#120000",
+          high: "#ff1020"
+        };
+
+      case "PENUMBRA":
+        return {
+          low: "#2b1600",
+          high: "#ffc247"
         };
 
       case "MAGIC":

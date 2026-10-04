@@ -257,9 +257,29 @@ export const MORRA_CONFIG = {
       "MAGIC" |
       "MAGOSPHERE" |
       "ANOMALY" |
-      "SHADOW",
+      "SHADOW" |
+      "UMBRA" |
+      "PENUMBRA",
 
     opacity: 0.62
+
+  },
+
+  // =========================
+  // SHADOW VOLUMES
+  // =========================
+
+  SHADOW_VOLUMES: {
+
+    enabled: true,
+
+    length: 1600,
+
+    opacity: 0.18,
+
+    showUmbra: true,
+
+    showPenumbra: true
 
   },
 

@@ -30,6 +30,10 @@ export interface SurfaceFieldSample {
   anomalyStrength: number;
 
   shadow: number;
+
+  umbra: number;
+
+  penumbra: number;
 }
 
 export interface SurfaceFieldStats {
@@ -63,6 +67,10 @@ export interface SurfaceFieldMap {
 
   shadow: Float32Array;
 
+  umbra: Float32Array;
+
+  penumbra: Float32Array;
+
   lightStats: SurfaceFieldStats;
 
   heatStats: SurfaceFieldStats;
@@ -70,6 +78,10 @@ export interface SurfaceFieldMap {
   magicStats: SurfaceFieldStats;
 
   shadowStats: SurfaceFieldStats;
+
+  umbraStats: SurfaceFieldStats;
+
+  penumbraStats: SurfaceFieldStats;
 }
 
 export class SurfaceFieldEngine {
@@ -282,6 +294,16 @@ export class SurfaceFieldEngine {
         count
       );
 
+    const umbra =
+      new Float32Array(
+        count
+      );
+
+    const penumbra =
+      new Float32Array(
+        count
+      );
+
     let lightSum =
       0;
 
@@ -316,6 +338,24 @@ export class SurfaceFieldEngine {
       Number.POSITIVE_INFINITY;
 
     let shadowMax =
+      Number.NEGATIVE_INFINITY;
+
+    let umbraSum =
+      0;
+
+    let umbraMin =
+      Number.POSITIVE_INFINITY;
+
+    let umbraMax =
+      Number.NEGATIVE_INFINITY;
+
+    let penumbraSum =
+      0;
+
+    let penumbraMin =
+      Number.POSITIVE_INFINITY;
+
+    let penumbraMax =
       Number.NEGATIVE_INFINITY;
 
     for(
@@ -396,6 +436,18 @@ export class SurfaceFieldEngine {
           width +
           x;
 
+        const hasUmbra =
+          sample.radiation.contributions.some(
+            contribution =>
+              contribution.umbra
+          );
+
+        const hasPenumbra =
+          sample.radiation.contributions.some(
+            contribution =>
+              contribution.penumbra
+          );
+
         const sampleData: SurfaceFieldSample = {
           latitude,
           longitude,
@@ -411,7 +463,15 @@ export class SurfaceFieldEngine {
             sample.magosphere.anomalyStrength,
           shadow:
             1 -
-            sample.radiation.magicVisibility
+            sample.radiation.lightVisibility,
+          umbra:
+            hasUmbra
+              ? 1
+              : 0,
+          penumbra:
+            hasPenumbra
+              ? 1
+              : 0
         };
 
         samples[index] =
@@ -435,6 +495,12 @@ export class SurfaceFieldEngine {
         shadow[index] =
           sampleData.shadow;
 
+        umbra[index] =
+          sampleData.umbra;
+
+        penumbra[index] =
+          sampleData.penumbra;
+
         lightSum +=
           sampleData.light;
 
@@ -457,6 +523,36 @@ export class SurfaceFieldEngine {
           Math.max(
             shadowMax,
             sampleData.shadow
+          );
+
+        umbraSum +=
+          sampleData.umbra;
+
+        umbraMin =
+          Math.min(
+            umbraMin,
+            sampleData.umbra
+          );
+
+        umbraMax =
+          Math.max(
+            umbraMax,
+            sampleData.umbra
+          );
+
+        penumbraSum +=
+          sampleData.penumbra;
+
+        penumbraMin =
+          Math.min(
+            penumbraMin,
+            sampleData.penumbra
+          );
+
+        penumbraMax =
+          Math.max(
+            penumbraMax,
+            sampleData.penumbra
           );
 
         lightMin =
@@ -508,6 +604,8 @@ export class SurfaceFieldEngine {
       magosphereStability,
       anomalyStrength,
       shadow,
+      umbra,
+      penumbra,
       lightStats: {
         min:
           lightMin,
@@ -542,6 +640,24 @@ export class SurfaceFieldEngine {
           shadowMax,
         average:
           shadowSum /
+          count
+      },
+      umbraStats: {
+        min:
+          umbraMin,
+        max:
+          umbraMax,
+        average:
+          umbraSum /
+          count
+      },
+      penumbraStats: {
+        min:
+          penumbraMin,
+        max:
+          penumbraMax,
+        average:
+          penumbraSum /
           count
       }
     };

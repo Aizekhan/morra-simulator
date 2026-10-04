@@ -34,6 +34,10 @@ export interface RadiationContribution {
   magic: number;
 
   blockingOccluderIds: string[];
+
+  umbra: boolean;
+
+  penumbra: boolean;
 }
 
 export interface RadiationSample {
@@ -227,7 +231,13 @@ export class RadiationEngine {
           magicContribution,
 
         blockingOccluderIds:
-          visibility.blockingOccluderIds
+          visibility.blockingOccluderIds,
+
+        umbra:
+          visibility.umbra,
+
+        penumbra:
+          visibility.penumbra
       });
     }
 
@@ -279,6 +289,12 @@ export class RadiationEngine {
     let visibility =
       1;
 
+    let umbra =
+      false;
+
+    let penumbra =
+      false;
+
     const blockingOccluderIds:
       string[] = [];
 
@@ -304,7 +320,9 @@ export class RadiationEngine {
     ) {
       return {
         factor: 0,
-        blockingOccluderIds
+        blockingOccluderIds,
+        umbra: true,
+        penumbra: false
       };
     }
 
@@ -377,6 +395,17 @@ export class RadiationEngine {
           occluderDistance
         );
 
+      const fullOcclusion =
+        angularSeparation +
+          sourceAngularRadius <=
+        occluderAngularRadius +
+          RadiationEngine.EPSILON;
+
+      const overlap =
+        angularSeparation <
+          sourceAngularRadius +
+          occluderAngularRadius;
+
       const blockedFraction =
         RadiationEngine.circleOverlapFraction(
           sourceAngularRadius,
@@ -385,9 +414,27 @@ export class RadiationEngine {
         );
 
       if(
+        fullOcclusion
+      ) {
+
+        umbra =
+          true;
+      }
+      else if(
+        overlap &&
+        blockedFraction >
+          RadiationEngine.EPSILON
+      ) {
+
+        penumbra =
+          true;
+      }
+
+      if(
         blockedFraction >
         RadiationEngine.EPSILON
       ) {
+
         blockingOccluderIds.push(
           String(
             occluder.mesh.userData.radiationId ??
@@ -404,9 +451,12 @@ export class RadiationEngine {
         visibility <=
         RadiationEngine.EPSILON
       ) {
+
         return {
           factor: 0,
-          blockingOccluderIds
+          blockingOccluderIds,
+          umbra: true,
+          penumbra
         };
       }
     }
@@ -418,7 +468,9 @@ export class RadiationEngine {
           0,
           1
         ),
-      blockingOccluderIds
+      blockingOccluderIds,
+      umbra,
+      penumbra
     };
   }
 
