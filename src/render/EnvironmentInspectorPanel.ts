@@ -192,7 +192,12 @@ export class EnvironmentInspectorPanel {
           contribution.visibilityFactor *
           100
         ).toFixed(0) +
-        "% visible</span></div>";
+        "% visible</span></div>" +
+        (
+          contribution.blockingOccluderIds.length > 0
+            ? "<div style=\"opacity:.55;font-size:10px\">BLOCKED</div>"
+            : ""
+        );
     }
 
     this.root.innerHTML =
