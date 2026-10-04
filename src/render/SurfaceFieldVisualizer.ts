@@ -87,8 +87,8 @@ export class SurfaceFieldVisualizer {
         THREE.UnsignedByteType
       );
 
-    this.texture.colorSpace =
-      THREE.SRGBColorSpace;
+    this.texture.flipY =
+      true;
 
     this.texture.needsUpdate =
       true;
@@ -263,9 +263,6 @@ export class SurfaceFieldVisualizer {
       return;
     }
 
-    const config =
-      this.engine.getConfig();
-
     if(
       map.width !== this.width ||
       map.height !== this.height
@@ -275,6 +272,13 @@ export class SurfaceFieldVisualizer {
         map.width,
         map.height
       );
+    }
+
+    if(
+      this.lastMap ===
+      map
+    ) {
+      return;
     }
 
     this.lastMap =
@@ -429,8 +433,6 @@ export class SurfaceFieldVisualizer {
     width: number,
     height: number
   ) {
-
-    this.texture.dispose();
 
     this.texture.image =
       {
