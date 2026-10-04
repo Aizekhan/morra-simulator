@@ -20,6 +20,8 @@ export interface OrbitShape {
   offsetY: number;
   offsetZ: number;
 
+  planeOffset: number;
+
   inclination: number;
 
   ascendingNode: number;
@@ -36,6 +38,7 @@ export class OrbitRenderer {
     offsetX = 0,
     offsetY = 0,
     offsetZ = 0,
+    planeOffset = 0,
     inclination = 0,
     ascendingNode = 0,
     eccentricity = 0
@@ -58,6 +61,7 @@ export class OrbitRenderer {
         offsetX,
         offsetY,
         offsetZ,
+        planeOffset,
         inclination,
         ascendingNode,
         eccentricity
@@ -122,6 +126,13 @@ export class OrbitRenderer {
               shape.offsetY,
               shape.offsetZ
             )
+          )
+          .add(
+            basis.normal
+              .clone()
+              .multiplyScalar(
+                shape.planeOffset
+              )
           )
       );
     }
