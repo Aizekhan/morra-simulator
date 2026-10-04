@@ -6,9 +6,38 @@ import {
   MORRA_CONFIG
 } from "../world/MorraConfig";
 
+import {
+  OrbitMath
+} from "../astronomy/OrbitMath";
+
+interface EccentricityControl {
+
+  controller: {
+
+    max(
+      value: number
+    ): unknown;
+
+  };
+
+  config: {
+
+    radius: number;
+
+    orbitRadius: number;
+
+  };
+
+  clearance: number;
+
+}
+
 export class DebugPanel {
 
   gui: GUI;
+
+  private eccentricityControls:
+    EccentricityControl[] = [];
 
   constructor(
     timeControls: TimeControls
@@ -213,13 +242,23 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_ASCENDING_NODE.step
     ).name("ORBIT NODE (°)").listen();
 
-    folder.add(
-      sun,
-      "orbitEccentricity",
-      MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.min,
-      MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.max,
-      MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.step
-    ).name("ORBIT ECCENTRICITY").listen();
+    const eccentricityController =
+      folder.add(
+        sun,
+        "orbitEccentricity",
+        MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.min,
+        MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.max,
+        MORRA_CONFIG.LIMITS.ORBIT_ECCENTRICITY.step
+      ).name("ORBIT ECCENTRICITY").listen();
+
+    this.eccentricityControls.push({
+      controller:
+        eccentricityController,
+      config:
+        sun,
+      clearance:
+        100
+    });
   }
 
   private createMoonFolders() {
@@ -383,6 +422,30 @@ export class DebugPanel {
       MORRA_CONFIG.DEBUG,
       "showTimeline"
     );
+  }
+
+  update() {
+
+    for (
+      const control of
+      this.eccentricityControls
+    ) {
+
+      const minimumPeriapsisDistance =
+        MORRA_CONFIG.MORRA_RADIUS +
+        control.config.radius +
+        control.clearance;
+
+      const maximumEccentricity =
+        OrbitMath.getMaxEccentricity(
+          control.config.orbitRadius,
+          minimumPeriapsisDistance
+        );
+
+      control.controller.max(
+        maximumEccentricity
+      );
+    }
   }
 
   destroy() {
