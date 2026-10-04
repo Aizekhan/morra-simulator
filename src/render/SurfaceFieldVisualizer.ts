@@ -46,19 +46,13 @@ export class SurfaceFieldVisualizer {
     number;
 
   constructor(
-    morra: THREE.Mesh
+    morra: THREE.Mesh,
+    initialWidth: number,
+    initialHeight: number
   ) {
 
     this.morra =
       morra;
-
-    const initialWidth =
-      engine.getConfig()
-        .longitudeSegments;
-
-    const initialHeight =
-      engine.getConfig()
-        .latitudeSegments;
 
     this.width =
       initialWidth;
