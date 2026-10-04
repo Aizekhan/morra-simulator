@@ -507,9 +507,7 @@ export class MorraSystem {
   }
 
   update(
-    absoluteHours: number,
-    camera?: THREE.PerspectiveCamera,
-    viewportHeight?: number
+    absoluteHours: number
   ) {
 
     this.configSynchronizer.sync();
@@ -605,16 +603,19 @@ export class MorraSystem {
     });
 
     this.shadowVolumeVisualizer.update();
+  }
 
-    if(
-      camera &&
+  updatePresentation(
+    camera:
+      THREE.PerspectiveCamera,
+    viewportHeight:
+      number
+  ) {
+
+    this.celestialPresentation.update(
+      camera,
       viewportHeight
-    ) {
-      this.celestialPresentation.update(
-        camera,
-        viewportHeight
-      );
-    }
+    );
   }
 
   dispose() {
