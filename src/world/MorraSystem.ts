@@ -94,6 +94,26 @@ export class MorraSystem {
     // Keep it on the real physically lit mesh at every camera distance.
     this.morra.mesh.userData.disablePresentationProxy = true;
 
+    // Keep a very subtle render-only surface shell on Morra itself.
+    // The real MeshStandard material remains underneath, so direct light,
+    // shadows and receiving shadows are still rendered normally. The shell
+    // only prevents the planet from becoming visually black at system scale.
+    const morraPresentationMesh =
+      this.morra.mesh.userData.presentationMesh as THREE.Mesh;
+
+    morraPresentationMesh.visible = true;
+    morraPresentationMesh.renderOrder = 1;
+    morraPresentationMesh.scale.setScalar(1.002);
+
+    if (
+      morraPresentationMesh.material instanceof THREE.MeshBasicMaterial
+    ) {
+      morraPresentationMesh.material.transparent = true;
+      morraPresentationMesh.material.opacity = 0.16;
+      morraPresentationMesh.material.depthWrite = false;
+      morraPresentationMesh.material.depthTest = true;
+    }
+
     this.axis =
       new MorraAxis(
         scene,
