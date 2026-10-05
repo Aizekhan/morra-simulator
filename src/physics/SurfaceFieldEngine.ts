@@ -38,6 +38,10 @@ export interface SurfaceFieldSample {
   umbra: number;
 
   penumbra: number;
+
+  largeSunLight: number;
+  mediumSunLight: number;
+  smallSunLight: number;
 }
 
 export interface SurfaceFieldStats {
@@ -74,6 +78,14 @@ export interface SurfaceFieldMap {
   umbra: Float32Array;
 
   penumbra: Float32Array;
+
+  largeSunLight: Float32Array;
+  mediumSunLight: Float32Array;
+  smallSunLight: Float32Array;
+
+  largeSunLightStats: SurfaceFieldStats;
+  mediumSunLightStats: SurfaceFieldStats;
+  smallSunLightStats: SurfaceFieldStats;
 
   lightStats: SurfaceFieldStats;
 
@@ -303,6 +315,33 @@ export class SurfaceFieldEngine {
         count
       );
 
+    const largeSunLight =
+      new Float32Array(count);
+
+    const mediumSunLight =
+      new Float32Array(count);
+
+    const smallSunLight =
+      new Float32Array(count);
+
+    let largeSunLightSum = 0;
+    let mediumSunLightSum = 0;
+    let smallSunLightSum = 0;
+
+    let largeSunLightMin =
+      Number.POSITIVE_INFINITY;
+    let mediumSunLightMin =
+      Number.POSITIVE_INFINITY;
+    let smallSunLightMin =
+      Number.POSITIVE_INFINITY;
+
+    let largeSunLightMax =
+      Number.NEGATIVE_INFINITY;
+    let mediumSunLightMax =
+      Number.NEGATIVE_INFINITY;
+    let smallSunLightMax =
+      Number.NEGATIVE_INFINITY;
+
     let lightSum =
       0;
 
@@ -494,7 +533,22 @@ export class SurfaceFieldEngine {
           penumbra:
             hasPenumbra
               ? 1
-              : 0
+              : 0,
+          largeSunLight:
+            contributions.find(
+              contribution =>
+                contribution.sourceId === "large-sun"
+            )?.light ?? 0,
+          mediumSunLight:
+            contributions.find(
+              contribution =>
+                contribution.sourceId === "medium-sun"
+            )?.light ?? 0,
+          smallSunLight:
+            contributions.find(
+              contribution =>
+                contribution.sourceId === "small-sun"
+            )?.light ?? 0
         };
 
         samples[index] =
@@ -523,6 +577,60 @@ export class SurfaceFieldEngine {
 
         penumbra[index] =
           sampleData.penumbra;
+
+        largeSunLight[index] =
+          sampleData.largeSunLight;
+
+        mediumSunLight[index] =
+          sampleData.mediumSunLight;
+
+        smallSunLight[index] =
+          sampleData.smallSunLight;
+
+        largeSunLightSum +=
+          sampleData.largeSunLight;
+
+        mediumSunLightSum +=
+          sampleData.mediumSunLight;
+
+        smallSunLightSum +=
+          sampleData.smallSunLight;
+
+        largeSunLightMin =
+          Math.min(
+            largeSunLightMin,
+            sampleData.largeSunLight
+          );
+
+        mediumSunLightMin =
+          Math.min(
+            mediumSunLightMin,
+            sampleData.mediumSunLight
+          );
+
+        smallSunLightMin =
+          Math.min(
+            smallSunLightMin,
+            sampleData.smallSunLight
+          );
+
+        largeSunLightMax =
+          Math.max(
+            largeSunLightMax,
+            sampleData.largeSunLight
+          );
+
+        mediumSunLightMax =
+          Math.max(
+            mediumSunLightMax,
+            sampleData.mediumSunLight
+          );
+
+        smallSunLightMax =
+          Math.max(
+            smallSunLightMax,
+            sampleData.smallSunLight
+          );
 
         lightSum +=
           sampleData.light;
@@ -629,6 +737,24 @@ export class SurfaceFieldEngine {
       shadow,
       umbra,
       penumbra,
+      largeSunLight,
+      mediumSunLight,
+      smallSunLight,
+      largeSunLightStats: {
+        min: largeSunLightMin,
+        max: largeSunLightMax,
+        average: largeSunLightSum / count
+      },
+      mediumSunLightStats: {
+        min: mediumSunLightMin,
+        max: mediumSunLightMax,
+        average: mediumSunLightSum / count
+      },
+      smallSunLightStats: {
+        min: smallSunLightMin,
+        max: smallSunLightMax,
+        average: smallSunLightSum / count
+      },
       lightStats: {
         min:
           lightMin,
