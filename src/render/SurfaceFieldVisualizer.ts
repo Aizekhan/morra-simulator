@@ -131,7 +131,15 @@ export class SurfaceFieldVisualizer {
             value:
               new THREE.Color(0x4de9ff)
           },
+          channelSpectrum: {
+            value:
+              false
+          },
           valueTexture: {
+            value:
+              this.valueTexture
+          },
+          spectrumTexture: {
             value:
               this.valueTexture
           }
@@ -156,10 +164,18 @@ export class SurfaceFieldVisualizer {
           uniform float opacity;
           uniform vec3 lowColor;
           uniform vec3 highColor;
+          uniform sampler2D spectrumTexture;
+          uniform bool channelSpectrum;
 
           varying vec2 vUv;
 
           void main() {
+
+            vec4 spectrum =
+              texture2D(
+                spectrumTexture,
+                vUv
+              );
 
             float value =
               texture2D(
@@ -168,11 +184,13 @@ export class SurfaceFieldVisualizer {
               ).r;
 
             vec3 color =
-              mix(
-                lowColor,
-                highColor,
-                value
-              );
+              channelSpectrum
+                ? spectrum.rgb
+                : mix(
+                    lowColor,
+                    highColor,
+                    value
+                  );
 
             float alpha =
               opacity *
@@ -213,6 +231,7 @@ export class SurfaceFieldVisualizer {
     );
 
     this.applyChannelColors();
+    this.updateSpectrumMode();
 
     this.setEnabled(
       false
@@ -235,6 +254,7 @@ export class SurfaceFieldVisualizer {
       channel;
 
     this.applyChannelColors();
+    this.updateSpectrumMode();
 
     if(
       this.lastMap
@@ -393,6 +413,13 @@ export class SurfaceFieldVisualizer {
     this.material.uniforms
       .opacity.value =
       this.opacity;
+  }
+
+  private updateSpectrumMode() {
+
+    this.material.uniforms
+      .channelSpectrum.value =
+      this.channel === "SPECTRUM";
   }
 
   setEnabled(
