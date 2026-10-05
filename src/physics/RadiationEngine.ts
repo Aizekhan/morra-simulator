@@ -267,6 +267,37 @@ export class RadiationEngine {
     };
   }
 
+  addDynamicSource(
+    source: RadiationSource
+  ) {
+
+    const existing =
+      this.sources.findIndex(
+        item => item.id === source.id
+      );
+
+    if(existing >= 0) {
+      this.sources[existing] = source;
+      return;
+    }
+
+    this.sources.push(source);
+  }
+
+  removeDynamicSource(
+    sourceId: string
+  ) {
+
+    const index =
+      this.sources.findIndex(
+        source => source.id === sourceId
+      );
+
+    if(index >= 0) {
+      this.sources.splice(index, 1);
+    }
+  }
+
   getVisibilityFactor(
     worldPoint: THREE.Vector3,
     source: RadiationSource,
