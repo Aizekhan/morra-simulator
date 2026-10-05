@@ -29,6 +29,7 @@ export class RadiationConeVisualizer {
   private enabled = true;
   private length = 2100;
   private radialScale = 1;
+  private rangeScale = 1;
 
   private opacity = 0.08;
 
@@ -43,10 +44,11 @@ export class RadiationConeVisualizer {
     this.scene.add(this.root);
   }
 
-  setConfig(config:{enabled?:boolean;length?:number;radialScale?:number;opacity?:number;edgeOpacity?:number}) {
+  setConfig(config:{enabled?:boolean;length?:number;radialScale?:number;rangeScale?:number;opacity?:number;edgeOpacity?:number}) {
     if(config.enabled!==undefined) this.enabled=config.enabled;
     if(config.length!==undefined) this.length=Math.max(1,config.length);
     if(config.radialScale!==undefined) this.radialScale=Math.max(0.01,config.radialScale);
+    if(config.rangeScale!==undefined) this.rangeScale=Math.max(0.01,config.rangeScale);
     if(config.opacity!==undefined) this.opacity=THREE.MathUtils.clamp(config.opacity,0,1);
     if(config.edgeOpacity!==undefined) this.edgeOpacity=THREE.MathUtils.clamp(config.edgeOpacity,0,1);
   }
@@ -66,9 +68,44 @@ export class RadiationConeVisualizer {
     if(distance<=1e-6) return;
 
     const direction=sourceToMorra.clone().normalize();
-    const radiusAtMorra=this.projectedRadius(source.radius,distance);
-    const radiusAtEnd=Math.max(radiusAtMorra,radiusAtMorra+this.length*Math.tan(THREE.MathUtils.clamp(source.radius/distance,0,0.45))*this.radialScale);
-    const coneDepth=Math.max(this.length,radiusAtMorra*2);
+
+    const sizeFactor =
+      source.radius /
+      Math.max(
+        this.referenceSourceRadius(),
+        1e-6
+      );
+
+    const coneDepth =
+      Math.max(
+        distance +
+        this.length *
+        sizeFactor *
+        this.rangeScale,
+        this.length
+      );
+
+    const radiusAtMorra =
+      this.projectedRadius(
+        source.radius,
+        distance
+      );
+
+    const radiusAtEnd =
+      Math.max(
+        radiusAtMorra,
+        radiusAtMorra +
+        coneDepth *
+        Math.tan(
+          THREE.MathUtils.clamp(
+            source.radius /
+            distance,
+            0,
+            0.45
+          )
+        ) *
+        this.radialScale
+      );
 
     const geometry=new THREE.ConeGeometry(radiusAtEnd,coneDepth,48,1,true);
 
@@ -121,7 +158,32 @@ export class RadiationConeVisualizer {
     this.visuals.push({group,material});
   }
 
-  private projectedRadius(sourceRadius:number,distance:number){const angularRadius=Math.asin(THREE.MathUtils.clamp(sourceRadius/Math.max(distance,1e-6),0,0.999999));return Math.max(sourceRadius,Math.tan(angularRadius)*distance);}
+  private projectedRadius(sourceRadius:number,distance:number){
+    const angularRadius =
+      Math.asin(
+        THREE.MathUtils.clamp(
+          sourceRadius /
+          Math.max(
+            distance,
+            1e-6
+          ),
+          0,
+          0.999999
+        )
+      );
+
+    return Math.max(
+      sourceRadius,
+      Math.tan(
+        angularRadius
+      ) *
+      distance
+    );
+  }
+
+  private referenceSourceRadius(){
+    return 40;
+  }
 
   private clear(){
 
