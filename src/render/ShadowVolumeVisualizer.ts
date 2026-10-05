@@ -363,19 +363,6 @@ export class ShadowVolumeVisualizer {
       morraDistance -
       occluderProjection;
 
-    const sourceAngularRadiusAtOccluder =
-      Math.asin(
-        THREE.MathUtils.clamp(
-          source.radius /
-          Math.max(
-            morraDistance,
-            1e-6
-          ),
-          0,
-          0.999999
-        )
-      );
-
     const umbraRadius =
       shadowReach *
       Math.max(
