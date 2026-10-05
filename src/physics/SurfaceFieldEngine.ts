@@ -31,6 +31,8 @@ export interface SurfaceFieldSample {
 
   anomalyStrength: number;
 
+  // Normalized diagnostic maps for the first field-audit step.
+  // Raw light/heat/magic remain untouched.
   shadow: number;
 
   umbra: number;
