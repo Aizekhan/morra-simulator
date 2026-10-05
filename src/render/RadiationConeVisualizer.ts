@@ -289,7 +289,6 @@ export class RadiationConeVisualizer {
 
         if(
           body &&
-          body !== this.morra &&
           !bodies.includes(body)
         ) {
           bodies.push(
@@ -298,6 +297,16 @@ export class RadiationConeVisualizer {
         }
       }
     );
+
+    if(
+      !bodies.includes(
+        this.morra
+      )
+    ) {
+      bodies.push(
+        this.morra
+      );
+    }
 
     return bodies;
   }
