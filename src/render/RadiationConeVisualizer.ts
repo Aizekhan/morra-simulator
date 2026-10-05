@@ -208,8 +208,7 @@ export class RadiationConeVisualizer {
           }
 
           if(
-            line.geometry &&
-            line !== mesh
+            line.geometry
           ) {
             line.geometry.dispose();
           }
