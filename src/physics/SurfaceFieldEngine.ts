@@ -435,25 +435,28 @@ export class SurfaceFieldEngine {
           width +
           x;
 
+        const contributions =
+          sample.radiation.contributions;
+
         const hasUmbra =
-          sample.radiation.contributions.some(
+          contributions.some(
             contribution =>
               contribution.umbra &&
-              contribution.visibilityFactor <
-                0.5
+              contribution.visibilityFactor <=
+                0.000001
           );
 
         const hasPenumbra =
-          sample.radiation.contributions.some(
+          contributions.some(
             contribution =>
               contribution.penumbra ||
-              contribution.visibilityFactor <
-                0.999999
+              (
+                contribution.visibilityFactor >
+                  0.000001 &&
+                contribution.visibilityFactor <
+                  0.999999
+              )
           );
-
-        // SHADOW is the actual loss of direct light at this surface point.
-        // Umbra/Penumbra are kept as categorical diagnostics in parallel.
-
 
         const sampleData: SurfaceFieldSample = {
           latitude,
