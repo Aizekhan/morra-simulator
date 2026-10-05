@@ -287,6 +287,11 @@ export class CelestialInteractionSystem {
       const reflectedLight =
         moon.reflectedLight;
 
+      const sourceId =
+        moon.id === "moon-1"
+          ? "north-moon-reflection"
+          : "equator-moon-reflection";
+
       const enabled =
         MORRA_CONFIG.MOON_REFLECTION.enabled &&
         moon.body.mesh.visible;
@@ -300,6 +305,10 @@ export class CelestialInteractionSystem {
 
         reflectedLight.intensity =
           0;
+
+        this.radiation.removeDynamicSource(
+          sourceId
+        );
 
         continue;
       }
@@ -462,12 +471,32 @@ export class CelestialInteractionSystem {
           reflected;
       }
 
-      reflectedLight.intensity =
+      const reflectedLightPower =
         THREE.MathUtils.clamp(
           totalIntensity,
           0,
           MORRA_CONFIG.MOON_REFLECTION.maxIntensity
         );
+
+      reflectedLight.intensity =
+        reflectedLightPower;
+
+      this.radiation.addDynamicSource({
+        id:
+          sourceId,
+
+        body:
+          moon.body,
+
+        lightPower:
+          reflectedLightPower,
+
+        heatPower:
+          0,
+
+        magicPower:
+          0
+      });
 
       if(
         colorWeight >
