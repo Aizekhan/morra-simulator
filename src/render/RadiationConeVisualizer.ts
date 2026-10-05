@@ -389,53 +389,6 @@ export class RadiationConeVisualizer {
     return { u, v };
   }
 
-  private raySphereEntryDistance(
-    origin: THREE.Vector3,
-    direction: THREE.Vector3,
-    body: CelestialBody
-  ) {
-
-    const center =
-      body.mesh.getWorldPosition(
-        new THREE.Vector3()
-      );
-
-    const toCenter =
-      center.sub(origin);
-
-    const projection =
-      toCenter.dot(direction);
-
-    if(projection <= 0) {
-      return null;
-    }
-
-    const perpendicularSquared =
-      Math.max(
-        0,
-        toCenter.lengthSq() - projection * projection
-      );
-
-    const radius = Math.max(body.radius, 0);
-    const radiusSquared = radius * radius;
-
-    if(perpendicularSquared > radiusSquared) {
-      return null;
-    }
-
-    const offset =
-      Math.sqrt(
-        Math.max(
-          0,
-          radiusSquared - perpendicularSquared
-        )
-      );
-
-    const entry = projection - offset;
-
-    return entry > 1e-4 ? entry : null;
-  }
-
   private findNearestOccluderHit(
     source: CelestialBody,
     origin: THREE.Vector3,
