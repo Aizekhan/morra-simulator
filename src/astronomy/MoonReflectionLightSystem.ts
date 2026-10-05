@@ -12,10 +12,6 @@ import {
   MORRA_CONFIG
 } from "../world/MorraConfig";
 
-import {
-  RENDER_LAYERS
-} from "../render/RenderLayers";
-
 interface MoonReflectionTarget {
 
   id: string;
