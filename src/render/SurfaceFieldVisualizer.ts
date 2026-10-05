@@ -12,7 +12,10 @@ export type SurfaceFieldChannel =
   | "ANOMALY"
   | "SHADOW"
   | "UMBRA"
-  | "PENUMBRA";
+  | "PENUMBRA"
+  | "LIGHT_TOTAL"
+  | "HEAT_TOTAL"
+  | "MAGIC_TOTAL";
 
 export class SurfaceFieldVisualizer {
 
