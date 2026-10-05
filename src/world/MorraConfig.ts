@@ -352,11 +352,11 @@ DEBUG: {
 
   showTimeline: true,
 
-  showSurfaceField: true,
+  showSurfaceField: false,
 
   showRadiationRays: false,
 
-  showDirectIllumination: true
+  showDirectIllumination: false
 
 },
 
