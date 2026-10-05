@@ -42,6 +42,8 @@ export interface SurfaceFieldSample {
   largeSunLight: number;
   mediumSunLight: number;
   smallSunLight: number;
+  northMoonLight: number;
+  equatorMoonLight: number;
 }
 
 export interface SurfaceFieldStats {
@@ -82,10 +84,14 @@ export interface SurfaceFieldMap {
   largeSunLight: Float32Array;
   mediumSunLight: Float32Array;
   smallSunLight: Float32Array;
+  northMoonLight: Float32Array;
+  equatorMoonLight: Float32Array;
 
   largeSunLightStats: SurfaceFieldStats;
   mediumSunLightStats: SurfaceFieldStats;
   smallSunLightStats: SurfaceFieldStats;
+  northMoonLightStats: SurfaceFieldStats;
+  equatorMoonLightStats: SurfaceFieldStats;
 
   lightStats: SurfaceFieldStats;
 
@@ -324,6 +330,25 @@ export class SurfaceFieldEngine {
     const smallSunLight =
       new Float32Array(count);
 
+    const northMoonLight =
+      new Float32Array(count);
+
+    const equatorMoonLight =
+      new Float32Array(count);
+
+    let northMoonLightSum = 0;
+    let equatorMoonLightSum = 0;
+
+    let northMoonLightMin =
+      Number.POSITIVE_INFINITY;
+    let equatorMoonLightMin =
+      Number.POSITIVE_INFINITY;
+
+    let northMoonLightMax =
+      Number.NEGATIVE_INFINITY;
+    let equatorMoonLightMax =
+      Number.NEGATIVE_INFINITY;
+
     let largeSunLightSum = 0;
     let mediumSunLightSum = 0;
     let smallSunLightSum = 0;
@@ -548,7 +573,9 @@ export class SurfaceFieldEngine {
             contributions.find(
               contribution =>
                 contribution.sourceId === "small-sun"
-            )?.light ?? 0
+            )?.light ?? 0,
+          northMoonLight: 0,
+          equatorMoonLight: 0
         };
 
         samples[index] =
@@ -586,6 +613,39 @@ export class SurfaceFieldEngine {
 
         smallSunLight[index] =
           sampleData.smallSunLight;
+
+        northMoonLight[index] =
+          sampleData.northMoonLight;
+
+        equatorMoonLight[index] =
+          sampleData.equatorMoonLight;
+
+        northMoonLightSum +=
+          sampleData.northMoonLight;
+        equatorMoonLightSum +=
+          sampleData.equatorMoonLight;
+
+        northMoonLightMin =
+          Math.min(
+            northMoonLightMin,
+            sampleData.northMoonLight
+          );
+        equatorMoonLightMin =
+          Math.min(
+            equatorMoonLightMin,
+            sampleData.equatorMoonLight
+          );
+
+        northMoonLightMax =
+          Math.max(
+            northMoonLightMax,
+            sampleData.northMoonLight
+          );
+        equatorMoonLightMax =
+          Math.max(
+            equatorMoonLightMax,
+            sampleData.equatorMoonLight
+          );
 
         largeSunLightSum +=
           sampleData.largeSunLight;
@@ -740,6 +800,8 @@ export class SurfaceFieldEngine {
       largeSunLight,
       mediumSunLight,
       smallSunLight,
+      northMoonLight,
+      equatorMoonLight,
       largeSunLightStats: {
         min: largeSunLightMin,
         max: largeSunLightMax,
@@ -754,6 +816,16 @@ export class SurfaceFieldEngine {
         min: smallSunLightMin,
         max: smallSunLightMax,
         average: smallSunLightSum / count
+      },
+      northMoonLightStats: {
+        min: northMoonLightMin,
+        max: northMoonLightMax,
+        average: northMoonLightSum / count
+      },
+      equatorMoonLightStats: {
+        min: equatorMoonLightMin,
+        max: equatorMoonLightMax,
+        average: equatorMoonLightSum / count
       },
       lightStats: {
         min:
