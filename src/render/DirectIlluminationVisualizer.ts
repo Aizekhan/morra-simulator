@@ -393,7 +393,7 @@ export class DirectIlluminationVisualizer {
       this.engine.radiation.getSources();
 
     const occluders =
-      this.engine.getOccluders();
+      this.engine.environment.getOccluders();
 
     const moons =
       this.engine.getMoonBodies();
