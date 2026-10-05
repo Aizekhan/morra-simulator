@@ -21,7 +21,8 @@ export type SurfaceFieldChannel =
   | "SMALL_SUN"
   | "NORTH_MOON"
   | "EQUATOR_MOON"
-  | "SPECTRUM";
+  | "SPECTRUM"
+  | "DAY_NIGHT";
 
 export class SurfaceFieldVisualizer {
 
@@ -348,6 +349,12 @@ export class SurfaceFieldVisualizer {
           high: 0xffffff
         };
 
+      case "DAY_NIGHT":
+        return {
+          low: 0x020207,
+          high: 0xfff2b0
+        };
+
       case "SMALL_SUN":
         return {
           low: 0x07100a,
@@ -644,6 +651,9 @@ export class SurfaceFieldVisualizer {
       case "SPECTRUM":
         return map.light;
 
+      case "DAY_NIGHT":
+        return map.light;
+
       case "LIGHT_TOTAL":
         return map.light;
 
@@ -723,6 +733,14 @@ export class SurfaceFieldVisualizer {
       case "SPECTRUM":
         return map.lightStats;
 
+      case "DAY_NIGHT":
+        return {
+          min: 0,
+          max: 1,
+          average:
+            this.averageDayNight(map)
+        };
+
       case "LIGHT_TOTAL":
         return map.lightStats;
 
@@ -736,6 +754,34 @@ export class SurfaceFieldVisualizer {
       default:
         return map.magicStats;
     }
+  }
+
+  private averageDayNight(
+    map:
+      SurfaceFieldMap
+  ) {
+
+    let sum = 0;
+
+    for(
+      const value of
+      map.light
+    ) {
+
+      sum +=
+        value >
+        0
+          ? 1
+          : 0;
+    }
+
+    return (
+      sum /
+      Math.max(
+        map.light.length,
+        1
+      )
+    );
   }
 
   private recreateTexture(
