@@ -534,9 +534,16 @@ export class MorraSystem {
       );
 
     this.radiationConeVisualizer.setConfig({
-      enabled: true,
-      length: 2100,
-      radialScale: 1
+      enabled:
+        MORRA_CONFIG.RADIATION_CONES.enabled,
+      length:
+        MORRA_CONFIG.RADIATION_CONES.length,
+      radialScale:
+        MORRA_CONFIG.RADIATION_CONES.radialScale,
+      opacity:
+        MORRA_CONFIG.RADIATION_CONES.opacity,
+      edgeOpacity:
+        MORRA_CONFIG.RADIATION_CONES.edgeOpacity
     });
 
     this.continents =
@@ -749,6 +756,19 @@ export class MorraSystem {
     this.surfaceFieldVisualizer.update(
       fieldMap
     );
+
+    this.radiationConeVisualizer.setConfig({
+      enabled:
+        MORRA_CONFIG.RADIATION_CONES.enabled,
+      length:
+        MORRA_CONFIG.RADIATION_CONES.length,
+      radialScale:
+        MORRA_CONFIG.RADIATION_CONES.radialScale,
+      opacity:
+        MORRA_CONFIG.RADIATION_CONES.opacity,
+      edgeOpacity:
+        MORRA_CONFIG.RADIATION_CONES.edgeOpacity
+    });
 
     this.radiationConeVisualizer.update([
       this.sunLarge,
