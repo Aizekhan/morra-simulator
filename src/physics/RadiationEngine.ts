@@ -346,6 +346,9 @@ export class RadiationEngine {
     let penumbra =
       false;
 
+    let primaryOccluderId:
+      string | undefined;
+
     const blockingOccluderIds:
       string[] = [];
 
@@ -499,6 +502,17 @@ export class RadiationEngine {
         blockingOccluderIds.push(
           occluderId
         );
+
+        if(
+          primaryOccluderId ===
+          undefined ||
+          blockedFraction >
+          0
+        ) {
+          primaryOccluderId =
+            primaryOccluderId ??
+            occluderId;
+        }
       }
 
       visibility *=
@@ -513,6 +527,7 @@ export class RadiationEngine {
         return {
           factor: 0,
           blockingOccluderIds,
+          primaryOccluderId,
           umbra: true,
           penumbra
         };
@@ -527,6 +542,7 @@ export class RadiationEngine {
           1
         ),
       blockingOccluderIds,
+      primaryOccluderId,
       umbra,
       penumbra
     };
