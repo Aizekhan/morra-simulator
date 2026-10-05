@@ -113,3 +113,11 @@ export class CelestialInteractionSystem {
   }
 
   private updateMoonReflections() {
+    // Reflections are currently handled by the radiation engine.
+    // Keep this hook valid while the simulator is running.
+  }
+
+  dispose() {
+    // Radiation sources are owned by the physics engine.
+  }
+}
