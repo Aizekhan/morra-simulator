@@ -533,24 +533,59 @@ export class SurfaceFieldVisualizer {
               1
             );
 
-      const byte =
-        Math.round(
-          normalized *
-          255
-        );
-
       const offset =
         index *
         4;
 
+      let red =
+        normalized;
+
+      let green =
+        normalized;
+
+      let blue =
+        normalized;
+
+      if(
+        this.channel === "SPECTRUM"
+      ) {
+
+        red =
+          THREE.MathUtils.clamp(
+            map.spectrumRed[index],
+            0,
+            1
+          );
+
+        green =
+          THREE.MathUtils.clamp(
+            map.spectrumGreen[index],
+            0,
+            1
+          );
+
+        blue =
+          THREE.MathUtils.clamp(
+            map.spectrumBlue[index],
+            0,
+            1
+          );
+      }
+
       data[offset] =
-        byte;
+        Math.round(
+          red * 255
+        );
 
       data[offset + 1] =
-        byte;
+        Math.round(
+          green * 255
+        );
 
       data[offset + 2] =
-        byte;
+        Math.round(
+          blue * 255
+        );
 
       data[offset + 3] =
         255;
@@ -559,6 +594,7 @@ export class SurfaceFieldVisualizer {
     this.texture.needsUpdate =
       true;
   }
+
 
   private getChannelValues(
     map:
