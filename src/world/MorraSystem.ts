@@ -741,8 +741,13 @@ export class MorraSystem {
           : 100
     });
 
+    const showSurfaceField =
+      MORRA_CONFIG.DEBUG.showSurfaceField;
+
     const fieldMap =
-      this.surfaceFieldEngine.update(absoluteHours);
+      showSurfaceField
+        ? this.surfaceFieldEngine.update(absoluteHours)
+        : null;
 
     this.surfaceFieldVisualizer.setRadius(
       this.morra.radius
@@ -757,10 +762,12 @@ export class MorraSystem {
     );
 
     this.surfaceFieldVisualizer.setEnabled(
-      MORRA_CONFIG.DEBUG.showSurfaceField
+      showSurfaceField
     );
 
-    this.surfaceFieldVisualizer.update(fieldMap);
+    if(fieldMap) {
+      this.surfaceFieldVisualizer.update(fieldMap);
+    }
 
     // Radiation geometry is debug-only and is rebuilt from the already-updated
     // celestial positions, so it cannot oscillate between stale/current states.
