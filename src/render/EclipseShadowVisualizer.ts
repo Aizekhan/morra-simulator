@@ -200,12 +200,6 @@ export class EclipseShadowVisualizer {
                 break;
               }
 
-              vec3 surfaceDirection =
-                normalize(
-                  vWorldPosition -
-                  morraCenter
-                );
-
               float shadowSeparation =
                 acos(
                   clamp(
