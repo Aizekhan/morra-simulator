@@ -108,6 +108,8 @@ export class MorraSystem {
     // Morra is the actual world surface, not a distant-object marker.
     // Keep it on the real physically lit mesh at every camera distance.
     this.morra.mesh.userData.disablePresentationProxy = true;
+    this.morra.mesh.userData.celestialBody =
+      this.morra;
     this.morra.mesh.frustumCulled = false;
     this.morra.mesh.visible = true;
 
@@ -149,6 +151,9 @@ export class MorraSystem {
       this.moonNorth.mesh
     );
 
+    this.moonNorth.mesh.userData.celestialBody =
+      this.moonNorth;
+
     this.moonEquator =
       new CelestialBody(
         MORRA_CONFIG.MOON_EQUATOR.radius,
@@ -178,6 +183,9 @@ export class MorraSystem {
     scene.add(
       this.moonEquator.mesh
     );
+
+    this.moonEquator.mesh.userData.celestialBody =
+      this.moonEquator;
 
     this.sunLarge =
       new CelestialBody(
@@ -211,6 +219,9 @@ export class MorraSystem {
       this.sunLarge.mesh
     );
 
+    this.sunLarge.mesh.userData.celestialBody =
+      this.sunLarge;
+
     this.sunMedium =
       new CelestialBody(
         MORRA_CONFIG.SUN_MEDIUM.radius,
@@ -243,6 +254,9 @@ export class MorraSystem {
       this.sunMedium.mesh
     );
 
+    this.sunMedium.mesh.userData.celestialBody =
+      this.sunMedium;
+
     this.sunSmall =
       new CelestialBody(
         MORRA_CONFIG.SUN_SMALL.radius,
@@ -274,6 +288,9 @@ export class MorraSystem {
     scene.add(
       this.sunSmall.mesh
     );
+
+    this.sunSmall.mesh.userData.celestialBody =
+      this.sunSmall;
 
     this.celestialSystem =
       new CelestialSystem();
