@@ -102,9 +102,12 @@ export class Renderer {
     this.ambientLight =
       new THREE.AmbientLight(
         0xffffff,
-        MORRA_CONFIG.LIGHTS.ambient
+        0
       );
 
+    // Physical illumination comes from Morra's celestial radiation model.
+    // Ambient light is disabled so it cannot create a second, detached
+    // lighting solution that moves independently from the physical model.
     this.scene.add(
       this.ambientLight
     );
@@ -118,7 +121,7 @@ export class Renderer {
   update() {
 
     this.ambientLight.intensity =
-      MORRA_CONFIG.LIGHTS.ambient;
+      0;
 
   }
 
