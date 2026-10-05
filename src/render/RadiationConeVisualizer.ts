@@ -180,9 +180,7 @@ export class RadiationConeVisualizer {
       );
 
     const sourceToMorra =
-      morraPosition
-        .clone()
-        .sub(sourcePosition);
+      morraPosition.clone().sub(sourcePosition);
 
     const targetDistance =
       sourceToMorra.length();
@@ -203,13 +201,7 @@ export class RadiationConeVisualizer {
       );
 
     const visibleDistance =
-      Math.max(
-        0,
-        Math.min(
-          targetDistance,
-          occlusionHit?.distance ?? targetDistance
-        )
-      );
+      occlusionHit?.distance ?? targetDistance;
 
     if(visibleDistance <= 1) {
       return;
@@ -254,18 +246,13 @@ export class RadiationConeVisualizer {
       );
 
     const geometry =
-      this.createTruncatedConeGeometry(
+      this.createConeGeometry(
         sourcePosition,
         direction,
         coneDepth,
         startRadius,
-        endRadius,
-        occlusionHit?.body ?? null
+        endRadius
       );
-
-    if(!geometry) {
-      return;
-    }
 
     const material =
       new THREE.MeshBasicMaterial({
@@ -278,15 +265,10 @@ export class RadiationConeVisualizer {
       });
 
     const mesh =
-      new THREE.Mesh(
-        geometry,
-        material
-      );
+      new THREE.Mesh(geometry, material);
 
     const edgeGeometry =
-      new THREE.EdgesGeometry(
-        geometry
-      );
+      new THREE.EdgesGeometry(geometry);
 
     const edgeMaterial =
       new THREE.LineBasicMaterial({
@@ -296,13 +278,12 @@ export class RadiationConeVisualizer {
         depthWrite: false
       });
 
-    const edges =
+    mesh.add(
       new THREE.LineSegments(
         edgeGeometry,
         edgeMaterial
-      );
-
-    mesh.add(edges);
+      )
+    );
 
     const group =
       new THREE.Group();
@@ -311,7 +292,6 @@ export class RadiationConeVisualizer {
       definition.id + "-cone-group";
 
     group.add(mesh);
-
     this.root.add(group);
 
     this.visuals.push({
@@ -321,24 +301,22 @@ export class RadiationConeVisualizer {
     });
   }
 
-  private createTruncatedConeGeometry(
+  private createConeGeometry(
     sourcePosition: THREE.Vector3,
     direction: THREE.Vector3,
     depth: number,
     startRadius: number,
-    endRadius: number,
-    occluder: CelestialBody | null
+    endRadius: number
   ) {
 
-    const radialSegments = 48;
-    const rows = 8;
+    const radialSegments = 32;
     const basis = this.buildPerpendicularBasis(direction);
     const vertices: number[] = [];
     const indices: number[] = [];
 
-    for(let row = 0; row <= rows; row++) {
-      const t = row / rows;
-      const distance = t * depth;
+    for(let row = 0; row <= 6; row++) {
+      const t = row / 6;
+      const distance = depth * t;
       const radius = THREE.MathUtils.lerp(
         startRadius,
         endRadius,
@@ -355,54 +333,24 @@ export class RadiationConeVisualizer {
               basis.v.clone().multiplyScalar(Math.sin(angle))
             );
 
-        let vertexDistance = distance;
-
-        if(occluder) {
-          const hit = this.raySphereEntryDistance(
-            sourcePosition
-              .clone()
-              .addScaledVector(radial, Math.max(0, radius)),
-            direction,
-            occluder
-          );
-
-          if(hit !== null) {
-            vertexDistance = Math.min(vertexDistance, hit);
-          }
-        }
-
-        const center =
-          sourcePosition
-            .clone()
-            .addScaledVector(direction, vertexDistance);
-
         const position =
-          center
+          sourcePosition.clone()
+            .addScaledVector(direction, distance)
             .addScaledVector(radial, radius);
 
-        vertices.push(
-          position.x,
-          position.y,
-          position.z
-        );
+        vertices.push(position.x, position.y, position.z);
       }
     }
 
-    for(let row = 0; row < rows; row++) {
+    for(let row = 0; row < 6; row++) {
       for(let segment = 0; segment < radialSegments; segment++) {
         const next = (segment + 1) % radialSegments;
         const a = row * radialSegments + segment;
         const b = row * radialSegments + next;
         const c = (row + 1) * radialSegments + next;
         const d = (row + 1) * radialSegments + segment;
-
-        indices.push(a, b, d);
-        indices.push(b, c, d);
+        indices.push(a, b, d, b, c, d);
       }
-    }
-
-    if(vertices.length < 9 || indices.length < 3) {
-      return null;
     }
 
     const geometry =
