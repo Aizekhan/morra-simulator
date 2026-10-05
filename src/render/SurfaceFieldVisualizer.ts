@@ -31,6 +31,12 @@ export class SurfaceFieldVisualizer {
   private readonly texture:
     THREE.DataTexture;
 
+  private readonly valueTexture:
+    THREE.DataTexture;
+
+  private readonly normalTexture:
+    THREE.DataTexture;
+
   private channel:
     SurfaceFieldChannel =
       "MAGIC";
@@ -83,7 +89,35 @@ export class SurfaceFieldVisualizer {
       true;
 
     this.texture.minFilter =
+      THREE.LinearFilter;    this.valueTexture =
+      this.texture;
+
+    this.normalTexture =
+      new THREE.DataTexture(
+        new Uint8Array(
+          initialWidth *
+          initialHeight *
+          4
+        ),
+        initialWidth,
+        initialHeight,
+        THREE.RGBAFormat,
+        THREE.UnsignedByteType
+      );
+
+    this.normalTexture.colorSpace =
+      THREE.NoColorSpace;
+
+    this.normalTexture.flipY =
+      true;
+
+    this.normalTexture.minFilter =
       THREE.LinearFilter;
+
+    this.normalTexture.magFilter =
+      THREE.LinearFilter;
+
+
 
     this.texture.magFilter =
       THREE.LinearFilter;
@@ -116,6 +150,10 @@ export class SurfaceFieldVisualizer {
           highColor: {
             value:
               new THREE.Color(0x4de9ff)
+          },
+          valueTexture: {
+            value:
+              this.valueTexture
           }
         },
         vertexShader: `
@@ -138,6 +176,7 @@ export class SurfaceFieldVisualizer {
           uniform float opacity;
           uniform vec3 lowColor;
           uniform vec3 highColor;
+          uniform sampler2D valueTexture;
 
           varying vec2 vUv;
 
@@ -145,9 +184,17 @@ export class SurfaceFieldVisualizer {
 
             float value =
               texture2D(
-                fieldTexture,
+                valueTexture,
                 vUv
               ).r;
+
+            if(value <= 0.0001) {
+              value =
+                texture2D(
+                  fieldTexture,
+                  vUv
+                ).r;
+            }
 
             vec3 color =
               mix(
