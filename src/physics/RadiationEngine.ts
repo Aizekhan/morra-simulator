@@ -378,6 +378,7 @@ export class RadiationEngine {
       return {
         factor: 0,
         blockingOccluderIds,
+        primaryOccluderId,
         umbra: true,
         penumbra: false
       };
