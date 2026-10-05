@@ -89,7 +89,9 @@ export class SurfaceFieldVisualizer {
       true;
 
     this.texture.minFilter =
-      THREE.LinearFilter;    this.valueTexture =
+      THREE.LinearFilter;
+
+    this.valueTexture =
       this.texture;
 
     this.normalTexture =
