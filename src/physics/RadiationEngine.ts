@@ -373,6 +373,11 @@ export class RadiationEngine {
         continue;
       }
 
+      // Only bodies intersecting the source direction are relevant
+      // for the surface point. Keep the test angular rather than
+      // relying on a center-line ray so extended suns and moons
+      // produce real penumbra/umbra regions.
+
       const occluderDirection =
         occluderVector
           .clone()
