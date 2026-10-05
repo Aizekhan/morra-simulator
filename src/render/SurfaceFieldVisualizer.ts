@@ -153,7 +153,6 @@ export class SurfaceFieldVisualizer {
           uniform float opacity;
           uniform vec3 lowColor;
           uniform vec3 highColor;
-          uniform sampler2D valueTexture;
 
           varying vec2 vUv;
 
@@ -161,17 +160,9 @@ export class SurfaceFieldVisualizer {
 
             float value =
               texture2D(
-                valueTexture,
+                fieldTexture,
                 vUv
               ).r;
-
-            if(value <= 0.0001) {
-              value =
-                texture2D(
-                  fieldTexture,
-                  vUv
-                ).r;
-            }
 
             vec3 color =
               mix(
