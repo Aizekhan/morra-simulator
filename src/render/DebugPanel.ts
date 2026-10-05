@@ -689,6 +689,50 @@ export class DebugPanel {
       "showRadiationRays"
     ).name("POINT DEBUG").listen();
 
+    const radiationFolder =
+      folder.addFolder(
+        "RADIATION CONES"
+      );
+
+    radiationFolder.add(
+      MORRA_CONFIG.RADIATION_CONES,
+      "enabled"
+    ).name("VISIBLE").listen();
+
+    radiationFolder.add(
+      MORRA_CONFIG.RADIATION_CONES,
+      "length",
+      100,
+      10000,
+      25
+    ).name("LENGTH").listen();
+
+    radiationFolder.add(
+      MORRA_CONFIG.RADIATION_CONES,
+      "radialScale",
+      0.1,
+      5,
+      0.1
+    ).name("RADIAL SCALE").listen();
+
+    radiationFolder.add(
+      MORRA_CONFIG.RADIATION_CONES,
+      "opacity",
+      0,
+      1,
+      0.01
+    ).name("OPACITY").listen();
+
+    radiationFolder.add(
+      MORRA_CONFIG.RADIATION_CONES,
+      "edgeOpacity",
+      0,
+      1,
+      0.01
+    ).name("EDGE OPACITY").listen();
+
+    radiationFolder.close();
+
     const shadowFolder =
       folder.addFolder(
         "SHADOW VOLUMES"
