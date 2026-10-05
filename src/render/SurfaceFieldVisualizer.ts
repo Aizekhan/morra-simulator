@@ -15,7 +15,10 @@ export type SurfaceFieldChannel =
   | "PENUMBRA"
   | "LIGHT_TOTAL"
   | "HEAT_TOTAL"
-  | "MAGIC_TOTAL";
+  | "MAGIC_TOTAL"
+  | "LARGE_SUN"
+  | "MEDIUM_SUN"
+  | "SMALL_SUN";
 
 export class SurfaceFieldVisualizer {
 
@@ -301,6 +304,24 @@ export class SurfaceFieldVisualizer {
           high: 0xff4d00
         };
 
+      case "LARGE_SUN":
+        return {
+          low: 0x05070f,
+          high: 0xffcc88
+        };
+
+      case "MEDIUM_SUN":
+        return {
+          low: 0x08101a,
+          high: 0xff8a3d
+        };
+
+      case "SMALL_SUN":
+        return {
+          low: 0x07100a,
+          high: 0xffffaa
+        };
+
       case "LIGHT_TOTAL":
         return {
           low: 0x061020,
@@ -530,6 +551,15 @@ export class SurfaceFieldVisualizer {
       case "PENUMBRA":
         return map.penumbra;
 
+      case "LARGE_SUN":
+        return map.largeSunLight;
+
+      case "MEDIUM_SUN":
+        return map.mediumSunLight;
+
+      case "SMALL_SUN":
+        return map.smallSunLight;
+
       case "LIGHT_TOTAL":
         return map.light;
 
@@ -590,6 +620,15 @@ export class SurfaceFieldVisualizer {
           max: 1,
           average: 0
         };
+
+      case "LARGE_SUN":
+        return map.largeSunLightStats;
+
+      case "MEDIUM_SUN":
+        return map.mediumSunLightStats;
+
+      case "SMALL_SUN":
+        return map.smallSunLightStats;
 
       case "LIGHT_TOTAL":
         return map.lightStats;
