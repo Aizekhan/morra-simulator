@@ -590,7 +590,10 @@ export class RadiationEngine {
       const occluder of occluders
     ) {
 
-      if(occluder === source.body) {
+      if(
+        occluder === source.body ||
+        occluder.mesh.visible === false
+      ) {
         continue;
       }
 
@@ -598,29 +601,6 @@ export class RadiationEngine {
         occluder.mesh.getWorldPosition(
           new THREE.Vector3()
         );
-
-      const toOccluder =
-        occluderPosition.clone().sub(worldPoint);
-
-      const occluderDistance =
-        toOccluder.length();
-
-      if(occluderDistance <= RadiationEngine.EPSILON) {
-        continue;
-      }
-
-      const incomingDirection =
-        toOccluder.clone().normalize();
-
-      const receiveFactor =
-        Math.max(
-          0,
-          surfaceNormal.dot(incomingDirection)
-        );
-
-      if(receiveFactor <= RadiationEngine.EPSILON) {
-        continue;
-      }
 
       const sourceToOccluder =
         occluderPosition.clone().sub(sourcePosition);
@@ -635,25 +615,16 @@ export class RadiationEngine {
       const sourceDirection =
         sourceToOccluder.clone().normalize();
 
-      const occluderNormalToSource =
-        sourceDirection.clone().negate();
-
-      const illuminatedSide =
-        Math.max(
-          0,
-          occluderNormalToSource.dot(incomingDirection.clone().negate())
-        );
-
-      if(illuminatedSide <= RadiationEngine.EPSILON) {
-        continue;
-      }
-
       const sourceVisibility =
         this.getVisibilityDetails(
           occluderPosition,
           source,
           occluders
         );
+
+      if(sourceVisibility.factor <= RadiationEngine.EPSILON) {
+        continue;
+      }
 
       const sourceIrradiance =
         source.lightPower /
@@ -663,34 +634,72 @@ export class RadiationEngine {
         ) *
         sourceVisibility.factor;
 
-      const reflectedPower =
-        sourceIrradiance *
-        Math.PI *
-        occluder.radius *
-        occluder.radius *
-        0.08 *
-        illuminatedSide;
+      const toPoint =
+        worldPoint.clone().sub(occluderPosition);
+
+      const occluderToPointDistance =
+        toPoint.length();
+
+      if(occluderToPointDistance <= RadiationEngine.EPSILON) {
+        continue;
+      }
+
+      const directionToPoint =
+        toPoint.clone().normalize();
+
+      const surfaceReceiveFactor =
+        Math.max(
+          0,
+          surfaceNormal.dot(directionToPoint)
+        );
+
+      if(surfaceReceiveFactor <= RadiationEngine.EPSILON) {
+        continue;
+      }
+
+      const occluderNormalToSource =
+        sourceDirection.clone().negate();
+
+      const reflectedDirectionFactor =
+        Math.max(
+          0,
+          occluderNormalToSource.dot(directionToPoint)
+        );
+
+      if(reflectedDirectionFactor <= RadiationEngine.EPSILON) {
+        continue;
+      }
+
+      const returnSource: RadiationSource = {
+        id:
+          "reflection-" + occluder.mesh.uuid,
+        body:
+          occluder,
+        lightPower:
+          sourceIrradiance *
+          Math.PI *
+          occluder.radius *
+          occluder.radius *
+          0.08 *
+          reflectedDirectionFactor,
+        heatPower: 0,
+        magicPower: 0
+      };
 
       const returnVisibility =
         this.getVisibilityDetails(
           worldPoint,
-          {
-            id: "reflection-" + occluder.mesh.uuid,
-            body: occluder,
-            lightPower: reflectedPower,
-            heatPower: 0,
-            magicPower: 0
-          },
+          returnSource,
           occluders
         );
 
       reflected +=
-        reflectedPower /
+        returnSource.lightPower /
         (
-          occluderDistance *
-          occluderDistance
+          occluderToPointDistance *
+          occluderToPointDistance
         ) *
-        receiveFactor *
+        surfaceReceiveFactor *
         returnVisibility.factor;
     }
 
