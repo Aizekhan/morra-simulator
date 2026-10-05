@@ -213,31 +213,28 @@ export class ShadowVolumeVisualizer {
 
   update() {
 
+    if(
+      !this.config.enabled
+    ) {
+      if(this.root.visible) {
+        this.clear();
+      }
+      this.lastSignature = null;
+      this.root.visible = false;
+      return;
+    }
+
     const signature =
       this.getSceneSignature();
 
     if(
-      !this.dirty &&
-      signature ===
-        this.lastSignature
+      signature === this.lastSignature &&
+      !this.dirty
     ) {
       return;
     }
 
-    if(
-      !this.config.enabled
-    ) {
-      this.clear();
-      this.lastSignature =
-        null;
-      this.root.visible =
-        false;
-      return;
-    }
-
-    this.root.visible =
-      true;
-
+    this.root.visible = true;
     this.clear();
 
     const sources =
@@ -246,60 +243,38 @@ export class ShadowVolumeVisualizer {
     const occluders =
       this.engine.getOccluders();
 
-    for(
-      const source
-      of sources
-    ) {
-
-      if(
-        !source.body.mesh.visible
-      ) {
+    for(const source of sources) {
+      if(!source.body.mesh.visible) {
         continue;
       }
 
-      for(
-        const occluder
-        of occluders
-      ) {
-
+      for(const occluder of occluders) {
         if(
-          occluder ===
-          source.body ||
+          occluder === source.body ||
           !occluder.mesh.visible
         ) {
           continue;
         }
 
         const pair: ShadowPair = {
-          source:
-            source.body.mesh,
-          occluder:
-            occluder.mesh,
-          sourceBody:
-            source.body,
-          occluderBody:
-            occluder,
-          umbra:
-            null,
-          penumbra:
-            null
+          source: source.body.mesh,
+          occluder: occluder.mesh,
+          sourceBody: source.body,
+          occluderBody: occluder,
+          umbra: null,
+          penumbra: null
         };
 
-        this.pairs.push(
-          pair
-        );
+        this.buildPairGeometry(pair);
 
-        this.buildPairGeometry(
-          pair
-        );
+        if(pair.umbra || pair.penumbra) {
+          this.pairs.push(pair);
+        }
       }
     }
 
-    this.lastSignature =
-      signature;
-
-    this.dirty =
-      false;
+    this.lastSignature = signature;
+    this.dirty = false;
   }
 
   private buildPairGeometry(
