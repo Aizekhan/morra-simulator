@@ -717,6 +717,14 @@ export class DebugPanel {
 
     radiationFolder.add(
       MORRA_CONFIG.RADIATION_CONES,
+      "rangeScale",
+      0.1,
+      5,
+      0.1
+    ).name("RANGE SCALE").listen();
+
+    radiationFolder.add(
+      MORRA_CONFIG.RADIATION_CONES,
       "opacity",
       0,
       1,
