@@ -214,6 +214,8 @@ export class SurfaceFieldHUD {
         return "NORTH MOON";
       case "EQUATOR_MOON":
         return "EQUATOR MOON";
+      case "SPECTRUM":
+        return "SPECTRUM";
       case "LIGHT_TOTAL":
         return "LIGHT TOTAL";
       case "HEAT_TOTAL":
@@ -285,6 +287,8 @@ export class SurfaceFieldHUD {
         return map.northMoonLightStats;
       case "EQUATOR_MOON":
         return map.equatorMoonLightStats;
+      case "SPECTRUM":
+        return map.lightStats;
       case "LIGHT_TOTAL":
         return map.lightStats;
       case "HEAT_TOTAL":
@@ -399,6 +403,11 @@ export class SurfaceFieldHUD {
         return {
           low: "#10101f",
           high: "#d0a8ff"
+        };
+      case "SPECTRUM":
+        return {
+          low: "#05050a",
+          high: "#ffffff"
         };
       case "LIGHT_TOTAL":
         return {
