@@ -601,6 +601,9 @@ export class DebugPanel {
       MORRA_CONFIG.SURFACE_FIELD,
       "channel",
       [
+        "LIGHT_TOTAL",
+        "HEAT_TOTAL",
+        "MAGIC_TOTAL",
         "LIGHT",
         "HEAT",
         "MAGIC",
