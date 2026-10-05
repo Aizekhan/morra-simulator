@@ -5,36 +5,26 @@ import {
 } from "../astronomy/CelestialBody";
 
 interface PresentationProxy {
-
   body: CelestialBody;
-
   mesh: THREE.Mesh;
-
   minimumPixels: number;
 }
 
 export class CelestialPresentationSystem {
 
-  private readonly scene:
-    THREE.Scene;
+  private readonly scene: THREE.Scene;
 
-  private readonly proxies:
-    PresentationProxy[] = [];
+  private readonly proxies: PresentationProxy[] = [];
 
-  private readonly maximumScale:
-    number;
+  private readonly maximumScale: number;
 
   constructor(
-    scene:
-      THREE.Scene,
-    bodies:
-      CelestialBody[],
-    maximumScale =
-      20
+    scene: THREE.Scene,
+    bodies: CelestialBody[],
+    maximumScale = 20
   ) {
 
-    this.scene =
-      scene;
+    this.scene = scene;
 
     this.maximumScale =
       Math.max(
@@ -43,13 +33,11 @@ export class CelestialPresentationSystem {
       );
 
     for(
-      const body
-      of bodies
+      const body of bodies
     ) {
 
-      // Morra is the primary world body. It must always use its real
-      // physically lit mesh; switching it to a flat proxy by camera
-      // distance makes the planet appear/disappear when zooming.
+      // Presentation is a fallback for genuinely tiny distant bodies.
+      // The real mesh is never hidden by this system.
       if(
         body.mesh.userData.disablePresentationProxy === true
       ) {
@@ -99,18 +87,15 @@ export class CelestialPresentationSystem {
         minimumPixels:
           Math.max(
             4,
-            body.mesh.userData.presentationMinimumPixels ??
-              10
+            body.mesh.userData.presentationMinimumPixels ?? 10
           )
       });
     }
   }
 
   update(
-    camera:
-      THREE.PerspectiveCamera,
-    viewportHeight:
-      number
+    camera: THREE.PerspectiveCamera,
+    viewportHeight: number
   ) {
 
     const height =
@@ -122,28 +107,22 @@ export class CelestialPresentationSystem {
     const cameraTan =
       Math.tan(
         THREE.MathUtils.degToRad(
-          camera.fov *
-          0.5
+          camera.fov * 0.5
         )
       );
 
     for(
-      const proxy
-      of this.proxies
+      const proxy of this.proxies
     ) {
 
       const bodyMesh =
         proxy.body.mesh;
 
-      if(
-        !bodyMesh.visible
-      ) {
-
-        proxy.mesh.visible =
-          false;
-
-        continue;
-      }
+      // Never hide the real body. This is the critical invariant:
+      // orbit visibility and physical-body visibility must not depend
+      // on presentation/LOD decisions.
+      bodyMesh.visible =
+        true;
 
       const worldPosition =
         bodyMesh.getWorldPosition(
@@ -178,14 +157,14 @@ export class CelestialPresentationSystem {
         0
       );
 
+      // The real mesh is already visible. Proxy is only a minimum-pixel
+      // readability aid and must never replace the real body.
       if(
         projectedDiameter >=
         proxy.minimumPixels
       ) {
-
         proxy.mesh.visible =
           false;
-
         continue;
       }
 
@@ -211,12 +190,9 @@ export class CelestialPresentationSystem {
         );
 
       proxy.mesh.scale.set(
-        proxy.body.radius *
-          scale,
-        proxy.body.radius *
-          scale,
-        proxy.body.radius *
-          scale
+        proxy.body.radius * scale,
+        proxy.body.radius * scale,
+        proxy.body.radius * scale
       );
 
       if(
@@ -237,8 +213,7 @@ export class CelestialPresentationSystem {
   dispose() {
 
     for(
-      const proxy
-      of this.proxies
+      const proxy of this.proxies
     ) {
 
       proxy.mesh.geometry.dispose();
