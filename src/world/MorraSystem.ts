@@ -38,6 +38,10 @@ import {
 } from "../render/RadiationConeVisualizer";
 
 import {
+  EclipseShadowVisualizer
+} from "../render/EclipseShadowVisualizer";
+
+import {
   MORRA_CONTINENTS,
   latitudeLongitudeToDirection
 } from "./MorraContinents";
@@ -83,6 +87,9 @@ export class MorraSystem {
 
   radiationConeVisualizer:
     RadiationConeVisualizer;
+
+  eclipseShadowVisualizer:
+    EclipseShadowVisualizer;
 
   continents:
     THREE.Group;
@@ -565,6 +572,20 @@ export class MorraSystem {
         MORRA_CONFIG.RADIATION_CONES.edgeOpacity
     });
 
+    this.eclipseShadowVisualizer =
+      new EclipseShadowVisualizer(
+        scene,
+        this.morra,
+        {
+          enabled:
+            true,
+          opacity:
+            0.32,
+          softness:
+            0.18
+        }
+      );
+
     this.continents =
       new THREE.Group();
 
@@ -786,6 +807,13 @@ export class MorraSystem {
       this.sunSmall
     ]);
 
+    this.eclipseShadowVisualizer.update(
+      this.celestialInteractionSystem.radiation.getSources().map(
+        source => source.body
+      ),
+      this.environmentEngine.getOccluders()
+    );
+
     this.shadowVolumeVisualizer.setConfig({
       enabled: MORRA_CONFIG.SHADOW_VOLUMES.enabled,
       length: MORRA_CONFIG.SHADOW_VOLUMES.length,
@@ -827,6 +855,8 @@ export class MorraSystem {
     this.radiationConeVisualizer.dispose();
 
     this.shadowVolumeVisualizer.dispose();
+
+    this.eclipseShadowVisualizer.dispose();
 
 
 
