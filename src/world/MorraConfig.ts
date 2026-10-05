@@ -273,7 +273,7 @@ export const MORRA_CONFIG = {
 
     updateIntervalHours: 0.25,
 
-    channel: "SHADOW" as
+    channel: "LIGHT_TOTAL" as
       "LIGHT" |
       "HEAT" |
       "MAGIC" |
@@ -281,7 +281,13 @@ export const MORRA_CONFIG = {
       "ANOMALY" |
       "SHADOW" |
       "UMBRA" |
-      "PENUMBRA",
+      "PENUMBRA" |
+      "LIGHT_TOTAL" |
+      "HEAT_TOTAL" |
+      "MAGIC_TOTAL",
+      "LIGHT_TOTAL",
+      "HEAT_TOTAL",
+      "MAGIC_TOTAL",
 
     opacity: 0.22
 
