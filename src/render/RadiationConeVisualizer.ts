@@ -67,7 +67,24 @@ export class RadiationConeVisualizer {
     const distance=sourceToMorra.length();
     if(distance<=1e-6) return;
 
-    const direction=sourceToMorra.clone().normalize();
+    const direction =
+      sourceToMorra.clone().normalize();
+
+    const occlusionEnd =
+      this.findNearestOccluderDistance(
+        sourcePosition,
+        direction,
+        distance
+      );
+
+    const visibleDistance =
+      Math.max(
+        0,
+        Math.min(
+          distance,
+          occlusionEnd
+        )
+      );
 
     const sizeFactor =
       source.radius /
@@ -81,17 +98,12 @@ export class RadiationConeVisualizer {
       sizeFactor *
       this.rangeScale;
 
-    const startOffset =
-      Math.max(
-        0,
-        distance -
-        this.morra.radius
-      );
-
     const coneDepth =
       Math.max(
-        influenceRange +
-        startOffset,
+        Math.min(
+          influenceRange,
+          visibleDistance
+        ),
         1
       );
 
@@ -166,6 +178,131 @@ export class RadiationConeVisualizer {
     group.add(mesh);
     this.root.add(group);
     this.visuals.push({group,material});
+  }
+
+  private findNearestOccluderDistance(
+    origin: THREE.Vector3,
+    direction: THREE.Vector3,
+    maxDistance: number
+  ) {
+
+    const candidates =
+      [
+        this.morra,
+        ...this.getSceneCelestialBodies()
+      ];
+
+    let nearest =
+      maxDistance;
+
+    for(
+      const body of candidates
+    ) {
+
+      const center =
+        body.mesh.getWorldPosition(
+          new THREE.Vector3()
+        );
+
+      const toCenter =
+        center
+          .sub(origin);
+
+      const projection =
+        toCenter.dot(
+          direction
+        );
+
+      if(
+        projection <= 0 ||
+        projection >= nearest
+      ) {
+        continue;
+      }
+
+      const perpendicular =
+        toCenter
+          .sub(
+            direction
+              .clone()
+              .multiplyScalar(
+                projection
+              )
+          );
+
+      const radial =
+        Math.max(
+          0,
+          body.radius
+        );
+
+      const radialSquared =
+        radial *
+        radial;
+
+      const perpendicularSquared =
+        perpendicular.lengthSq();
+
+      if(
+        perpendicularSquared >
+        radialSquared
+      ) {
+        continue;
+      }
+
+      const hitOffset =
+        Math.sqrt(
+          Math.max(
+            0,
+            radialSquared -
+            perpendicularSquared
+          )
+        );
+
+      const entry =
+        projection -
+        hitOffset;
+
+      if(
+        entry > 1e-4
+      ) {
+        nearest =
+          Math.min(
+            nearest,
+            entry
+          );
+      }
+    }
+
+    return nearest;
+  }
+
+  private getSceneCelestialBodies() {
+    const bodies:
+      CelestialBody[] = [];
+
+    this.scene.traverse(
+      object => {
+
+        const body =
+          object.userData
+            .celestialBody as
+            CelestialBody |
+            undefined;
+
+        if(
+          body &&
+          body !== this.morra &&
+          !bodies.includes(body)
+        ) {
+          bodies.push(
+            body
+          );
+        }
+      }
+    );
+
+    return bodies;
   }
 
   private projectedRadius(sourceRadius:number,distance:number){
