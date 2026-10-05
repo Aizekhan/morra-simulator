@@ -84,7 +84,7 @@ const eventPanel =
 
 const environmentPanel =
   new EnvironmentInspectorPanel(
-    simulation.morraSystem.environmentEngine
+    simulation.morraSystem.celestialInteractionSystem
   );
 
 const surfaceFieldHUD =
