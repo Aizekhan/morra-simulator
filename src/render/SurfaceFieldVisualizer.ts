@@ -85,6 +85,9 @@ export class SurfaceFieldVisualizer {
     this.texture.magFilter =
       THREE.LinearFilter;
 
+    this.texture.colorSpace =
+      THREE.NoColorSpace;
+
     this.texture.needsUpdate =
       true;
 
@@ -93,6 +96,7 @@ export class SurfaceFieldVisualizer {
         transparent: true,
         depthWrite: false,
         side: THREE.DoubleSide,
+        toneMapped: false,
         uniforms: {
           fieldTexture: {
             value:
@@ -156,6 +160,10 @@ export class SurfaceFieldVisualizer {
                 0.001,
                 value
               );
+
+            if(alpha <= 0.001) {
+              discard;
+            }
 
             gl_FragColor =
               vec4(
@@ -540,6 +548,9 @@ export class SurfaceFieldVisualizer {
         width,
         height
       };
+
+    this.texture.colorSpace =
+      THREE.NoColorSpace;
 
     this.width =
       width;
