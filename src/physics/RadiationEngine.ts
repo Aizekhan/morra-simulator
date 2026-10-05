@@ -69,6 +69,8 @@ export class RadiationEngine {
 
   private readonly sources: RadiationSource[] = [];
 
+  static readonly BASE_RADIATION_RANGE = 10000;
+
   private static readonly EPSILON =
     1e-8;
 
