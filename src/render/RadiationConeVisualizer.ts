@@ -76,13 +76,23 @@ export class RadiationConeVisualizer {
         1e-6
       );
 
+    const influenceRange =
+      this.length *
+      sizeFactor *
+      this.rangeScale;
+
+    const startOffset =
+      Math.max(
+        0,
+        distance -
+        this.morra.radius
+      );
+
     const coneDepth =
       Math.max(
-        distance +
-        this.length *
-        sizeFactor *
-        this.rangeScale,
-        this.length
+        influenceRange +
+        startOffset,
+        1
       );
 
     const radiusAtMorra =
