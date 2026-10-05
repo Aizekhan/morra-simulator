@@ -395,6 +395,13 @@ export class EclipseShadowVisualizer {
       this.material.uniforms.occluderAngularRadii.value as
       Float32Array;
 
+    for(let i = 0; i < 4; i++) {
+      sourcePositions[i].set(0, 0, 0);
+      occluderDirections[i].set(0, 0, 1);
+      sourceAngularRadii[i] = 0;
+      occluderAngularRadii[i] = 0;
+    }
+
     let count =
       0;
 
