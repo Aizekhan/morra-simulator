@@ -153,7 +153,7 @@ export class SurfaceFieldVisualizer {
               opacity *
               smoothstep(
                 0.0,
-                0.02,
+                0.001,
                 value
               );
 
@@ -271,8 +271,8 @@ export class SurfaceFieldVisualizer {
 
       case "SHADOW":
         return {
-          low: 0x061526,
-          high: 0xff1b24
+          low: 0x07101e,
+          high: 0xff2633
         };
 
       case "UMBRA":
