@@ -88,10 +88,6 @@ export class MoonReflectionLightSystem {
     body: CelestialBody
   ) {
 
-    body.mesh.layers.set(
-      RENDER_LAYERS.MOON_LIGHT_RECEIVER
-    );
-
     const light =
       new THREE.PointLight(
         0xffffff,
