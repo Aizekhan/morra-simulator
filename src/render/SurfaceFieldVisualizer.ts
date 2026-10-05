@@ -280,6 +280,24 @@ export class SurfaceFieldVisualizer {
           high: 0xff4d00
         };
 
+      case "LIGHT_TOTAL":
+        return {
+          low: 0x061020,
+          high: 0xfff1a8
+        };
+
+      case "HEAT_TOTAL":
+        return {
+          low: 0x10152a,
+          high: 0xff3218
+        };
+
+      case "MAGIC_TOTAL":
+        return {
+          low: 0x12002d,
+          high: 0x6f4dff
+        };
+
       case "SHADOW":
         return {
           low: 0x07101e,
@@ -491,6 +509,15 @@ export class SurfaceFieldVisualizer {
       case "PENUMBRA":
         return map.penumbra;
 
+      case "LIGHT_TOTAL":
+        return map.light;
+
+      case "HEAT_TOTAL":
+        return map.heat;
+
+      case "MAGIC_TOTAL":
+        return map.magic;
+
       case "MAGIC":
       default:
         return map.magic;
@@ -542,6 +569,15 @@ export class SurfaceFieldVisualizer {
           max: 1,
           average: 0
         };
+
+      case "LIGHT_TOTAL":
+        return map.lightStats;
+
+      case "HEAT_TOTAL":
+        return map.heatStats;
+
+      case "MAGIC_TOTAL":
+        return map.magicStats;
 
       case "MAGIC":
       default:
