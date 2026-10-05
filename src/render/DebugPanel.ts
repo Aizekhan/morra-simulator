@@ -610,6 +610,7 @@ export class DebugPanel {
         "NORTH_MOON",
         "EQUATOR_MOON",
         "SPECTRUM",
+        "DAY_NIGHT",
         "LIGHT",
         "HEAT",
         "MAGIC",
