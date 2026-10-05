@@ -1,7 +1,5 @@
 import * as THREE from "three";
 
-import { MORRA_CONFIG } from "../world/MorraConfig";
-
 export class Renderer {
 
   scene: THREE.Scene;
