@@ -160,7 +160,10 @@ export class EnvironmentInspectorPanel {
     ) {
 
       html +=
-        "<div style=\"height:125px;display:flex;align-items:center;opacity:.65\">Select a point on Morra</div>";
+        "<div style=\"height:72px;display:flex;align-items:center;opacity:.65\">Select a point on Morra</div>";
+
+      html +=
+        "</details>";
 
       this.root.innerHTML =
         html;
