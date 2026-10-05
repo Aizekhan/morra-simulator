@@ -251,7 +251,11 @@ export class ShadowVolumeVisualizer {
       for(const occluder of occluders) {
         if(
           occluder === source.body ||
-          !occluder.mesh.visible
+          !occluder.mesh.visible ||
+          !this.isBetweenSourceAndMorra(
+            source.body,
+            occluder
+          )
         ) {
           continue;
         }
@@ -275,6 +279,63 @@ export class ShadowVolumeVisualizer {
 
     this.lastSignature = signature;
     this.dirty = false;
+  }
+
+  private isBetweenSourceAndMorra(
+    source: { mesh: THREE.Object3D; radius: number },
+    occluder: { mesh: THREE.Object3D; radius: number }
+  ) {
+
+    const sourcePosition =
+      source.mesh.getWorldPosition(
+        new THREE.Vector3()
+      );
+
+    const occluderPosition =
+      occluder.mesh.getWorldPosition(
+        new THREE.Vector3()
+      );
+
+    const morraPosition =
+      this.engine.morra.mesh.getWorldPosition(
+        new THREE.Vector3()
+      );
+
+    const sourceToMorra =
+      morraPosition.clone().sub(sourcePosition);
+
+    const sourceToOccluder =
+      occluderPosition.clone().sub(sourcePosition);
+
+    const morraDistance =
+      sourceToMorra.length();
+
+    const occluderProjection =
+      sourceToOccluder.dot(
+        sourceToMorra.clone().normalize()
+      );
+
+    if(
+      occluderProjection <= 0 ||
+      occluderProjection >= morraDistance
+    ) {
+      return false;
+    }
+
+    const axis =
+      sourceToMorra.clone().normalize();
+
+    const perpendicularDistance =
+      sourceToOccluder
+        .sub(axis.multiplyScalar(occluderProjection))
+        .length();
+
+    return perpendicularDistance <=
+      Math.max(
+        occluder.radius +
+        source.radius,
+        this.engine.morra.radius
+      );
   }
 
   private buildPairGeometry(
