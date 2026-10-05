@@ -393,12 +393,15 @@ export class SurfaceFieldVisualizer {
         map
       );
 
+    const hasRange =
+      Number.isFinite(stats.min) &&
+      Number.isFinite(stats.max) &&
+      stats.max > stats.min;
+
     const range =
-      Math.max(
-        stats.max -
-          stats.min,
-        Number.EPSILON
-      );
+      hasRange
+        ? stats.max - stats.min
+        : 1;
 
     for(
       let index = 0;
@@ -406,16 +409,27 @@ export class SurfaceFieldVisualizer {
       index++
     ) {
 
+      const rawValue =
+        Number.isFinite(values[index])
+          ? values[index]
+          : 0;
+
       const normalized =
-        THREE.MathUtils.clamp(
-          (
-            values[index] -
-            stats.min
-          ) /
-          range,
-          0,
-          1
-        );
+        hasRange
+          ? THREE.MathUtils.clamp(
+              (
+                rawValue -
+                stats.min
+              ) /
+              range,
+              0,
+              1
+            )
+          : THREE.MathUtils.clamp(
+              rawValue,
+              0,
+              1
+            );
 
       const byte =
         Math.round(
