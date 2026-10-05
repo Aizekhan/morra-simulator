@@ -313,14 +313,50 @@ export class EnvironmentInspectorPanel {
 
     html +=
       this.row(
+        "LIGHT UNOBSTRUCTED",
+        sample.radiation.unobstructedLight.toExponential(3)
+      );
+
+    html +=
+      this.row(
         "HEAT SUM",
         sample.radiation.heat.toExponential(3)
       );
 
     html +=
       this.row(
+        "HEAT UNOBSTRUCTED",
+        sample.radiation.unobstructedHeat.toExponential(3)
+      );
+
+    html +=
+      this.row(
         "MAGIC SUM",
         sample.radiation.magic.toExponential(3)
+      );
+
+    html +=
+      this.row(
+        "MAGIC UNOBSTRUCTED",
+        sample.radiation.unobstructedMagic.toExponential(3)
+      );
+
+    html +=
+      this.row(
+        "LIGHT VISIBILITY",
+        (
+          sample.radiation.lightVisibility *
+          100
+        ).toFixed(1) + "%"
+      );
+
+    html +=
+      this.row(
+        "HEAT VISIBILITY",
+        (
+          sample.radiation.heatVisibility *
+          100
+        ).toFixed(1) + "%"
       );
 
     html +=
