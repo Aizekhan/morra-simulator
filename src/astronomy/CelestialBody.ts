@@ -109,13 +109,8 @@ export class CelestialBody {
     else {
 
       this.material =
-        new THREE.MeshStandardMaterial({
-          color,
-          roughness: 1,
-          metalness: 0,
-          emissive: color,
-          emissiveIntensity:
-            options.emissiveIntensity ?? 0.05
+        new THREE.MeshBasicMaterial({
+          color
         });
     }
 
@@ -167,13 +162,6 @@ export class CelestialBody {
 
     this.mesh.userData.presentationMesh =
       presentationMesh;
-
-    this.mesh.castShadow =
-      true;
-
-    this.mesh.receiveShadow =
-      true;
-
     this.orbitRadius =
       orbitRadius;
 
