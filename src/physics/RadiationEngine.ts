@@ -35,6 +35,8 @@ export interface RadiationContribution {
 
   blockingOccluderIds: string[];
 
+  primaryOccluderId?: string;
+
   umbra: boolean;
 
   penumbra: boolean;
@@ -489,11 +491,13 @@ export class RadiationEngine {
         RadiationEngine.EPSILON
       ) {
 
+        const occluderId = String(
+          occluder.mesh.userData.radiationId ??
+          occluder.mesh.uuid
+        );
+
         blockingOccluderIds.push(
-          String(
-            occluder.mesh.userData.radiationId ??
-            occluder.mesh.uuid
-          )
+          occluderId
         );
       }
 
