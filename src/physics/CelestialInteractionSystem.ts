@@ -171,7 +171,7 @@ export class CelestialInteractionSystem {
           );
 
           reflectedLight.castShadow =
-            true;
+            false;
 
           this.configureMoonReflectionShadow(
             reflectedLight
