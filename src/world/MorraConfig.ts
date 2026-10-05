@@ -267,9 +267,9 @@ export const MORRA_CONFIG = {
 
   SURFACE_FIELD: {
 
-    latitudeSegments: 32,
+    latitudeSegments: 64,
 
-    longitudeSegments: 64,
+    longitudeSegments: 128,
 
     updateIntervalHours: 0.25,
 
@@ -285,11 +285,8 @@ export const MORRA_CONFIG = {
       "LIGHT_TOTAL" |
       "HEAT_TOTAL" |
       "MAGIC_TOTAL",
-      "LIGHT_TOTAL",
-      "HEAT_TOTAL",
-      "MAGIC_TOTAL",
 
-    opacity: 0.22
+    opacity: 0.55
 
   },
 
