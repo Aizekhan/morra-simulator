@@ -57,34 +57,13 @@ export class CelestialInteractionSystem {
   readonly radiation:
     MorraEnvironmentEngine["radiation"];
 
-  private readonly scene:
-    THREE.Scene;
-
-  private readonly sources:
-    CelestialSourceConfig[];
-
-  private readonly moonTargets:
-    MoonTarget[];
-
-  private readonly sourceLights:
-    THREE.PointLight[] = [];
-
-  private frameCounter =
-    0;
-
-  private readonly shadowUpdateEveryFrames =
-    3;
-
   constructor(
-    scene: THREE.Scene,
+    _scene: THREE.Scene,
     morra: CelestialBody,
     sources: CelestialSourceConfig[],
     moons: CelestialBody[],
     occluders: CelestialBody[]
   ) {
-
-    this.scene =
-      scene;
 
     this.sources =
       sources;
@@ -120,99 +99,20 @@ export class CelestialInteractionSystem {
     this.radiation =
       this.environment.radiation;
 
-    for(
-      const source
-      of this.sources
-    ) {
-
-      const light =
-        new THREE.PointLight(
-          source.color,
-          source.intensity *
-            VISUAL_LIGHT_INTENSITY_SCALE,
-          source.distance,
-          2
-        );
-
-      light.castShadow =
-        true;
-
-      light.layers.set(
-        0
-      );
-
-      this.configureShadow(
-        light
-      );
-
-      this.sourceLights.push(
-        light
-      );
-
-      this.scene.add(
-        light
-      );
-    }
-
     this.moonTargets =
       moons.map(
-        (body, index) => {
+        (body, index) => ({
+          id:
+            `moon-${index + 1}`,
 
-          const reflectedLight =
-            new THREE.PointLight(
-              0xffffff,
-              0,
-              10000,
-              2
-            );
-
-          reflectedLight.layers.set(
-            0
-          );
-
-          reflectedLight.castShadow =
-            false;
-
-          this.configureMoonReflectionShadow(
-            reflectedLight
-          );
-
-          this.scene.add(
-            reflectedLight
-          );
-
-          return {
-            id:
-              `moon-${index + 1}`,
-
-            body,
-
-            reflectedLight
-          };
-        }
+          body
+        })
       );
   }
 
   update() {
 
     this.frameCounter++;
-
-    this.updateDirectLights();
-
-    if(
-      this.frameCounter %
-      this.shadowUpdateEveryFrames ===
-      0
-    ) {
-      for(
-        const light
-        of this.sourceLights
-      ) {
-        light.shadow.needsUpdate =
-          true;
-      }
-    }
-
     this.updateMoonReflections();
   }
 
@@ -230,64 +130,12 @@ export class CelestialInteractionSystem {
       moon =>
         moon.body
     );
-  }
-
-  private updateDirectLights() {
-
-    for(
-      let index = 0;
-      index < this.sources.length;
-      index++
-    ) {
-
-      const source =
-        this.sources[index];
-
-      const light =
-        this.sourceLights[index];
-
-      const position =
-        source.body.mesh
-          .getWorldPosition(
-            new THREE.Vector3()
-          );
-
-      light.position.copy(
-        position
-      );
-
-      light.color.setHex(
-        source.color
-      );
-
-      light.intensity =
-        source.intensity *
-        VISUAL_LIGHT_INTENSITY_SCALE;
-
-      light.distance =
-        source.distance;
-
-      light.visible =
-        source.visible();
-
-      this.updateShadowRange(
-        light,
-        source.distance
-      );
-    }
-  }
-
-  private updateMoonReflections() {
+  }  private updateMoonReflections() {
 
     for(
       const moon
       of this.moonTargets
-    ) {
-
-      const reflectedLight =
-        moon.reflectedLight;
-
-      const sourceId =
+    ) {      const sourceId =
         moon.id === "moon-1"
           ? "north-moon-reflection"
           : "equator-moon-reflection";
@@ -295,16 +143,9 @@ export class CelestialInteractionSystem {
       const enabled =
         MORRA_CONFIG.MOON_REFLECTION.enabled &&
         moon.body.mesh.visible;
-
-      reflectedLight.visible =
-        enabled;
-
       if(
         !enabled
       ) {
-
-        reflectedLight.intensity =
-          0;
 
         this.radiation.removeDynamicSource(
           sourceId
@@ -318,11 +159,6 @@ export class CelestialInteractionSystem {
           .getWorldPosition(
             new THREE.Vector3()
           );
-
-      reflectedLight.position.copy(
-        moonPosition
-      );
-
       const morraPosition =
         this.environment.morra.mesh
           .getWorldPosition(
@@ -347,15 +183,6 @@ export class CelestialInteractionSystem {
 
       let totalIntensity =
         0;
-
-      const reflectedColor =
-        new THREE.Color(
-          0x000000
-        );
-
-      let colorWeight =
-        0;
-
       for(
         const source
         of this.sources
@@ -477,10 +304,6 @@ export class CelestialInteractionSystem {
           0,
           MORRA_CONFIG.MOON_REFLECTION.maxIntensity
         );
-
-      reflectedLight.intensity =
-        reflectedLightPower;
-
       this.radiation.addDynamicSource({
         id:
           sourceId,
@@ -496,23 +319,7 @@ export class CelestialInteractionSystem {
 
         magicPower:
           0
-      });
-
-      if(
-        colorWeight >
-        0
-      ) {
-
-        reflectedColor.multiplyScalar(
-          1 /
-          colorWeight
-        );
-
-        reflectedLight.color.copy(
-          reflectedColor
-        );
-      }
-      else {
+      });      else {
 
         reflectedLight.color.setHex(
           0x111111
@@ -520,105 +327,8 @@ export class CelestialInteractionSystem {
       }
     }
   }
-
-  private configureShadow(
-    light: THREE.PointLight
-  ) {
-
-    light.shadow.mapSize.set(
-      512,
-      512
-    );
-
-    light.shadow.bias =
-      -0.0002;
-
-    light.shadow.normalBias =
-      0.35;
-
-    light.shadow.radius =
-      2;
-
-    light.shadow.camera.near =
-      1;
-
-    light.shadow.camera.far =
-      10000;
-
-    light.shadow.camera.layers.set(
-      0
-    );
-
-    light.shadow.autoUpdate =
-      false;
-  }
-
-  private configureMoonReflectionShadow(
-    light: THREE.PointLight
-  ) {
-
-    light.shadow.mapSize.set(
-      512,
-      512
-    );
-
-    light.shadow.bias =
-      -0.0002;
-
-    light.shadow.normalBias =
-      0.2;
-
-    light.shadow.radius =
-      1.5;
-
-    light.shadow.camera.near =
-      1;
-
-    light.shadow.camera.far =
-      10000;
-
-    light.shadow.camera.layers.set(
-      0
-    );
-
-    light.shadow.autoUpdate =
-      false;
-  }
-
-  private updateShadowRange(
-    light: THREE.PointLight,
-    range: number
-  ) {
-
-    light.shadow.camera.far =
-      Math.max(
-        10000,
-        range
-      );
-  }
-
   dispose() {
-
-    for(
-      const light
-      of this.sourceLights
-    ) {
-
-      this.scene.remove(
-        light
-      );
-    }
-
-    for(
-      const moon
-      of this.moonTargets
-    ) {
-
-      moon.reflectedLight.dispose();
-
-      this.scene.remove(
-        moon.reflectedLight
-      );
-    }
+    // Radiation sources are owned by the physics engine.
   }
 }
+
