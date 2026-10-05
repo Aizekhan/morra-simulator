@@ -15,6 +15,15 @@ import {
   type RadiationSource
 } from "./RadiationEngine";
 
+export interface GravitySample {
+
+  baseGravity: number;
+
+  gravityEffect: number;
+
+  gravityScale: number;
+}
+
 export interface MorraEnvironmentSample {
 
   point: THREE.Vector3;
@@ -24,6 +33,8 @@ export interface MorraEnvironmentSample {
   radiation: RadiationSample;
 
   magosphere: MagosphereSample;
+
+  gravity: GravitySample;
 }
 
 export class MorraEnvironmentEngine {
@@ -39,6 +50,9 @@ export class MorraEnvironmentEngine {
 
   private readonly occluders:
     CelestialBody[];
+
+  private readonly baseGravity =
+    0.9;
 
   constructor(
     morra: CelestialBody,
@@ -109,7 +123,27 @@ export class MorraEnvironmentEngine {
         radiation
       );
 
+    const gravity: GravitySample = {
+
+      baseGravity:
+        this.baseGravity,
+
+      gravityEffect:
+        magosphere.gravityEffect,
+
+      // A stable Magosphere preserves canonical 0.9g.
+      // Instability lowers the local effective gravity.
+      gravityScale:
+        THREE.MathUtils.clamp(
+          1 -
+          magosphere.gravityEffect,
+          0,
+          1
+        )
+    };
+
     return {
+
       point:
         worldPoint,
 
@@ -117,7 +151,9 @@ export class MorraEnvironmentEngine {
 
       radiation,
 
-      magosphere
+      magosphere,
+
+      gravity
     };
   }
 
@@ -174,13 +210,20 @@ export class MorraEnvironmentEngine {
     }
 
     return {
+
       sample,
+
       sourceCount:
         sample.radiation.contributions.length,
+
       minVisibility,
+
       maxShadow,
+
       blockedSources,
+
       umbraSources,
+
       penumbraSources
     };
   }
