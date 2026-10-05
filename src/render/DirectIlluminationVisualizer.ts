@@ -17,7 +17,11 @@ const SOURCE_COLORS: Record<
   "medium-sun":
     0xffaa55,
   "small-sun":
-    0xffffcc
+    0xffffcc,
+  "north-moon-reflection":
+    0xbfd8ff,
+  "equator-moon-reflection":
+    0xd0a8ff
 };
 
 interface SourceVisual {
