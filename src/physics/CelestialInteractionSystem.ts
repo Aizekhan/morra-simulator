@@ -16,37 +16,21 @@ import type {
   RadiationSource
 } from "./RadiationEngine";
 
-const VISUAL_LIGHT_INTENSITY_SCALE =
-  50000;
-
 interface CelestialSourceConfig {
-
   id: string;
-
   body: CelestialBody;
-
   color: number;
-
   intensity: number;
-
   distance: number;
-
   lightPower: number;
-
   heatPower: number;
-
   magicPower: number;
-
   visible: () => boolean;
 }
 
 interface MoonTarget {
-
   id: string;
-
   body: CelestialBody;
-
-  reflectedLight: THREE.PointLight;
 }
 
 export class CelestialInteractionSystem {
@@ -56,6 +40,12 @@ export class CelestialInteractionSystem {
 
   readonly radiation:
     MorraEnvironmentEngine["radiation"];
+
+  private readonly sources:
+    CelestialSourceConfig[];
+
+  private readonly moonTargets:
+    MoonTarget[];
 
   constructor(
     _scene: THREE.Scene,
@@ -74,16 +64,12 @@ export class CelestialInteractionSystem {
         source => ({
           id:
             source.id,
-
           body:
             source.body,
-
           lightPower:
             source.lightPower,
-
           heatPower:
             source.heatPower,
-
           magicPower:
             source.magicPower
         })
@@ -104,38 +90,34 @@ export class CelestialInteractionSystem {
         (body, index) => ({
           id:
             `moon-${index + 1}`,
-
           body
         })
       );
   }
 
   update() {
-
-    this.frameCounter++;
     this.updateMoonReflections();
   }
 
   getSourceBodies() {
-
     return this.sources.map(
-      source =>
-        source.body
+      source => source.body
     );
   }
 
   getMoonBodies() {
-
     return this.moonTargets.map(
-      moon =>
-        moon.body
+      moon => moon.body
     );
-  }  private updateMoonReflections() {
+  }
+
+  private updateMoonReflections() {
 
     for(
-      const moon
-      of this.moonTargets
-    ) {      const sourceId =
+      const moon of this.moonTargets
+    ) {
+
+      const sourceId =
         moon.id === "moon-1"
           ? "north-moon-reflection"
           : "equator-moon-reflection";
@@ -143,6 +125,7 @@ export class CelestialInteractionSystem {
       const enabled =
         MORRA_CONFIG.MOON_REFLECTION.enabled &&
         moon.body.mesh.visible;
+
       if(
         !enabled
       ) {
@@ -155,21 +138,19 @@ export class CelestialInteractionSystem {
       }
 
       const moonPosition =
-        moon.body.mesh
-          .getWorldPosition(
-            new THREE.Vector3()
-          );
+        moon.body.mesh.getWorldPosition(
+          new THREE.Vector3()
+        );
+
       const morraPosition =
-        this.environment.morra.mesh
-          .getWorldPosition(
-            new THREE.Vector3()
-          );
+        this.environment.morra.mesh.getWorldPosition(
+          new THREE.Vector3()
+        );
 
       const moonToMorra =
-        morraPosition
-          .sub(
-            moonPosition
-          );
+        morraPosition.sub(
+          moonPosition
+        );
 
       const moonMorraDistance =
         Math.max(
@@ -178,14 +159,12 @@ export class CelestialInteractionSystem {
         );
 
       const moonToMorraDirection =
-        moonToMorra
-          .normalize();
+        moonToMorra.normalize();
 
-      let totalIntensity =
-        0;
+      let totalIntensity = 0;
+
       for(
-        const source
-        of this.sources
+        const source of this.sources
       ) {
 
         if(
@@ -195,16 +174,14 @@ export class CelestialInteractionSystem {
         }
 
         const sourcePosition =
-          source.body.mesh
-            .getWorldPosition(
-              new THREE.Vector3()
-            );
+          source.body.mesh.getWorldPosition(
+            new THREE.Vector3()
+          );
 
         const moonToSource =
-          sourcePosition
-            .sub(
-              moonPosition
-            );
+          sourcePosition.sub(
+            moonPosition
+          );
 
         const sourceDistance =
           Math.max(
@@ -215,27 +192,22 @@ export class CelestialInteractionSystem {
         moonToSource.normalize();
 
         const visibility =
-          this.radiation
-            .getVisibilityDetails(
-              moonPosition,
-              {
-                id:
-                  source.id,
-
-                body:
-                  source.body,
-
-                lightPower:
-                  source.lightPower,
-
-                heatPower:
-                  source.heatPower,
-
-                magicPower:
-                  source.magicPower
-              },
-              this.environment.getOccluders()
-            );
+          this.radiation.getVisibilityDetails(
+            moonPosition,
+            {
+              id:
+                source.id,
+              body:
+                source.body,
+              lightPower:
+                source.lightPower,
+              heatPower:
+                source.heatPower,
+              magicPower:
+                source.magicPower
+            },
+            this.environment.getOccluders()
+          );
 
         const sourceIrradiance =
           source.lightPower /
@@ -258,20 +230,16 @@ export class CelestialInteractionSystem {
 
         const phase =
           (
-            Math.sin(
-              phaseAngle
-            ) +
+            Math.sin(phaseAngle) +
             (
               Math.PI -
               phaseAngle
             ) *
-            Math.cos(
-              phaseAngle
-            )
+            Math.cos(phaseAngle)
           ) /
           Math.PI;
 
-        const reflected =
+        totalIntensity +=
           sourceIrradiance *
           moon.body.radius *
           moon.body.radius *
@@ -282,20 +250,6 @@ export class CelestialInteractionSystem {
             moonMorraDistance
           ) *
           MORRA_CONFIG.MOON_REFLECTION.intensityScale;
-
-        totalIntensity +=
-          reflected;
-
-        reflectedColor.add(
-          new THREE.Color(
-            source.color
-          ).multiplyScalar(
-            reflected
-          )
-        );
-
-        colorWeight +=
-          reflected;
       }
 
       const reflectedLightPower =
@@ -304,31 +258,23 @@ export class CelestialInteractionSystem {
           0,
           MORRA_CONFIG.MOON_REFLECTION.maxIntensity
         );
+
       this.radiation.addDynamicSource({
         id:
           sourceId,
-
         body:
           moon.body,
-
         lightPower:
           reflectedLightPower,
-
         heatPower:
           0,
-
         magicPower:
           0
-      });      else {
-
-        reflectedLight.color.setHex(
-          0x111111
-        );
-      }
+      });
     }
   }
+
   dispose() {
     // Radiation sources are owned by the physics engine.
   }
 }
-
