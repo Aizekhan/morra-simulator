@@ -601,7 +601,7 @@ export class MorraSystem {
       const up =
         direction.clone();
 
-      mesh.quaternion =
+      mesh.setRotationFromQuaternion(
         new THREE.Quaternion()
           .setFromUnitVectors(
             new THREE.Vector3(
@@ -610,7 +610,8 @@ export class MorraSystem {
               1
             ),
             up
-          );
+          )
+      );
 
       mesh.rotateZ(
         THREE.MathUtils.degToRad(
