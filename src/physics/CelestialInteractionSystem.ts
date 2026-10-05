@@ -8,9 +8,6 @@ import {
   MorraEnvironmentEngine
 } from "../physics/MorraEnvironmentEngine";
 
-import {
-  MORRA_CONFIG
-} from "../world/MorraConfig";
 
 import type {
   RadiationSource
