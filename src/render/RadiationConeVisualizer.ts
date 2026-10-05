@@ -263,7 +263,7 @@ export class RadiationConeVisualizer {
       midpoint
     );
 
-    mesh.quaternion =
+    mesh.setRotationFromQuaternion(
       new THREE.Quaternion()
         .setFromUnitVectors(
           new THREE.Vector3(
@@ -272,7 +272,8 @@ export class RadiationConeVisualizer {
             0
           ),
           direction
-        );
+        )
+    );
 
     mesh.name =
       definition.id +
