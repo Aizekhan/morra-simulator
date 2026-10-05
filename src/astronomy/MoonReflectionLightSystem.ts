@@ -92,9 +92,7 @@ export class MoonReflectionLightSystem {
         2
       );
 
-    light.layers.set(
-      RENDER_LAYERS.MORRA_LIGHT_RECEIVER
-    );
+    light.layers.set(0);
 
     light.castShadow =
       false;
