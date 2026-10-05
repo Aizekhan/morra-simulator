@@ -607,6 +607,8 @@ export class DebugPanel {
         "LARGE_SUN",
         "MEDIUM_SUN",
         "SMALL_SUN",
+        "NORTH_MOON",
+        "EQUATOR_MOON",
         "LIGHT",
         "HEAT",
         "MAGIC",
