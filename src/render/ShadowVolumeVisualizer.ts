@@ -330,18 +330,17 @@ export class ShadowVolumeVisualizer {
         .sub(axis.multiplyScalar(occluderProjection))
         .length();
 
-    const sourceDistanceFromOccluder =
-      Math.max(
-        morraDistance -
-        occluderProjection,
-        1e-6
-      );
+    const sourceDistanceToMorra =
+      morraDistance;
 
     const sourceAngularRadius =
       Math.asin(
         THREE.MathUtils.clamp(
           source.radius /
-          sourceDistanceFromOccluder,
+          Math.max(
+            sourceDistanceToMorra,
+            1e-6
+          ),
           0,
           0.999999
         )
