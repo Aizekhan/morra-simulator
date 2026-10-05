@@ -44,6 +44,9 @@ export interface SurfaceFieldSample {
   smallSunLight: number;
   northMoonLight: number;
   equatorMoonLight: number;
+  spectrumRed: number;
+  spectrumGreen: number;
+  spectrumBlue: number;
 }
 
 export interface SurfaceFieldStats {
@@ -86,6 +89,9 @@ export interface SurfaceFieldMap {
   smallSunLight: Float32Array;
   northMoonLight: Float32Array;
   equatorMoonLight: Float32Array;
+  spectrumRed: Float32Array;
+  spectrumGreen: Float32Array;
+  spectrumBlue: Float32Array;
 
   largeSunLightStats: SurfaceFieldStats;
   mediumSunLightStats: SurfaceFieldStats;
@@ -334,6 +340,15 @@ export class SurfaceFieldEngine {
       new Float32Array(count);
 
     const equatorMoonLight =
+      new Float32Array(count);
+
+    const spectrumRed =
+      new Float32Array(count);
+
+    const spectrumGreen =
+      new Float32Array(count);
+
+    const spectrumBlue =
       new Float32Array(count);
 
     let northMoonLightSum = 0;
@@ -585,7 +600,13 @@ export class SurfaceFieldEngine {
               contribution =>
                 contribution.sourceId ===
                 "equator-moon-reflection"
-            )?.light ?? 0
+            )?.light ?? 0,
+          spectrumRed:
+            Math.min(1, sample.radiation.light),
+          spectrumGreen:
+            Math.min(1, sample.radiation.heat),
+          spectrumBlue:
+            Math.min(1, sample.radiation.magic)
         };
 
         samples[index] =
@@ -629,6 +650,15 @@ export class SurfaceFieldEngine {
 
         equatorMoonLight[index] =
           sampleData.equatorMoonLight;
+
+        spectrumRed[index] =
+          sampleData.spectrumRed;
+
+        spectrumGreen[index] =
+          sampleData.spectrumGreen;
+
+        spectrumBlue[index] =
+          sampleData.spectrumBlue;
 
         northMoonLightSum +=
           sampleData.northMoonLight;
@@ -812,6 +842,9 @@ export class SurfaceFieldEngine {
       smallSunLight,
       northMoonLight,
       equatorMoonLight,
+      spectrumRed,
+      spectrumGreen,
+      spectrumBlue,
       largeSunLightStats: {
         min: largeSunLightMin,
         max: largeSunLightMax,
