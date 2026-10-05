@@ -540,6 +540,8 @@ export class MorraSystem {
         MORRA_CONFIG.RADIATION_CONES.length,
       radialScale:
         MORRA_CONFIG.RADIATION_CONES.radialScale,
+      rangeScale:
+        MORRA_CONFIG.RADIATION_CONES.rangeScale,
       opacity:
         MORRA_CONFIG.RADIATION_CONES.opacity,
       edgeOpacity:
@@ -764,6 +766,8 @@ export class MorraSystem {
         MORRA_CONFIG.RADIATION_CONES.length,
       radialScale:
         MORRA_CONFIG.RADIATION_CONES.radialScale,
+      rangeScale:
+        MORRA_CONFIG.RADIATION_CONES.rangeScale,
       opacity:
         MORRA_CONFIG.RADIATION_CONES.opacity,
       edgeOpacity:
