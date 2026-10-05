@@ -372,26 +372,36 @@ export class ShadowVolumeVisualizer {
         )
       );
 
-    const shadowConeAngularRadius =
+    const umbraRadius =
+      shadowReach *
       Math.max(
         0,
-        occluderAngularRadius -
-        sourceAngularRadiusAtOccluder
-      ) *
-      Math.min(
-        1,
-        shadowReach /
-        Math.max(
-          morraDistance,
-          1e-6
-        )
+        occluder.radius -
+        source.radius
+      ) /
+      Math.max(
+        occluderProjection,
+        1e-6
       );
 
-    return angularSeparation <=
-      occluderAngularRadius +
-      sourceAngularRadiusAtOccluder &&
-      shadowReach > 0 &&
-      shadowConeAngularRadius >= 0;
+    const effectiveShadowRadius =
+      occluder.radius +
+      shadowReach *
+      (
+        source.radius +
+        occluder.radius
+      ) /
+      Math.max(
+        morraDistance,
+        1e-6
+      );
+
+    return perpendicularDistance <=
+      Math.max(
+        effectiveShadowRadius,
+        umbraRadius
+      ) &&
+      shadowReach > 0;
   }
 
   private buildPairGeometry(
