@@ -352,6 +352,13 @@ export class ShadowVolumeVisualizer {
         )
       );
 
+    if(
+      angularSeparation >
+      occluderAngularRadius
+    ) {
+      return false;
+    }
+
     const shadowReach =
       morraDistance -
       occluderProjection;
