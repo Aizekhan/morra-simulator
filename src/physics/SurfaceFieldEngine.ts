@@ -438,14 +438,22 @@ export class SurfaceFieldEngine {
         const hasUmbra =
           sample.radiation.contributions.some(
             contribution =>
-              contribution.umbra
+              contribution.umbra &&
+              contribution.visibilityFactor <
+                0.5
           );
 
         const hasPenumbra =
           sample.radiation.contributions.some(
             contribution =>
-              contribution.penumbra
+              contribution.penumbra ||
+              contribution.visibilityFactor <
+                0.999999
           );
+
+        // SHADOW is the actual loss of direct light at this surface point.
+        // Umbra/Penumbra are kept as categorical diagnostics in parallel.
+
 
         const sampleData: SurfaceFieldSample = {
           latitude,
@@ -461,8 +469,12 @@ export class SurfaceFieldEngine {
           anomalyStrength:
             sample.magosphere.anomalyStrength,
           shadow:
-            1 -
-            sample.radiation.lightVisibility,
+            THREE.MathUtils.clamp(
+              1 -
+              sample.radiation.lightVisibility,
+              0,
+              1
+            ),
           umbra:
             hasUmbra
               ? 1
