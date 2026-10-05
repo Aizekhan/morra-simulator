@@ -326,6 +326,8 @@ export const MORRA_CONFIG = {
 
     radialScale: 1,
 
+    rangeScale: 1,
+
     opacity: 0.08,
 
     edgeOpacity: 0.35
