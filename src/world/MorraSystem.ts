@@ -704,39 +704,26 @@ export class MorraSystem {
         MORRA_CONFIG.AXIS_TILT
       );
 
-    this.morra.mesh.rotation.z =
-      axisTilt;
-
+    this.morra.mesh.rotation.z = axisTilt;
     this.morra.mesh.rotation.y =
-      MORRA_CONFIG.ROTATION_SPEED *
-      absoluteHours;
+      MORRA_CONFIG.ROTATION_SPEED * absoluteHours;
 
     this.axis.update(
       this.morra.radius,
       MORRA_CONFIG.AXIS_TILT
     );
 
-    this.celestialSystem.update(
-      absoluteHours
-    );
-
+    // One deterministic simulation step:
+    // 1) move every celestial body first;
+    // 2) only then evaluate radiation, shadows and debug geometry.
+    this.celestialSystem.update(absoluteHours);
     this.orbitSystem.update();
 
-    this.axis.axisLine.visible =
-      MORRA_CONFIG.DEBUG.showAxis;
-
-    this.axis.northPole.visible =
-      MORRA_CONFIG.DEBUG.showAxis;
-
-    this.axis.southPole.visible =
-      MORRA_CONFIG.DEBUG.showAxis;
-
-    this.axis.equator.visible =
-      MORRA_CONFIG.DEBUG.showEquator;
-
-    this.orbitSystem.setVisible(
-      MORRA_CONFIG.DEBUG.showOrbits
-    );
+    this.axis.axisLine.visible = MORRA_CONFIG.DEBUG.showAxis;
+    this.axis.northPole.visible = MORRA_CONFIG.DEBUG.showAxis;
+    this.axis.southPole.visible = MORRA_CONFIG.DEBUG.showAxis;
+    this.axis.equator.visible = MORRA_CONFIG.DEBUG.showEquator;
+    this.orbitSystem.setVisible(MORRA_CONFIG.DEBUG.showOrbits);
 
     this.celestialInteractionSystem.update();
 
@@ -747,14 +734,15 @@ export class MorraSystem {
         MORRA_CONFIG.SURFACE_FIELD.longitudeSegments,
       updateIntervalHours:
         MORRA_CONFIG.SURFACE_FIELD.updateIntervalHours,
+      // SurfaceField is a diagnostic map, not a render-frame lighting system.
       updateIntervalMilliseconds:
-        100
+        MORRA_CONFIG.SURFACE_FIELD.updateIntervalHours > 0
+          ? 250
+          : 100
     });
 
     const fieldMap =
-      this.surfaceFieldEngine.update(
-        absoluteHours
-      );
+      this.surfaceFieldEngine.update(absoluteHours);
 
     this.surfaceFieldVisualizer.setRadius(
       this.morra.radius
@@ -772,23 +760,17 @@ export class MorraSystem {
       MORRA_CONFIG.DEBUG.showSurfaceField
     );
 
-    this.surfaceFieldVisualizer.update(
-      fieldMap
-    );
+    this.surfaceFieldVisualizer.update(fieldMap);
 
+    // Radiation geometry is debug-only and is rebuilt from the already-updated
+    // celestial positions, so it cannot oscillate between stale/current states.
     this.radiationConeVisualizer.setConfig({
-      enabled:
-        MORRA_CONFIG.RADIATION_CONES.enabled,
-      length:
-        MORRA_CONFIG.RADIATION_CONES.length,
-      radialScale:
-        MORRA_CONFIG.RADIATION_CONES.radialScale,
-      rangeScale:
-        MORRA_CONFIG.RADIATION_CONES.rangeScale,
-      opacity:
-        MORRA_CONFIG.RADIATION_CONES.opacity,
-      edgeOpacity:
-        MORRA_CONFIG.RADIATION_CONES.edgeOpacity
+      enabled: MORRA_CONFIG.RADIATION_CONES.enabled,
+      length: MORRA_CONFIG.RADIATION_CONES.length,
+      radialScale: MORRA_CONFIG.RADIATION_CONES.radialScale,
+      rangeScale: MORRA_CONFIG.RADIATION_CONES.rangeScale,
+      opacity: MORRA_CONFIG.RADIATION_CONES.opacity,
+      edgeOpacity: MORRA_CONFIG.RADIATION_CONES.edgeOpacity
     });
 
     this.radiationConeVisualizer.update([
@@ -798,16 +780,11 @@ export class MorraSystem {
     ]);
 
     this.shadowVolumeVisualizer.setConfig({
-      enabled:
-        MORRA_CONFIG.SHADOW_VOLUMES.enabled,
-      length:
-        MORRA_CONFIG.SHADOW_VOLUMES.length,
-      opacity:
-        MORRA_CONFIG.SHADOW_VOLUMES.opacity,
-      showUmbra:
-        MORRA_CONFIG.SHADOW_VOLUMES.showUmbra,
-      showPenumbra:
-        MORRA_CONFIG.SHADOW_VOLUMES.showPenumbra
+      enabled: MORRA_CONFIG.SHADOW_VOLUMES.enabled,
+      length: MORRA_CONFIG.SHADOW_VOLUMES.length,
+      opacity: MORRA_CONFIG.SHADOW_VOLUMES.opacity,
+      showUmbra: MORRA_CONFIG.SHADOW_VOLUMES.showUmbra,
+      showPenumbra: MORRA_CONFIG.SHADOW_VOLUMES.showPenumbra
     });
 
     this.shadowVolumeVisualizer.update();
