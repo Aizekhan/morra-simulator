@@ -34,8 +34,7 @@ export class SurfaceFieldVisualizer {
   private readonly valueTexture:
     THREE.DataTexture;
 
-  private readonly normalTexture:
-    THREE.DataTexture;
+
 
   private channel:
     SurfaceFieldChannel =
@@ -93,33 +92,6 @@ export class SurfaceFieldVisualizer {
 
     this.valueTexture =
       this.texture;
-
-    this.normalTexture =
-      new THREE.DataTexture(
-        new Uint8Array(
-          initialWidth *
-          initialHeight *
-          4
-        ),
-        initialWidth,
-        initialHeight,
-        THREE.RGBAFormat,
-        THREE.UnsignedByteType
-      );
-
-    this.normalTexture.colorSpace =
-      THREE.NoColorSpace;
-
-    this.normalTexture.flipY =
-      true;
-
-    this.normalTexture.minFilter =
-      THREE.LinearFilter;
-
-    this.normalTexture.magFilter =
-      THREE.LinearFilter;
-
-
 
     this.texture.magFilter =
       THREE.LinearFilter;
