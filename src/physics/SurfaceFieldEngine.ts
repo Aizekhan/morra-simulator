@@ -602,11 +602,23 @@ export class SurfaceFieldEngine {
                 "equator-moon-reflection"
             )?.light ?? 0,
           spectrumRed:
-            Math.min(1, sample.radiation.light),
+            Math.min(
+              1,
+              sample.radiation.light +
+              sample.radiation.magic * 0.15
+            ),
           spectrumGreen:
-            Math.min(1, sample.radiation.heat),
+            Math.min(
+              1,
+              sample.radiation.heat +
+              sample.radiation.light * 0.05
+            ),
           spectrumBlue:
-            Math.min(1, sample.radiation.magic)
+            Math.min(
+              1,
+              sample.radiation.magic +
+              sample.radiation.light * 0.2
+            )
         };
 
         samples[index] =
