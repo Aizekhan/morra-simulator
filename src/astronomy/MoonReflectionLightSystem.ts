@@ -129,6 +129,12 @@ export class MoonReflectionLightSystem {
         moon.light.intensity =
           0;
 
+        this.engine.radiation.removeDynamicSource(
+          moon.id === "north-moon"
+            ? "north-moon-reflection"
+            : "equator-moon-reflection"
+        );
+
         continue;
       }
 
@@ -289,12 +295,30 @@ export class MoonReflectionLightSystem {
           reflected;
       }
 
-      moon.light.intensity =
+      const reflectedLightPower =
         THREE.MathUtils.clamp(
           totalIntensity,
           0,
           MORRA_CONFIG.MOON_REFLECTION.maxIntensity
         );
+
+      moon.light.intensity =
+        reflectedLightPower;
+
+      this.engine.radiation.addDynamicSource({
+        id:
+          moon.id === "north-moon"
+            ? "north-moon-reflection"
+            : "equator-moon-reflection",
+        body:
+          moon.body,
+        lightPower:
+          reflectedLightPower,
+        heatPower:
+          0,
+        magicPower:
+          0
+      });
 
       if(
         colorWeight >
