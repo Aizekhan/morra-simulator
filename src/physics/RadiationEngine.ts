@@ -349,6 +349,9 @@ export class RadiationEngine {
     let primaryOccluderId:
       string | undefined;
 
+    let primaryBlockedFraction =
+      0;
+
     const blockingOccluderIds:
       string[] = [];
 
@@ -504,9 +507,12 @@ export class RadiationEngine {
         );
 
         if(
-          primaryOccluderId ===
-          undefined
+          blockedFraction >
+          primaryBlockedFraction
         ) {
+          primaryBlockedFraction =
+            blockedFraction;
+
           primaryOccluderId =
             occluderId;
         }
