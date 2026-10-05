@@ -1,10 +1,229 @@
+import * as THREE from "three";
+
+import type {
+  CelestialBody
+} from "../astronomy/CelestialBody";
+
+export type RadiationConeKind =
+  | "LIGHT"
+  | "HEAT"
+  | "MAGIC";
+
+interface RadiationConeDefinition {
+  id: string;
+  kind: RadiationConeKind;
+  color: number;
+}
+
+interface RadiationConeVisual {
+  group: THREE.Group;
+  material: THREE.Material;
+  edgeMaterial: THREE.Material;
+}
+
+export class RadiationConeVisualizer {
+
+  private readonly scene: THREE.Scene;
+  private readonly morra: CelestialBody;
+  private readonly definitions: RadiationConeDefinition[];
+  private readonly visuals: RadiationConeVisual[] = [];
+  private readonly root: THREE.Group;
+
+  private enabled = true;
+  private length = 2100;
+  private radialScale = 1;
+  private rangeScale = 1;
+  private opacity = 0.08;
+  private edgeOpacity = 0.35;
+
+  constructor(
+    scene: THREE.Scene,
+    morra: CelestialBody,
+    definitions: RadiationConeDefinition[]
+  ) {
+
+    this.scene =
+      scene;
+
+    this.morra =
+      morra;
+
+    this.definitions =
+      definitions;
+
+    this.root =
+      new THREE.Group();
+
+    this.root.name =
+      "Radiation Cones";
+
+    this.scene.add(
+      this.root
+    );
+  }
+
+  setConfig(
+    config: {
+      enabled?: boolean;
+      length?: number;
+      radialScale?: number;
+      rangeScale?: number;
+      opacity?: number;
+      edgeOpacity?: number;
+    }
+  ) {
+
+    if(
+      config.enabled !== undefined
+    ) {
+      this.enabled =
+        config.enabled;
+    }
+
+    if(
+      config.length !== undefined
+    ) {
+      this.length =
+        Math.max(
+          1,
+          config.length
+        );
+    }
+
+    if(
+      config.radialScale !== undefined
+    ) {
+      this.radialScale =
+        Math.max(
+          0.01,
+          config.radialScale
+        );
+    }
+
+    if(
+      config.rangeScale !== undefined
+    ) {
+      this.rangeScale =
+        Math.max(
+          0.01,
+          config.rangeScale
+        );
+    }
+
+    if(
+      config.opacity !== undefined
+    ) {
+      this.opacity =
+        THREE.MathUtils.clamp(
+          config.opacity,
+          0,
+          1
+        );
+    }
+
+    if(
+      config.edgeOpacity !== undefined
+    ) {
+      this.edgeOpacity =
+        THREE.MathUtils.clamp(
+          config.edgeOpacity,
+          0,
+          1
+        );
+    }
+  }
+
+  update(
+    sources: CelestialBody[]
+  ) {
+
+    this.clear();
+
+    this.root.visible =
+      this.enabled;
+
+    if(
+      !this.enabled
+    ) {
+      return;
+    }
+
+    for(
+      let i = 0;
+      i < Math.min(
+        sources.length,
+        this.definitions.length
+      );
+      i++
+    ) {
+
+      this.addCone(
+        sources[i],
+        this.definitions[i]
+      );
+    }
+  }
+
+  private addCone(
+    source: CelestialBody,
+    definition: RadiationConeDefinition
+  ) {
+
+    const sourcePosition =
+      source.mesh.getWorldPosition(
+        new THREE.Vector3()
+      );
+
+    const morraPosition =
+      this.morra.mesh.getWorldPosition(
+        new THREE.Vector3()
+      );
+
+    const sourceToMorra =
+      morraPosition
+        .clone()
+        .sub(
+          sourcePosition
+        );
+
+    const targetDistance =
+      sourceToMorra.length();
+
+    if(
+      targetDistance <=
+      1e-6
+    ) {
+      return;
+    }
+
+    const direction =
+      sourceToMorra
+        .normalize();
+
+    const occlusionHit =
+      this.findNearestOccluderHit(
+        source,
+        sourcePosition,
+        direction,
+        targetDistance
+      );
 
     const visibleDistance =
       Math.max(
         0,
-        occlusionHit?.distance ??
-        distance
+        Math.min(
+          targetDistance,
+          occlusionHit?.distance ??
+          targetDistance
+        )
       );
+
+    if(
+      visibleDistance <=
+      1
+    ) {
+      return;
+    }
 
     const sizeFactor =
       source.radius /
@@ -27,56 +246,96 @@
         1
       );
 
-    if(
-      visibleDistance <=
-      1
-    ) {
-      return;
-    }
-
-    const radiusAtMorra =
-      this.projectedRadius(
-        source.radius,
-        distance
-      );
-
-    const radiusAtEnd =
+    const startRadius =
       Math.max(
-        radiusAtMorra,
-        radiusAtMorra +
-        coneDepth *
-        Math.tan(
-          THREE.MathUtils.clamp(
-            source.radius /
-            distance,
-            0,
-            0.45
-          )
-        ) *
-        this.radialScale
+        source.radius,
+        0.01
       );
 
-    const geometry=new THREE.ConeGeometry(radiusAtEnd,coneDepth,48,1,true);
+    const radiusGrowth =
+      Math.tan(
+        THREE.MathUtils.clamp(
+          source.radius /
+          Math.max(
+            targetDistance,
+            1e-6
+          ),
+          0,
+          0.45
+        )
+      ) *
+      this.radialScale;
 
-    const material=new THREE.MeshBasicMaterial({
-      color:definition.color,
-      transparent:true,
-      opacity:this.opacity,
-      depthWrite:false,
-      side:THREE.DoubleSide,
-      blending:THREE.AdditiveBlending
-    });
+    const endRadius =
+      Math.max(
+        startRadius,
+        startRadius +
+        coneDepth *
+        radiusGrowth
+      );
 
-    const mesh=new THREE.Mesh(
-      geometry,
-      material
+    const radialSegments = 48;
+
+    const geometry =
+      new THREE.CylinderGeometry(
+        endRadius,
+        startRadius,
+        coneDepth,
+        radialSegments,
+        1,
+        true
+      );
+
+    const material =
+      new THREE.MeshBasicMaterial({
+        color:
+          definition.color,
+        transparent:
+          true,
+        opacity:
+          this.opacity,
+        depthWrite:
+          false,
+        side:
+          THREE.DoubleSide,
+        blending:
+          THREE.AdditiveBlending
+      });
+
+    const mesh =
+      new THREE.Mesh(
+        geometry,
+        material
+      );
+
+    const midpoint =
+      sourcePosition
+        .clone()
+        .add(
+          direction
+            .clone()
+            .multiplyScalar(
+              coneDepth * 0.5
+            )
+        );
+
+    mesh.position.copy(
+      midpoint
     );
 
-    const midpoint=sourcePosition.clone().add(direction.clone().multiplyScalar(coneDepth*0.5));
-    mesh.position.copy(midpoint);
-    mesh.setRotationFromQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),direction));
+    mesh.setRotationFromQuaternion(
+      new THREE.Quaternion()
+        .setFromUnitVectors(
+          new THREE.Vector3(
+            0,
+            1,
+            0
+          ),
+          direction
+        )
+    );
 
-    const edgesGeometry =
+    const edgeGeometry =
       new THREE.EdgesGeometry(
         geometry
       );
@@ -88,12 +347,14 @@
         transparent:
           true,
         opacity:
-          this.edgeOpacity
+          this.edgeOpacity,
+        depthWrite:
+          false
       });
 
     const edges =
       new THREE.LineSegments(
-        edgesGeometry,
+        edgeGeometry,
         edgeMaterial
       );
 
@@ -101,10 +362,26 @@
       edges
     );
 
-    const group=new THREE.Group();
-    group.add(mesh);
-    this.root.add(group);
-    this.visuals.push({group,material});
+    const group =
+      new THREE.Group();
+
+    group.name =
+      definition.id +
+      "-cone-group";
+
+    group.add(
+      mesh
+    );
+
+    this.root.add(
+      group
+    );
+
+    this.visuals.push({
+      group,
+      material,
+      edgeMaterial
+    });
   }
 
   private findNearestOccluderHit(
@@ -124,7 +401,8 @@
       {
         body: CelestialBody;
         distance: number;
-      } | null = null;
+      } | null =
+      null;
 
     for(
       const body of candidates
@@ -143,7 +421,9 @@
 
       const toCenter =
         center
-          .sub(origin);
+          .sub(
+            origin
+          );
 
       const projection =
         toCenter.dot(
@@ -152,7 +432,8 @@
 
       if(
         projection <= 0 ||
-        projection >= nearest
+        projection >=
+        maxDistance
       ) {
         continue;
       }
@@ -161,3 +442,169 @@
         toCenter
           .sub(
             direction
+              .clone()
+              .multiplyScalar(
+                projection
+              )
+          );
+
+      const radius =
+        Math.max(
+          body.radius,
+          0
+        );
+
+      const radiusSquared =
+        radius *
+        radius;
+
+      if(
+        perpendicular.lengthSq() >
+        radiusSquared
+      ) {
+        continue;
+      }
+
+      const hitOffset =
+        Math.sqrt(
+          Math.max(
+            0,
+            radiusSquared -
+            perpendicular.lengthSq()
+          )
+        );
+
+      const entry =
+        projection -
+        hitOffset;
+
+      if(
+        entry <=
+        1e-4
+      ) {
+        continue;
+      }
+
+      if(
+        nearest === null ||
+        entry <
+        nearest.distance
+      ) {
+
+        nearest = {
+          body,
+          distance:
+            entry
+        };
+      }
+    }
+
+    return nearest;
+  }
+
+  private getSceneCelestialBodies() {
+
+    const bodies:
+      CelestialBody[] = [];
+
+    this.scene.traverse(
+      object => {
+
+        const body =
+          object.userData
+            .celestialBody as
+            CelestialBody |
+            undefined;
+
+        if(
+          body &&
+          !bodies.includes(
+            body
+          )
+        ) {
+
+          bodies.push(
+            body
+          );
+        }
+      }
+    );
+
+    if(
+      !bodies.includes(
+        this.morra
+      )
+    ) {
+
+      bodies.push(
+        this.morra
+      );
+    }
+
+    return bodies;
+  }
+
+  private referenceSourceRadius() {
+
+    return 40;
+  }
+
+  private clear() {
+
+    for(
+      const visual of
+      this.visuals
+    ) {
+
+      visual.group.traverse(
+        object => {
+
+          const mesh =
+            object as THREE.Mesh;
+
+          const line =
+            object as THREE.LineSegments;
+
+          if(
+            mesh.geometry
+          ) {
+
+            mesh.geometry.dispose();
+          }
+
+          if(
+            line.geometry
+          ) {
+
+            line.geometry.dispose();
+          }
+        }
+      );
+
+      visual.material.dispose();
+      visual.edgeMaterial.dispose();
+    }
+
+    this.visuals.length =
+      0;
+
+    while(
+      this.root.children.length >
+      0
+    ) {
+
+      this.root.remove(
+        this.root.children[
+          this.root.children.length - 1
+        ]
+      );
+    }
+  }
+
+  dispose() {
+
+    this.clear();
+
+    this.root.removeFromParent();
+  }
+}
