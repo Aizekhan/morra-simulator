@@ -285,6 +285,9 @@ export const MORRA_CONFIG = {
       "LIGHT_TOTAL" |
       "HEAT_TOTAL" |
       "MAGIC_TOTAL",
+      "LARGE_SUN",
+      "MEDIUM_SUN",
+      "SMALL_SUN",
 
     opacity: 0.55
 
