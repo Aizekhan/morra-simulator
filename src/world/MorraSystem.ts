@@ -34,6 +34,10 @@ import {
 } from "../render/CelestialPresentationSystem";
 
 import {
+  RadiationConeVisualizer
+} from "../render/RadiationConeVisualizer";
+
+import {
   MORRA_CONTINENTS,
   latitudeLongitudeToDirection
 } from "./MorraContinents";
@@ -76,6 +80,9 @@ export class MorraSystem {
 
   celestialPresentation:
     CelestialPresentationSystem;
+
+  radiationConeVisualizer:
+    RadiationConeVisualizer;
 
   continents:
     THREE.Group;
@@ -494,6 +501,44 @@ export class MorraSystem {
     this.sunSmall.mesh.userData.presentationMinimumPixels =
       12;
 
+    this.radiationConeVisualizer =
+      new RadiationConeVisualizer(
+        scene,
+        this.morra,
+        [
+          {
+            id:
+              "large-sun",
+            kind:
+              "MAGIC",
+            color:
+              0xb070ff
+          },
+          {
+            id:
+              "medium-sun",
+            kind:
+              "LIGHT",
+            color:
+              0xffc66d
+          },
+          {
+            id:
+              "small-sun",
+            kind:
+              "HEAT",
+            color:
+              0xff5d3d
+          }
+        ]
+      );
+
+    this.radiationConeVisualizer.setConfig({
+      enabled: true,
+      length: 2100,
+      radialScale: 1
+    });
+
     this.continents =
       new THREE.Group();
 
@@ -704,6 +749,12 @@ export class MorraSystem {
       fieldMap
     );
 
+    this.radiationConeVisualizer.update([
+      this.sunLarge,
+      this.sunMedium,
+      this.sunSmall
+    ]);
+
     this.shadowVolumeVisualizer.setConfig({
       enabled:
         MORRA_CONFIG.SHADOW_VOLUMES.enabled,
@@ -746,6 +797,8 @@ export class MorraSystem {
     );
 
     this.surfaceFieldVisualizer.dispose();
+
+    this.radiationConeVisualizer.dispose();
 
     this.shadowVolumeVisualizer.dispose();
 
