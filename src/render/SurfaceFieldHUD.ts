@@ -204,6 +204,12 @@ export class SurfaceFieldHUD {
         return "UMBRA";
       case "PENUMBRA":
         return "PENUMBRA";
+      case "LARGE_SUN":
+        return "LARGE SUN";
+      case "MEDIUM_SUN":
+        return "MEDIUM SUN";
+      case "SMALL_SUN":
+        return "SMALL SUN";
       case "LIGHT_TOTAL":
         return "LIGHT TOTAL";
       case "HEAT_TOTAL":
@@ -265,6 +271,12 @@ export class SurfaceFieldHUD {
               map.penumbra
             )
         };
+      case "LARGE_SUN":
+        return map.largeSunLightStats;
+      case "MEDIUM_SUN":
+        return map.mediumSunLightStats;
+      case "SMALL_SUN":
+        return map.smallSunLightStats;
       case "LIGHT_TOTAL":
         return map.lightStats;
       case "HEAT_TOTAL":
@@ -354,6 +366,21 @@ export class SurfaceFieldHUD {
         return {
           low: "#2b1600",
           high: "#ffc247"
+        };
+      case "LARGE_SUN":
+        return {
+          low: "#05070f",
+          high: "#ffcc88"
+        };
+      case "MEDIUM_SUN":
+        return {
+          low: "#08101a",
+          high: "#ff8a3d"
+        };
+      case "SMALL_SUN":
+        return {
+          low: "#07100a",
+          high: "#ffffaa"
         };
       case "LIGHT_TOTAL":
         return {
