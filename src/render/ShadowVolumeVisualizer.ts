@@ -333,19 +333,6 @@ export class ShadowVolumeVisualizer {
     const sourceDistanceToMorra =
       morraDistance;
 
-    const sourceAngularRadius =
-      Math.asin(
-        THREE.MathUtils.clamp(
-          source.radius /
-          Math.max(
-            morraDistance,
-            1e-6
-          ),
-          0,
-          0.999999
-        )
-      );
-
     const occluderAngularRadius =
       Math.asin(
         THREE.MathUtils.clamp(
@@ -368,9 +355,43 @@ export class ShadowVolumeVisualizer {
         )
       );
 
+    const shadowReach =
+      morraDistance -
+      occluderProjection;
+
+    const sourceAngularRadiusAtOccluder =
+      Math.asin(
+        THREE.MathUtils.clamp(
+          source.radius /
+          Math.max(
+            morraDistance,
+            1e-6
+          ),
+          0,
+          0.999999
+        )
+      );
+
+    const shadowConeAngularRadius =
+      Math.max(
+        0,
+        occluderAngularRadius -
+        sourceAngularRadiusAtOccluder
+      ) *
+      Math.min(
+        1,
+        shadowReach /
+        Math.max(
+          morraDistance,
+          1e-6
+        )
+      );
+
     return angularSeparation <=
-      sourceAngularRadius +
-      occluderAngularRadius;
+      occluderAngularRadius +
+      sourceAngularRadiusAtOccluder &&
+      shadowReach > 0 &&
+      shadowConeAngularRadius >= 0;
   }
 
   private buildPairGeometry(
