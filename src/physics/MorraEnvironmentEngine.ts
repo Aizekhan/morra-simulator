@@ -121,3 +121,67 @@ export class MorraEnvironmentEngine {
     };
   }
 }
+  evaluateSurfacePointDiagnostics(
+    localPoint: THREE.Vector3
+  ) {
+
+    const sample =
+      this.evaluateLocalPoint(
+        localPoint
+      );
+
+    let maxShadow = 0;
+    let minVisibility = 1;
+    let blockedSources = 0;
+    let umbraSources = 0;
+    let penumbraSources = 0;
+
+    for(
+      const contribution of
+      sample.radiation.contributions
+    ) {
+
+      minVisibility = Math.min(
+        minVisibility,
+        contribution.visibilityFactor
+      );
+
+      const blocked =
+        1 - contribution.visibilityFactor;
+
+      maxShadow = Math.max(
+        maxShadow,
+        blocked
+      );
+
+      if(
+        contribution.blockingOccluderIds.length > 0
+      ) {
+        blockedSources += 1;
+      }
+
+      if(
+        contribution.umbra
+      ) {
+        umbraSources += 1;
+      }
+
+      if(
+        contribution.penumbra
+      ) {
+        penumbraSources += 1;
+      }
+    }
+
+    return {
+      sample,
+      sourceCount:
+        sample.radiation.contributions.length,
+      minVisibility,
+      maxShadow,
+      blockedSources,
+      umbraSources,
+      penumbraSources
+    };
+  }
+
