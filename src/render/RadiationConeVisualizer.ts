@@ -30,6 +30,10 @@ export class RadiationConeVisualizer {
   private length = 2100;
   private radialScale = 1;
 
+  private opacity = 0.08;
+
+  private edgeOpacity = 0.35;
+
   constructor(scene: THREE.Scene, morra: CelestialBody, definitions: RadiationConeDefinition[]) {
     this.scene = scene;
     this.morra = morra;
@@ -39,10 +43,12 @@ export class RadiationConeVisualizer {
     this.scene.add(this.root);
   }
 
-  setConfig(config:{enabled?:boolean;length?:number;radialScale?:number}) {
+  setConfig(config:{enabled?:boolean;length?:number;radialScale?:number;opacity?:number;edgeOpacity?:number}) {
     if(config.enabled!==undefined) this.enabled=config.enabled;
     if(config.length!==undefined) this.length=Math.max(1,config.length);
     if(config.radialScale!==undefined) this.radialScale=Math.max(0.01,config.radialScale);
+    if(config.opacity!==undefined) this.opacity=THREE.MathUtils.clamp(config.opacity,0,1);
+    if(config.edgeOpacity!==undefined) this.edgeOpacity=THREE.MathUtils.clamp(config.edgeOpacity,0,1);
   }
 
   update(sources:CelestialBody[]) {
@@ -65,14 +71,14 @@ export class RadiationConeVisualizer {
     const coneDepth=Math.max(this.length,radiusAtMorra*2);
 
     const geometry=new THREE.ConeGeometry(radiusAtEnd,coneDepth,48,1,true);
-    const material=new THREE.MeshBasicMaterial({color:definition.color,transparent:true,opacity:0.08,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending});
+    const material=new THREE.MeshBasicMaterial({color:definition.color,transparent:true,opacity:this.opacity,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending});
     const mesh=new THREE.Mesh(geometry,material);
 
     const midpoint=sourcePosition.clone().add(direction.clone().multiplyScalar(coneDepth*0.5));
     mesh.position.copy(midpoint);
     mesh.setRotationFromQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),direction));
 
-    const edges=new THREE.LineSegments(new THREE.EdgesGeometry(geometry),new THREE.LineBasicMaterial({color:definition.color,transparent:true,opacity:0.35}));
+    const edges=new THREE.LineSegments(new THREE.EdgesGeometry(geometry),new THREE.LineBasicMaterial({color:definition.color,transparent:true,opacity:this.edgeOpacity}));
     mesh.add(edges);
 
     const group=new THREE.Group();
