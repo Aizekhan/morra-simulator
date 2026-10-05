@@ -54,10 +54,10 @@ export class EnvironmentInspectorPanel {
       "14px";
 
     this.root.style.width =
-      "300px";
+      "280px";
 
     this.root.style.maxHeight =
-      "calc(100vh - 28px)";
+      "min(520px, calc(100vh - 28px))";
 
     this.root.style.overflowY =
       "auto";
@@ -150,7 +150,10 @@ export class EnvironmentInspectorPanel {
   ) {
 
     let html =
-      "<div style=\"font-weight:700;font-size:15px;margin-bottom:8px\">MORRA ENVIRONMENT</div>";
+      "<div style=\"display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px;margin-bottom:8px\"><span>MORRA ENVIRONMENT</span><span style=\"opacity:.55;font-size:10px\">CLICK POINT</span></div>";
+
+    html +=
+      "<details open><summary style=\"cursor:pointer;font-weight:700;padding:3px 0\">CORE</summary>";
 
     if(
       !sample
@@ -221,10 +224,12 @@ export class EnvironmentInspectorPanel {
       ).toFixed(1) +
       "%</span></div>";
 
+    html +=
+      "</details>";
+
     if(diagnostic) {
       html +=
-        "<div style=\"border-top:1px solid #3a3f46;margin:8px 0 6px;padding-top:6px\">RADIATION DEBUG</div>";
-
+        "<details><summary style=\"cursor:pointer;font-weight:700;padding:3px 0\">RADIATION DEBUG</summary>";
       html +=
         "<div style=\"display:flex;justify-content:space-between\"><span>MIN VISIBILITY</span><span>" +
         (diagnostic.minVisibility * 100).toFixed(1) +
@@ -251,10 +256,13 @@ export class EnvironmentInspectorPanel {
         "<div style=\"display:flex;justify-content:space-between\"><span>PENUMBRA</span><span>" +
         diagnostic.penumbraSources +
         "</span></div>";
+
+      html +=
+        "</details>";
     }
 
     html +=
-      "<div style=\"border-top:1px solid #3a3f46;margin:8px 0 6px;padding-top:6px\">SOURCE CONTRIBUTIONS</div>";
+      "<details><summary style=\"cursor:pointer;font-weight:700;padding:3px 0\">SOURCE CONTRIBUTIONS</summary>";
 
     for(
       const contribution
@@ -333,7 +341,10 @@ export class EnvironmentInspectorPanel {
     }
 
     html +=
-      "<div style=\"border-top:1px solid #3a3f46;margin:8px 0 6px;padding-top:6px\">TOTAL CHECK</div>";
+      "</details>";
+
+    html +=
+      "<details><summary style=\"cursor:pointer;font-weight:700;padding:3px 0\">TOTAL CHECK</summary>";
 
     html +=
       this.row(
@@ -397,6 +408,9 @@ export class EnvironmentInspectorPanel {
           100
         ).toFixed(1) + "%"
       );
+
+    html +=
+      "</details>";
 
     this.root.innerHTML =
       html;
