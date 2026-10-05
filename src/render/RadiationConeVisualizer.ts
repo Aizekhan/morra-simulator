@@ -535,9 +535,33 @@ export class RadiationConeVisualizer {
         radius *
         radius;
 
+      const sourceRadius =
+        Math.max(
+          source.radius,
+          0
+        );
+
+      const angularReach =
+        Math.max(
+          body.radius,
+          0
+        ) +
+        (
+          maxDistance -
+          projection
+        ) *
+        (
+          sourceRadius +
+          body.radius
+        ) /
+        Math.max(
+          maxDistance,
+          1e-6
+        );
+
       if(
-        perpendicular.lengthSq() >
-        radiusSquared
+        perpendicular.length() >
+        angularReach
       ) {
         continue;
       }
