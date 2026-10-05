@@ -143,18 +143,7 @@ export class SurfaceFieldHUD {
 
     const valueText =
       channelStats
-        ? "MIN " +
-          this.format(
-            channelStats.min
-          ) +
-          "   AVG " +
-          this.format(
-            channelStats.average
-          ) +
-          "   MAX " +
-          this.format(
-            channelStats.max
-          )
+        ? this.getRangeText(channelStats)
         : "Calculating surface field...";
 
     this.root.innerHTML =
@@ -183,6 +172,16 @@ export class SurfaceFieldHUD {
       "</div>";
   }
 
+
+  private getRangeText(
+    stats: { min: number; max: number; average: number }
+  ) {
+    return (
+      "MIN " + this.format(stats.min) +
+      "  AVG " + this.format(stats.average) +
+      "  MAX " + this.format(stats.max)
+    );
+  }
   private getTitle(
     channel:
       SurfaceFieldChannel
