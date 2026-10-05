@@ -287,7 +287,9 @@ export const MORRA_CONFIG = {
       "MAGIC_TOTAL" |
       "LARGE_SUN" |
       "MEDIUM_SUN" |
-      "SMALL_SUN",
+      "SMALL_SUN" |
+      "NORTH_MOON" |
+      "EQUATOR_MOON",
 
     opacity: 0.55
 
