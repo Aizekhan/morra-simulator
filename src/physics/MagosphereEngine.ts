@@ -13,6 +13,8 @@ export interface MagosphereSample {
   stability: number;
 
   anomalyStrength: number;
+
+  gravityEffect: number;
 }
 
 export class MagosphereEngine {
@@ -35,6 +37,10 @@ export class MagosphereEngine {
         1
       );
 
+    const anomalyStrength =
+      1 -
+      stability;
+
     return {
       magicInput:
         radiation.magic,
@@ -44,9 +50,14 @@ export class MagosphereEngine {
 
       stability,
 
-      anomalyStrength:
-        1 -
-        stability
+      anomalyStrength,
+
+      // Current canonical stage only:
+      // Magosphere instability produces a normalized gravity
+      // perturbation signal. Spatial direction and currents are
+      // implemented in the next physics layer.
+      gravityEffect:
+        anomalyStrength
     };
   }
 }
