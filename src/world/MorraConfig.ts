@@ -315,6 +315,24 @@ export const MORRA_CONFIG = {
   },
 
   // =========================
+  // RADIATION CONES
+  // =========================
+
+  RADIATION_CONES: {
+
+    enabled: true,
+
+    length: 2100,
+
+    radialScale: 1,
+
+    opacity: 0.08,
+
+    edgeOpacity: 0.35
+
+  },
+
+  // =========================
   // DEBUG
   // =========================
 
