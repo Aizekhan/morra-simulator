@@ -338,7 +338,7 @@ export class ShadowVolumeVisualizer {
         THREE.MathUtils.clamp(
           source.radius /
           Math.max(
-            sourceDistanceToMorra,
+            morraDistance,
             1e-6
           ),
           0,
