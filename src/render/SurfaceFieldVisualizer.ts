@@ -92,6 +92,7 @@ export class SurfaceFieldVisualizer {
       new THREE.ShaderMaterial({
         transparent: true,
         depthWrite: false,
+        side: THREE.DoubleSide,
         uniforms: {
           fieldTexture: {
             value:
@@ -152,7 +153,7 @@ export class SurfaceFieldVisualizer {
               opacity *
               smoothstep(
                 0.0,
-                0.08,
+                0.02,
                 value
               );
 
