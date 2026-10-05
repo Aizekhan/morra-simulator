@@ -29,7 +29,9 @@ interface CelestialSourceConfig {
 }
 
 interface MoonTarget {
+
   id: string;
+
   body: CelestialBody;
 }
 
@@ -40,7 +42,6 @@ export class CelestialInteractionSystem {
 
   readonly radiation:
     MorraEnvironmentEngine["radiation"];
-
   private readonly sources:
     CelestialSourceConfig[];
 
