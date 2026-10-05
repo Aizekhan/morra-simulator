@@ -204,6 +204,12 @@ export class SurfaceFieldHUD {
         return "UMBRA";
       case "PENUMBRA":
         return "PENUMBRA";
+      case "LIGHT_TOTAL":
+        return "LIGHT TOTAL";
+      case "HEAT_TOTAL":
+        return "HEAT TOTAL";
+      case "MAGIC_TOTAL":
+        return "MAGIC TOTAL";
     }
   }
 
@@ -259,6 +265,12 @@ export class SurfaceFieldHUD {
               map.penumbra
             )
         };
+      case "LIGHT_TOTAL":
+        return map.lightStats;
+      case "HEAT_TOTAL":
+        return map.heatStats;
+      case "MAGIC_TOTAL":
+        return map.magicStats;
     }
   }
 
@@ -342,6 +354,21 @@ export class SurfaceFieldHUD {
         return {
           low: "#2b1600",
           high: "#ffc247"
+        };
+      case "LIGHT_TOTAL":
+        return {
+          low: "#061020",
+          high: "#fff1a8"
+        };
+      case "HEAT_TOTAL":
+        return {
+          low: "#10152a",
+          high: "#ff3218"
+        };
+      case "MAGIC_TOTAL":
+        return {
+          low: "#12002d",
+          high: "#6f4dff"
         };
 
       case "MAGIC":
