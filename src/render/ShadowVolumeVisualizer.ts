@@ -330,12 +330,45 @@ export class ShadowVolumeVisualizer {
         .sub(axis.multiplyScalar(occluderProjection))
         .length();
 
-    return perpendicularDistance <=
-      Math.max(
-        occluder.radius +
-        source.radius,
-        this.engine.morra.radius
+    const sourceAngularRadius =
+      Math.asin(
+        THREE.MathUtils.clamp(
+          source.radius /
+          Math.max(
+            morraDistance -
+            occluderProjection,
+            1e-6
+          ),
+          0,
+          0.999999
+        )
       );
+
+    const occluderAngularRadius =
+      Math.asin(
+        THREE.MathUtils.clamp(
+          occluder.radius /
+          Math.max(
+            occluderProjection,
+            1e-6
+          ),
+          0,
+          0.999999
+        )
+      );
+
+    const angularSeparation =
+      Math.atan2(
+        perpendicularDistance,
+        Math.max(
+          occluderProjection,
+          1e-6
+        )
+      );
+
+    return angularSeparation <=
+      sourceAngularRadius +
+      occluderAngularRadius;
   }
 
   private buildPairGeometry(
