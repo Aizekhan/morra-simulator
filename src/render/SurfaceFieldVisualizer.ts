@@ -349,13 +349,6 @@ export class SurfaceFieldVisualizer {
       );
     }
 
-    if(
-      this.lastMap ===
-      map
-    ) {
-      return;
-    }
-
     this.lastMap =
       map;
 
