@@ -182,23 +182,17 @@ export class RadiationConeVisualizer {
     const sourceToMorra =
       morraPosition
         .clone()
-        .sub(
-          sourcePosition
-        );
+        .sub(sourcePosition);
 
     const targetDistance =
       sourceToMorra.length();
 
-    if(
-      targetDistance <=
-      1e-6
-    ) {
+    if(targetDistance <= 1e-6) {
       return;
     }
 
     const direction =
-      sourceToMorra
-        .normalize();
+      sourceToMorra.normalize();
 
     const occlusionHit =
       this.findNearestOccluderHit(
@@ -213,24 +207,17 @@ export class RadiationConeVisualizer {
         0,
         Math.min(
           targetDistance,
-          occlusionHit?.distance ??
-          targetDistance
+          occlusionHit?.distance ?? targetDistance
         )
       );
 
-    if(
-      visibleDistance <=
-      1
-    ) {
+    if(visibleDistance <= 1) {
       return;
     }
 
     const sizeFactor =
       source.radius /
-      Math.max(
-        this.referenceSourceRadius(),
-        1e-6
-      );
+      Math.max(this.referenceSourceRadius(), 1e-6);
 
     const influenceRange =
       this.length *
@@ -238,68 +225,56 @@ export class RadiationConeVisualizer {
       this.rangeScale;
 
     const coneDepth =
-      Math.max(
-        Math.min(
-          influenceRange,
-          visibleDistance
-        ),
-        1
+      Math.min(
+        influenceRange,
+        visibleDistance
       );
 
+    if(coneDepth <= 1) {
+      return;
+    }
+
     const startRadius =
-      Math.max(
-        source.radius,
-        0.01
-      );
+      Math.max(source.radius, 0.01);
 
     const radiusGrowth =
       Math.tan(
         THREE.MathUtils.clamp(
           source.radius /
-          Math.max(
-            targetDistance,
-            1e-6
-          ),
+          Math.max(targetDistance, 1e-6),
           0,
           0.45
         )
-      ) *
-      this.radialScale;
+      ) * this.radialScale;
 
     const endRadius =
       Math.max(
         startRadius,
-        startRadius +
-        coneDepth *
-        radiusGrowth
+        startRadius + coneDepth * radiusGrowth
       );
-
-    const radialSegments = 48;
 
     const geometry =
-      new THREE.CylinderGeometry(
-        endRadius,
-        startRadius,
+      this.createTruncatedConeGeometry(
+        sourcePosition,
+        direction,
         coneDepth,
-        radialSegments,
-        1,
-        true
+        startRadius,
+        endRadius,
+        occlusionHit?.body ?? null
       );
+
+    if(!geometry) {
+      return;
+    }
 
     const material =
       new THREE.MeshBasicMaterial({
-        color:
-          definition.color,
-        transparent:
-          true,
-        opacity:
-          this.opacity,
-        depthWrite:
-          false,
-        side:
-          THREE.DoubleSide,
-        blending:
-          THREE.AdditiveBlending
+        color: definition.color,
+        transparent: true,
+        opacity: this.opacity,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending
       });
 
     const mesh =
@@ -308,33 +283,6 @@ export class RadiationConeVisualizer {
         material
       );
 
-    const midpoint =
-      sourcePosition
-        .clone()
-        .add(
-          direction
-            .clone()
-            .multiplyScalar(
-              coneDepth * 0.5
-            )
-        );
-
-    mesh.position.copy(
-      midpoint
-    );
-
-    mesh.setRotationFromQuaternion(
-      new THREE.Quaternion()
-        .setFromUnitVectors(
-          new THREE.Vector3(
-            0,
-            1,
-            0
-          ),
-          direction
-        )
-    );
-
     const edgeGeometry =
       new THREE.EdgesGeometry(
         geometry
@@ -342,14 +290,10 @@ export class RadiationConeVisualizer {
 
     const edgeMaterial =
       new THREE.LineBasicMaterial({
-        color:
-          definition.color,
-        transparent:
-          true,
-        opacity:
-          this.edgeOpacity,
-        depthWrite:
-          false
+        color: definition.color,
+        transparent: true,
+        opacity: this.edgeOpacity,
+        depthWrite: false
       });
 
     const edges =
@@ -358,30 +302,190 @@ export class RadiationConeVisualizer {
         edgeMaterial
       );
 
-    mesh.add(
-      edges
-    );
+    mesh.add(edges);
 
     const group =
       new THREE.Group();
 
     group.name =
-      definition.id +
-      "-cone-group";
+      definition.id + "-cone-group";
 
-    group.add(
-      mesh
-    );
+    group.add(mesh);
 
-    this.root.add(
-      group
-    );
+    this.root.add(group);
 
     this.visuals.push({
       group,
       material,
       edgeMaterial
     });
+  }
+
+  private createTruncatedConeGeometry(
+    sourcePosition: THREE.Vector3,
+    direction: THREE.Vector3,
+    depth: number,
+    startRadius: number,
+    endRadius: number,
+    occluder: CelestialBody | null
+  ) {
+
+    const radialSegments = 48;
+    const rows = 8;
+    const basis = this.buildPerpendicularBasis(direction);
+    const vertices: number[] = [];
+    const indices: number[] = [];
+
+    for(let row = 0; row <= rows; row++) {
+      const t = row / rows;
+      const distance = t * depth;
+      const radius = THREE.MathUtils.lerp(
+        startRadius,
+        endRadius,
+        t
+      );
+
+      for(let segment = 0; segment < radialSegments; segment++) {
+        const angle =
+          segment / radialSegments * Math.PI * 2;
+
+        const radial =
+          basis.u.clone().multiplyScalar(Math.cos(angle))
+            .add(
+              basis.v.clone().multiplyScalar(Math.sin(angle))
+            );
+
+        let vertexDistance = distance;
+
+        if(occluder) {
+          const hit = this.raySphereEntryDistance(
+            sourcePosition
+              .clone()
+              .addScaledVector(radial, Math.max(0, radius)),
+            direction,
+            occluder
+          );
+
+          if(hit !== null) {
+            vertexDistance = Math.min(vertexDistance, hit);
+          }
+        }
+
+        const center =
+          sourcePosition
+            .clone()
+            .addScaledVector(direction, vertexDistance);
+
+        const position =
+          center
+            .addScaledVector(radial, radius);
+
+        vertices.push(
+          position.x,
+          position.y,
+          position.z
+        );
+      }
+    }
+
+    for(let row = 0; row < rows; row++) {
+      for(let segment = 0; segment < radialSegments; segment++) {
+        const next = (segment + 1) % radialSegments;
+        const a = row * radialSegments + segment;
+        const b = row * radialSegments + next;
+        const c = (row + 1) * radialSegments + next;
+        const d = (row + 1) * radialSegments + segment;
+
+        indices.push(a, b, d);
+        indices.push(b, c, d);
+      }
+    }
+
+    if(vertices.length < 9 || indices.length < 3) {
+      return null;
+    }
+
+    const geometry =
+      new THREE.BufferGeometry();
+
+    geometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(vertices, 3)
+    );
+
+    geometry.setIndex(indices);
+    geometry.computeVertexNormals();
+
+    return geometry;
+  }
+
+  private buildPerpendicularBasis(
+    direction: THREE.Vector3
+  ) {
+
+    const reference =
+      Math.abs(direction.y) < 0.9
+        ? new THREE.Vector3(0, 1, 0)
+        : new THREE.Vector3(1, 0, 0);
+
+    const u =
+      new THREE.Vector3()
+        .crossVectors(direction, reference)
+        .normalize();
+
+    const v =
+      new THREE.Vector3()
+        .crossVectors(direction, u)
+        .normalize();
+
+    return { u, v };
+  }
+
+  private raySphereEntryDistance(
+    origin: THREE.Vector3,
+    direction: THREE.Vector3,
+    body: CelestialBody
+  ) {
+
+    const center =
+      body.mesh.getWorldPosition(
+        new THREE.Vector3()
+      );
+
+    const toCenter =
+      center.sub(origin);
+
+    const projection =
+      toCenter.dot(direction);
+
+    if(projection <= 0) {
+      return null;
+    }
+
+    const perpendicularSquared =
+      Math.max(
+        0,
+        toCenter.lengthSq() - projection * projection
+      );
+
+    const radius = Math.max(body.radius, 0);
+    const radiusSquared = radius * radius;
+
+    if(perpendicularSquared > radiusSquared) {
+      return null;
+    }
+
+    const offset =
+      Math.sqrt(
+        Math.max(
+          0,
+          radiusSquared - perpendicularSquared
+        )
+      );
+
+    const entry = projection - offset;
+
+    return entry > 1e-4 ? entry : null;
   }
 
   private findNearestOccluderHit(
