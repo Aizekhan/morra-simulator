@@ -110,20 +110,29 @@ export class EnvironmentInspectorPanel {
       return;
     }
 
-    const sample =
+    const diagnostic =
       this.engine
-        .evaluateLocalPoint(
+        .evaluateSurfacePointDiagnostics(
           this.localPoint
         );
 
     this.render(
-      sample
+      diagnostic.sample,
+      diagnostic
     );
   }
 
   private render(
     sample:
-      MorraEnvironmentSample | null
+      MorraEnvironmentSample | null,
+    diagnostic?: {
+      sourceCount: number;
+      minVisibility: number;
+      maxShadow: number;
+      blockedSources: number;
+      umbraSources: number;
+      penumbraSources: number;
+    }
   ) {
 
     let html =
@@ -175,6 +184,33 @@ export class EnvironmentInspectorPanel {
         100
       ).toFixed(1) +
       "%</span></div>";
+
+    if(diagnostic) {
+      html +=
+        "<div style=\"border-top:1px solid #3a3f46;margin:8px 0 6px;padding-top:6px\">RADIATION DEBUG</div>";
+      html +=
+        "<div style=\"display:flex;justify-content:space-between\"><span>MIN VISIBILITY</span><span>" +
+        (diagnostic.minVisibility * 100).toFixed(1) +
+        "%</span></div>";
+      html +=
+        "<div style=\"display:flex;justify-content:space-between\"><span>MAX SHADOW</span><span>" +
+        (diagnostic.maxShadow * 100).toFixed(1) +
+        "%</span></div>";
+      html +=
+        "<div style=\"display:flex;justify-content:space-between\"><span>BLOCKED SOURCES</span><span>" +
+        diagnostic.blockedSources +
+        " / " +
+        diagnostic.sourceCount +
+        "</span></div>";
+      html +=
+        "<div style=\"display:flex;justify-content:space-between\"><span>UMBRA</span><span>" +
+        diagnostic.umbraSources +
+        "</span></div>";
+      html +=
+        "<div style=\"display:flex;justify-content:space-between\"><span>PENUMBRA</span><span>" +
+        diagnostic.penumbraSources +
+        "</span></div>";
+    }
 
     html +=
       "<div style=\"border-top:1px solid #3a3f46;margin:8px 0 6px;padding-top:6px\">SOURCES</div>";
