@@ -1,8 +1,8 @@
 import * as THREE from "three";
 
 import {
-  MorraEnvironmentEngine
-} from "../physics/MorraEnvironmentEngine";
+  CelestialInteractionSystem
+} from "../physics/CelestialInteractionSystem";
 
 import {
   MORRA_CONFIG
@@ -52,7 +52,7 @@ interface MoonVisual {
 export class DirectIlluminationVisualizer {
 
   private readonly engine:
-    MorraEnvironmentEngine;
+    CelestialInteractionSystem;
 
   private readonly root:
     THREE.Group;
@@ -68,7 +68,7 @@ export class DirectIlluminationVisualizer {
 
   constructor(
     scene: THREE.Scene,
-    engine: MorraEnvironmentEngine
+    engine: CelestialInteractionSystem
   ) {
 
     this.engine =
@@ -232,13 +232,13 @@ export class DirectIlluminationVisualizer {
     }
 
     const center =
-      this.engine.morra.mesh
+      this.engine.environment.morra.mesh
         .getWorldPosition(
           new THREE.Vector3()
         );
 
     const radius =
-      this.engine.morra.radius;
+      this.engine.environment.morra.radius;
 
     this.updateDirectSources(
       center,
@@ -571,7 +571,7 @@ export class DirectIlluminationVisualizer {
 
         reflectedColor.add(
           new THREE.Color(
-            source.color ??
+            SOURCE_COLORS[source.id] ??
             0xffffff
           ).multiplyScalar(
             reflected
