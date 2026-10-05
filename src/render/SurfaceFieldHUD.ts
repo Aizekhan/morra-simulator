@@ -216,6 +216,8 @@ export class SurfaceFieldHUD {
         return "EQUATOR MOON";
       case "SPECTRUM":
         return "SPECTRUM";
+      case "DAY_NIGHT":
+        return "DAY / NIGHT";
       case "LIGHT_TOTAL":
         return "LIGHT TOTAL";
       case "HEAT_TOTAL":
