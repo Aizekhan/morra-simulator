@@ -509,6 +509,10 @@ export class SurfaceFieldEngine {
               localPoint
             );
 
+        // Surface illumination is evaluated in world space by the
+        // environment/radiation engine. The map stores that physical
+        // result only; it is never used as a baked texture position.
+
         const index =
           y *
           width +
