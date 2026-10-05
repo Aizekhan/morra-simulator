@@ -15,6 +15,21 @@ import {
   type RadiationSource
 } from "./RadiationEngine";
 
+export type GravityCurrentType =
+  | "NONE"
+  | "VERTICAL"
+  | "HORIZONTAL"
+  | "SPIRAL";
+
+export interface GravityCurrentSample {
+
+  type: GravityCurrentType;
+
+  strength: number;
+
+  direction: THREE.Vector3;
+}
+
 export interface GravitySample {
 
   baseGravity: number;
@@ -22,6 +37,8 @@ export interface GravitySample {
   gravityEffect: number;
 
   gravityScale: number;
+
+  current: GravityCurrentSample;
 }
 
 export interface MorraEnvironmentSample {
@@ -123,23 +140,33 @@ export class MorraEnvironmentEngine {
         radiation
       );
 
+    const gravityEffect =
+      magosphere.gravityEffect;
+
+    const current: GravityCurrentSample =
+      this.evaluateGravityCurrent(
+        normalized,
+        gravityEffect
+      );
+
     const gravity: GravitySample = {
 
       baseGravity:
         this.baseGravity,
 
-      gravityEffect:
-        magosphere.gravityEffect,
+      gravityEffect,
 
       // A stable Magosphere preserves canonical 0.9g.
       // Instability lowers the local effective gravity.
       gravityScale:
         THREE.MathUtils.clamp(
           1 -
-          magosphere.gravityEffect,
+          gravityEffect,
           0,
           1
-        )
+        ),
+
+      current
     };
 
     return {
@@ -154,6 +181,121 @@ export class MorraEnvironmentEngine {
       magosphere,
 
       gravity
+    };
+  }
+
+  private evaluateGravityCurrent(
+    normal: THREE.Vector3,
+    strength: number
+  ): GravityCurrentSample {
+
+    const clampedStrength =
+      THREE.MathUtils.clamp(
+        strength,
+        0,
+        1
+      );
+
+    if(
+      clampedStrength <=
+      Number.EPSILON
+    ) {
+      return {
+        type: "NONE",
+        strength: 0,
+        direction:
+          new THREE.Vector3()
+      };
+    }
+
+    const axial =
+      Math.abs(normal.y);
+
+    const radial =
+      Math.sqrt(
+        normal.x * normal.x +
+        normal.z * normal.z
+      );
+
+    if(
+      axial >= 0.75
+    ) {
+      return {
+        type: "VERTICAL",
+        strength: clampedStrength,
+        direction:
+          new THREE.Vector3(
+            0,
+            normal.y >= 0
+              ? 1
+              : -1,
+            0
+          )
+      };
+    }
+
+    if(
+      radial <= 0.35
+    ) {
+      return {
+        type: "VERTICAL",
+        strength: clampedStrength,
+        direction:
+          new THREE.Vector3(
+            0,
+            normal.y >= 0
+              ? 1
+              : -1,
+            0
+          )
+      };
+    }
+
+    if(
+      axial <= 0.2
+    ) {
+      const tangent =
+        new THREE.Vector3(
+          -normal.z,
+          0,
+          normal.x
+        ).normalize();
+
+      return {
+        type: "HORIZONTAL",
+        strength: clampedStrength,
+        direction:
+          tangent
+      };
+    }
+
+    const tangent =
+      new THREE.Vector3(
+        -normal.z,
+        0,
+        normal.x
+      );
+
+    const spiralDirection =
+      new THREE.Vector3()
+        .copy(tangent)
+        .multiplyScalar(0.75)
+        .add(
+          new THREE.Vector3(
+            0,
+            normal.y >= 0
+              ? 0.66
+              : -0.66,
+            0
+          )
+        )
+        .normalize();
+
+    return {
+      type: "SPIRAL",
+      strength: clampedStrength,
+      direction:
+        spiralDirection
     };
   }
 
