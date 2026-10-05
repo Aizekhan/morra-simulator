@@ -116,7 +116,7 @@ export class EclipseShadowVisualizer {
                   new THREE.Vector3()
               )
           },
-          occluderDirections: {
+          shadowCenters: {
             value:
               Array.from(
                 { length: 4 },
@@ -124,11 +124,11 @@ export class EclipseShadowVisualizer {
                   new THREE.Vector3()
               )
           },
-          occluderAngularRadii: {
+          umbraAngularRadii: {
             value:
               new Float32Array(4)
           },
-          sourceAngularRadii: {
+          penumbraAngularRadii: {
             value:
               new Float32Array(4)
           }
@@ -172,9 +172,9 @@ export class EclipseShadowVisualizer {
           uniform float morraRadius;
 
           uniform vec3 sourcePositions[4];
-          uniform vec3 occluderDirections[4];
-          uniform float occluderAngularRadii[4];
-          uniform float sourceAngularRadii[4];
+          uniform vec3 shadowCenters[4];
+          uniform float umbraAngularRadii[4];
+          uniform float penumbraAngularRadii[4];
 
           varying vec3 vWorldPosition;
           varying vec3 vWorldNormal;
@@ -200,50 +200,43 @@ export class EclipseShadowVisualizer {
                 break;
               }
 
-              vec3 sourceDirection =
+              vec3 surfaceDirection =
                 normalize(
-                  sourcePositions[i] -
-                  vWorldPosition
+                  vWorldPosition -
+                  morraCenter
                 );
 
-              float angularSeparation =
+              float shadowSeparation =
                 acos(
                   clamp(
                     dot(
-                      sourceDirection,
-                      occluderDirections[i]
+                      surfaceDirection,
+                      shadowCenters[i]
                     ),
                     -1.0,
                     1.0
                   )
                 );
 
-              float sourceRadius =
-                sourceAngularRadii[i];
+              float umbraRadius =
+                umbraAngularRadii[i];
 
-              float occluderRadius =
-                occluderAngularRadii[i];
+              float penumbraRadius =
+                penumbraAngularRadii[i];
 
               float umbraEdge =
-                max(
-                  occluderRadius -
-                  sourceRadius,
-                  0.0
-                );
-
-              float fullUmbra =
                 1.0 -
                 smoothstep(
                   max(
                     0.0,
-                    umbraEdge -
+                    umbraRadius -
                     softness *
-                    sourceRadius
+                    umbraRadius
                   ),
-                  umbraEdge +
+                  umbraRadius +
                   softness *
-                  sourceRadius,
-                  angularSeparation
+                  umbraRadius,
+                  shadowSeparation
                 );
 
               float penumbra =
@@ -251,16 +244,20 @@ export class EclipseShadowVisualizer {
                 smoothstep(
                   max(
                     0.0,
-                    occluderRadius -
-                    sourceRadius -
+                    penumbraRadius -
                     softness *
-                    sourceRadius
+                    penumbraRadius
                   ),
-                  occluderRadius +
-                  sourceRadius +
+                  penumbraRadius +
                   softness *
-                  sourceRadius,
-                  angularSeparation
+                  penumbraRadius,
+                  shadowSeparation
+                );
+
+              vec3 sourceDirection =
+                normalize(
+                  sourcePositions[i] -
+                  vWorldPosition
                 );
 
               float facing =
@@ -395,26 +392,26 @@ export class EclipseShadowVisualizer {
       this.material.uniforms.sourcePositions.value as
       THREE.Vector3[];
 
-    const occluderDirections =
-      this.material.uniforms.occluderDirections.value as
+    const shadowCenters =
+      this.material.uniforms.shadowCenters.value as
       THREE.Vector3[];
 
-    const sourceAngularRadii =
-      this.material.uniforms.sourceAngularRadii.value as
+    const umbraAngularRadii =
+      this.material.uniforms.umbraAngularRadii.value as
       Float32Array;
 
-    const occluderAngularRadii =
-      this.material.uniforms.occluderAngularRadii.value as
+    const penumbraAngularRadii =
+      this.material.uniforms.penumbraAngularRadii.value as
       Float32Array;
 
     this.material.uniforms.sourcePositions.needsUpdate = true;
-    this.material.uniforms.occluderDirections.needsUpdate = true;
+    this.material.uniforms.shadowCenters.needsUpdate = true;
 
     for(let i = 0; i < 4; i++) {
       sourcePositions[i].set(0, 0, 0);
-      occluderDirections[i].set(0, 0, 1);
-      sourceAngularRadii[i] = 0;
-      occluderAngularRadii[i] = 0;
+      shadowCenters[i].set(0, 0, 1);
+      umbraAngularRadii[i] = 0;
+      penumbraAngularRadii[i] = 0;
     }
 
     let count =
@@ -595,7 +592,7 @@ export class EclipseShadowVisualizer {
           sourcePosition
         );
 
-        occluderDirections[count].copy(
+        shadowCenters[count].copy(
           occluderPosition
             .clone()
             .sub(
@@ -604,12 +601,12 @@ export class EclipseShadowVisualizer {
             .normalize()
         );
 
-        sourceAngularRadii[count] =
+        umbraAngularRadii[count] =
           Math.asin(
             THREE.MathUtils.clamp(
-              source.radius /
+              umbraRadius /
               Math.max(
-                sourceDistance,
+                morraDistance,
                 1e-6
               ),
               0,
@@ -617,15 +614,16 @@ export class EclipseShadowVisualizer {
             )
           );
 
-        occluderAngularRadii[count] =
-          Math.atan2(
-            Math.max(
-              projectedOffset,
-              umbraRadius
-            ),
-            Math.max(
-              morraDistance,
-              1e-6
+        penumbraAngularRadii[count] =
+          Math.asin(
+            THREE.MathUtils.clamp(
+              penumbraRadius /
+              Math.max(
+                morraDistance,
+                1e-6
+              ),
+              0,
+              0.999999
             )
           );
 
@@ -637,10 +635,10 @@ export class EclipseShadowVisualizer {
     this.material.uniforms.eclipseCount.value =
       count;
 
-    this.material.uniforms.sourceAngularRadii.needsUpdate =
+    this.material.uniforms.umbraAngularRadii.needsUpdate =
       true;
 
-    this.material.uniforms.occluderAngularRadii.needsUpdate =
+    this.material.uniforms.penumbraAngularRadii.needsUpdate =
       true;
   }
 
