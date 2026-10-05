@@ -273,7 +273,7 @@ export class EclipseShadowVisualizer {
                 max(
                   totalShadow,
                   max(
-                    fullUmbra,
+                    umbraEdge,
                     penumbra *
                     0.65
                   ) *
