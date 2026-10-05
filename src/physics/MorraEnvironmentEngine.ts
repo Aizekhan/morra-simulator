@@ -120,7 +120,7 @@ export class MorraEnvironmentEngine {
       magosphere
     };
   }
-}
+
   evaluateSurfacePointDiagnostics(
     localPoint: THREE.Vector3
   ) {
@@ -184,4 +184,4 @@ export class MorraEnvironmentEngine {
       penumbraSources
     };
   }
-
+}
