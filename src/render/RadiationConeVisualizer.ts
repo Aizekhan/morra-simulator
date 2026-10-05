@@ -27,6 +27,10 @@ export class RadiationConeVisualizer {
   private readonly morra: CelestialBody;
   private readonly definitions: RadiationConeDefinition[];
   private readonly visuals: RadiationConeVisual[] = [];
+
+  private lastSignature:
+    string | null =
+    null;
   private readonly root: THREE.Group;
 
   private enabled = true;
@@ -137,8 +141,6 @@ export class RadiationConeVisualizer {
     sources: CelestialBody[]
   ) {
 
-    this.clear();
-
     this.root.visible =
       this.enabled;
 
@@ -147,6 +149,20 @@ export class RadiationConeVisualizer {
     ) {
       return;
     }
+
+    const signature =
+      this.getSceneSignature(
+        sources
+      );
+
+    if(
+      signature ===
+      this.lastSignature
+    ) {
+      return;
+    }
+
+    this.clear();
 
     for(
       let i = 0;
@@ -162,6 +178,62 @@ export class RadiationConeVisualizer {
         this.definitions[i]
       );
     }
+
+    this.lastSignature =
+      signature;
+  }
+
+  private getSceneSignature(
+    sources: CelestialBody[]
+  ) {
+
+    const values:number[] = [
+      this.enabled ? 1 : 0,
+      this.length,
+      this.radialScale,
+      this.rangeScale,
+      this.opacity,
+      this.edgeOpacity
+    ];
+
+    for(
+      const source
+      of sources.slice(
+        0,
+        this.definitions.length
+      )
+    ) {
+
+      const position =
+        source.mesh.getWorldPosition(
+          new THREE.Vector3()
+        );
+
+      values.push(
+        position.x,
+        position.y,
+        position.z,
+        source.radius,
+        source.mesh.visible ? 1 : 0
+      );
+    }
+
+    const morraPosition =
+      this.morra.mesh.getWorldPosition(
+        new THREE.Vector3()
+      );
+
+    values.push(
+      morraPosition.x,
+      morraPosition.y,
+      morraPosition.z,
+      this.morra.radius
+    );
+
+    return values.map(
+      value =>
+        value.toFixed(3)
+    ).join("|");
   }
 
   private addCone(
