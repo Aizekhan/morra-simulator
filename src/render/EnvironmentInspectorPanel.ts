@@ -208,6 +208,19 @@ export class EnvironmentInspectorPanel {
       ).toFixed(1) +
       "%</span></div>";
 
+    html +=
+      "<div style=\"display:flex;justify-content:space-between\"><span>GRAVITY CURRENT</span><span>" +
+      sample.gravity.current.type +
+      "</span></div>";
+
+    html +=
+      "<div style=\"display:flex;justify-content:space-between\"><span>CURRENT STRENGTH</span><span>" +
+      (
+        sample.gravity.current.strength *
+        100
+      ).toFixed(1) +
+      "%</span></div>";
+
     if(diagnostic) {
       html +=
         "<div style=\"border-top:1px solid #3a3f46;margin:8px 0 6px;padding-top:6px\">RADIATION DEBUG</div>";
