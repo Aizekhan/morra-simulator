@@ -71,15 +71,49 @@ export class RadiationConeVisualizer {
     const coneDepth=Math.max(this.length,radiusAtMorra*2);
 
     const geometry=new THREE.ConeGeometry(radiusAtEnd,coneDepth,48,1,true);
-    const material=new THREE.MeshBasicMaterial({color:definition.color,transparent:true,opacity:this.opacity,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending});
-    const mesh=new THREE.Mesh(geometry,material);
+
+    const material=new THREE.MeshBasicMaterial({
+      color:definition.color,
+      transparent:true,
+      opacity:this.opacity,
+      depthWrite:false,
+      side:THREE.DoubleSide,
+      blending:THREE.AdditiveBlending
+    });
+
+    const mesh=new THREE.Mesh(
+      geometry,
+      material
+    );
 
     const midpoint=sourcePosition.clone().add(direction.clone().multiplyScalar(coneDepth*0.5));
     mesh.position.copy(midpoint);
     mesh.setRotationFromQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),direction));
 
-    const edges=new THREE.LineSegments(new THREE.EdgesGeometry(geometry),new THREE.LineBasicMaterial({color:definition.color,transparent:true,opacity:this.edgeOpacity}));
-    mesh.add(edges);
+    const edgesGeometry =
+      new THREE.EdgesGeometry(
+        geometry
+      );
+
+    const edgeMaterial =
+      new THREE.LineBasicMaterial({
+        color:
+          definition.color,
+        transparent:
+          true,
+        opacity:
+          this.edgeOpacity
+      });
+
+    const edges =
+      new THREE.LineSegments(
+        edgesGeometry,
+        edgeMaterial
+      );
+
+    mesh.add(
+      edges
+    );
 
     const group=new THREE.Group();
     group.add(mesh);
@@ -89,6 +123,79 @@ export class RadiationConeVisualizer {
 
   private projectedRadius(sourceRadius:number,distance:number){const angularRadius=Math.asin(THREE.MathUtils.clamp(sourceRadius/Math.max(distance,1e-6),0,0.999999));return Math.max(sourceRadius,Math.tan(angularRadius)*distance);}
 
-  private clear(){for(const visual of this.visuals){visual.group.traverse(object=>{const mesh=object as THREE.Mesh;if(mesh.geometry) mesh.geometry.dispose();});visual.material.dispose();}this.visuals.length=0;while(this.root.children.length>0){this.root.remove(this.root.children[this.root.children.length-1]);}}
+  private clear(){
+
+    for(
+      const visual of
+      this.visuals
+    ) {
+
+      visual.group.traverse(
+        object => {
+
+          const mesh =
+            object as THREE.Mesh;
+
+          const line =
+            object as THREE.LineSegments;
+
+          if(
+            mesh.geometry
+          ) {
+            mesh.geometry.dispose();
+          }
+
+          if(
+            line.geometry &&
+            line !== mesh
+          ) {
+            line.geometry.dispose();
+          }
+
+          const material =
+            (
+              mesh.material ??
+              line.material
+            ) as
+              THREE.Material |
+              THREE.Material[];
+
+          if(
+            Array.isArray(
+              material
+            )
+          ) {
+            for(
+              const item of
+              material
+            ) {
+              item.dispose();
+            }
+          }
+          else if(
+            material
+          ) {
+            material.dispose();
+          }
+        }
+      );
+
+      visual.material.dispose();
+    }
+
+    this.visuals.length =
+      0;
+
+    while(
+      this.root.children.length >
+      0
+    ) {
+      this.root.remove(
+        this.root.children[
+          this.root.children.length - 1
+        ]
+      );
+    }
+  }
   dispose(){this.clear();this.root.removeFromParent();}
 }
