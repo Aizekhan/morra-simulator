@@ -438,6 +438,16 @@ export class SurfaceFieldEngine {
         const contributions =
           sample.radiation.contributions;
 
+        const strongestShadow =
+          contributions.reduce(
+            (max, contribution) =>
+              Math.max(
+                max,
+                1 - contribution.visibilityFactor
+              ),
+            0
+          );
+
         const hasUmbra =
           contributions.some(
             contribution =>
@@ -473,8 +483,7 @@ export class SurfaceFieldEngine {
             sample.magosphere.anomalyStrength,
           shadow:
             THREE.MathUtils.clamp(
-              1 -
-              sample.radiation.lightVisibility,
+              strongestShadow,
               0,
               1
             ),
