@@ -298,6 +298,24 @@ export class RadiationEngine {
     }
   }
 
+  getSource(
+    sourceId: string
+  ) {
+
+    return this.sources.find(
+      source =>
+        source.id === sourceId
+    );
+  }
+
+  getSourceIds() {
+
+    return this.sources.map(
+      source =>
+        source.id
+    );
+  }
+
   getVisibilityFactor(
     worldPoint: THREE.Vector3,
     source: RadiationSource,
