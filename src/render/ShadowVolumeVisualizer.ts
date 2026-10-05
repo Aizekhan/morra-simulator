@@ -270,15 +270,6 @@ export class ShadowVolumeVisualizer {
           continue;
         }
 
-        if(
-          !this.isPotentialShadowPair(
-            source.body,
-            occluder
-          )
-        ) {
-          continue;
-        }
-
         const pair: ShadowPair = {
           source:
             source.body.mesh,
@@ -309,31 +300,6 @@ export class ShadowVolumeVisualizer {
 
     this.dirty =
       false;
-  }
-
-  private isPotentialShadowPair(
-    sourceBody: {
-      radius: number;
-      mesh: THREE.Object3D;
-    },
-    occluder: {
-      radius: number;
-      mesh: THREE.Object3D;
-    }
-  ) {
-    const sourceDistance =
-      sourceBody.mesh.getWorldPosition(
-        new THREE.Vector3()
-      ).distanceTo(
-        occluder.mesh.getWorldPosition(
-          new THREE.Vector3()
-        )
-      );
-
-    return sourceDistance >
-      sourceBody.radius +
-      occluder.radius +
-      0.001;
   }
 
   private buildPairGeometry(
