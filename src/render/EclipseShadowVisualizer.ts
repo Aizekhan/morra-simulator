@@ -575,12 +575,33 @@ export class EclipseShadowVisualizer {
           continue;
         }
 
+        const shadowCenter =
+          sourcePosition
+            .clone()
+            .addScaledVector(
+              axis,
+              morraDistance
+            );
+
+        const projectedOffset =
+          occluderPosition
+            .clone()
+            .sub(
+              shadowCenter
+            )
+            .length();
+
         sourcePositions[count].copy(
           sourcePosition
         );
 
         occluderDirections[count].copy(
-          direction
+          occluderPosition
+            .clone()
+            .sub(
+              center
+            )
+            .normalize()
         );
 
         sourceAngularRadii[count] =
@@ -597,15 +618,14 @@ export class EclipseShadowVisualizer {
           );
 
         occluderAngularRadii[count] =
-          Math.asin(
-            THREE.MathUtils.clamp(
-              occluder.radius /
-              Math.max(
-                projection,
-                1e-6
-              ),
-              0,
-              0.999999
+          Math.atan2(
+            Math.max(
+              projectedOffset,
+              umbraRadius
+            ),
+            Math.max(
+              morraDistance,
+              1e-6
             )
           );
 
