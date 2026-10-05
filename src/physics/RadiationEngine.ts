@@ -505,12 +505,9 @@ export class RadiationEngine {
 
         if(
           primaryOccluderId ===
-          undefined ||
-          blockedFraction >
-          0
+          undefined
         ) {
           primaryOccluderId =
-            primaryOccluderId ??
             occluderId;
         }
       }
