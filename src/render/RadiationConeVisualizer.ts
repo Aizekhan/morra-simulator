@@ -70,8 +70,9 @@ export class RadiationConeVisualizer {
     const direction =
       sourceToMorra.clone().normalize();
 
-    const occlusionEnd =
-      this.findNearestOccluderDistance(
+    const occlusionHit =
+      this.findNearestOccluderHit(
+        source,
         sourcePosition,
         direction,
         distance
@@ -80,10 +81,8 @@ export class RadiationConeVisualizer {
     const visibleDistance =
       Math.max(
         0,
-        Math.min(
-          distance,
-          occlusionEnd
-        )
+        occlusionHit?.distance ??
+        distance
       );
 
     const sizeFactor =
@@ -180,21 +179,34 @@ export class RadiationConeVisualizer {
     this.visuals.push({group,material});
   }
 
-  private findNearestOccluderDistance(
+  private findNearestOccluderHit(
+    source: CelestialBody,
     origin: THREE.Vector3,
     direction: THREE.Vector3,
     maxDistance: number
-  ) {
+  ): {
+    body: CelestialBody;
+    distance: number;
+  } | null {
 
     const candidates =
       this.getSceneCelestialBodies();
 
-    let nearest =
-      maxDistance;
+    let nearest:
+      {
+        body: CelestialBody;
+        distance: number;
+      } | null = null;
 
     for(
       const body of candidates
     ) {
+
+      if(
+        body === source
+      ) {
+        continue;
+      }
 
       const center =
         body.mesh.getWorldPosition(
@@ -261,13 +273,18 @@ export class RadiationConeVisualizer {
         hitOffset;
 
       if(
-        entry > 1e-4
+        entry > 1e-4 &&
+        (
+          nearest === null ||
+          entry <
+          nearest.distance
+        )
       ) {
-        nearest =
-          Math.min(
-            nearest,
+        nearest = {
+          body,
+          distance:
             entry
-          );
+        };
       }
     }
 
