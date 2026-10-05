@@ -15,7 +15,7 @@ export const MORRA_CONFIG = {
   // Keep the real Morra mesh visibly readable at system scale; this is render-only and does not change physical radiation.
   MORRA_BASE_EMISSIVE: 0.35,
 
-  AXIS_TILT: 23,
+  AXIS_TILT: 0,
 
   ROTATION_SPEED: 0.01,
 
