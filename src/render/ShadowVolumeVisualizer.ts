@@ -606,71 +606,42 @@ export class ShadowVolumeVisualizer {
 
   private getSceneSignature() {
 
-    const values:
-      number[] = [
-        this.config.length,
-        this.config.showUmbra ? 1 : 0,
-        this.config.showPenumbra ? 1 : 0
-      ];
+    const values:number[] = [
+      this.config.length,
+      this.config.showUmbra ? 1 : 0,
+      this.config.showPenumbra ? 1 : 0
+    ];
 
-    const sources =
-      this.engine.radiation.getSources();
+    const sources = this.engine.radiation.getSources();
+    const occluders = this.engine.getOccluders();
 
-    const occluders =
-      this.engine.getOccluders();
-
-    for(
-      const source
-      of sources
-    ) {
-
-      const position =
-        source.body.mesh.getWorldPosition(
-          new THREE.Vector3()
-        );
-
+    for(const body of sources.map(item => item.body)) {
+      const position = body.mesh.getWorldPosition(
+        new THREE.Vector3()
+      );
       values.push(
         position.x,
         position.y,
         position.z,
-        source.body.radius,
-        source.body.mesh.visible
-          ? 1
-          : 0
+        body.radius,
+        body.mesh.visible ? 1 : 0
       );
     }
 
-    for(
-      const occluder
-      of occluders
-    ) {
-
-      const position =
-        occluder.mesh.getWorldPosition(
-          new THREE.Vector3()
-        );
-
+    for(const body of occluders) {
+      const position = body.mesh.getWorldPosition(
+        new THREE.Vector3()
+      );
       values.push(
         position.x,
         position.y,
         position.z,
-        occluder.radius,
-        occluder.mesh.visible
-          ? 1
-          : 0
+        body.radius,
+        body.mesh.visible ? 1 : 0
       );
     }
 
-    return values
-      .map(
-        value =>
-          value.toFixed(
-            4
-          )
-      )
-      .join(
-        "|"
-      );
+    return values.map(value => value.toFixed(3)).join("|");
   }
 
   private clear() {
