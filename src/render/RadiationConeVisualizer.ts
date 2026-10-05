@@ -187,10 +187,7 @@ export class RadiationConeVisualizer {
   ) {
 
     const candidates =
-      [
-        this.morra,
-        ...this.getSceneCelestialBodies()
-      ];
+      this.getSceneCelestialBodies();
 
     let nearest =
       maxDistance;
