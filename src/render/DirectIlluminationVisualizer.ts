@@ -250,10 +250,6 @@ export class DirectIlluminationVisualizer {
       radius
     );
 
-    this.updatePlanetCoverage(
-      center,
-      radius
-    );
   }
 
   private updateDirectSources(
