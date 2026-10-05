@@ -18,7 +18,9 @@ export type SurfaceFieldChannel =
   | "MAGIC_TOTAL"
   | "LARGE_SUN"
   | "MEDIUM_SUN"
-  | "SMALL_SUN";
+  | "SMALL_SUN"
+  | "NORTH_MOON"
+  | "EQUATOR_MOON";
 
 export class SurfaceFieldVisualizer {
 
@@ -307,6 +309,18 @@ export class SurfaceFieldVisualizer {
           high: 0xff8a3d
         };
 
+      case "NORTH_MOON":
+        return {
+          low: 0x061020,
+          high: 0xaac8ff
+        };
+
+      case "EQUATOR_MOON":
+        return {
+          low: 0x10101f,
+          high: 0xd0a8ff
+        };
+
       case "SMALL_SUN":
         return {
           low: 0x07100a,
@@ -551,6 +565,12 @@ export class SurfaceFieldVisualizer {
       case "SMALL_SUN":
         return map.smallSunLight;
 
+      case "NORTH_MOON":
+        return map.northMoonLight;
+
+      case "EQUATOR_MOON":
+        return map.equatorMoonLight;
+
       case "LIGHT_TOTAL":
         return map.light;
 
@@ -620,6 +640,12 @@ export class SurfaceFieldVisualizer {
 
       case "SMALL_SUN":
         return map.smallSunLightStats;
+
+      case "NORTH_MOON":
+        return map.northMoonLightStats;
+
+      case "EQUATOR_MOON":
+        return map.equatorMoonLightStats;
 
       case "LIGHT_TOTAL":
         return map.lightStats;
