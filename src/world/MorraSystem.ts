@@ -33,6 +33,11 @@ import {
   CelestialPresentationSystem
 } from "../render/CelestialPresentationSystem";
 
+import {
+  MORRA_CONTINENTS,
+  latitudeLongitudeToDirection
+} from "./MorraContinents";
+
 export class MorraSystem {
 
   scene: THREE.Scene;
@@ -71,6 +76,9 @@ export class MorraSystem {
 
   celestialPresentation:
     CelestialPresentationSystem;
+
+  continents:
+    THREE.Group;
 
 
   constructor(
@@ -486,6 +494,100 @@ export class MorraSystem {
     this.sunSmall.mesh.userData.presentationMinimumPixels =
       12;
 
+    this.continents =
+      new THREE.Group();
+
+    this.continents.name =
+      "Morra Continents";
+
+    for(
+      const continent
+      of MORRA_CONTINENTS
+    ) {
+
+      const direction =
+        latitudeLongitudeToDirection(
+          continent.latitude,
+          continent.longitude
+        );
+
+      const center =
+        direction
+          .clone()
+          .multiplyScalar(
+            this.morra.radius + 0.7
+          );
+
+      const geometry =
+        new THREE.CircleGeometry(
+          1,
+          32
+        );
+
+      const material =
+        new THREE.MeshBasicMaterial({
+          color:
+            continent.color,
+          side:
+            THREE.DoubleSide
+        });
+
+      const mesh =
+        new THREE.Mesh(
+          geometry,
+          material
+        );
+
+      mesh.name =
+        continent.name;
+
+      mesh.scale.set(
+        continent.width *
+          0.5,
+        continent.height *
+          0.5,
+        1
+      );
+
+      mesh.position.copy(
+        center
+      );
+
+      const up =
+        direction.clone();
+
+      mesh.quaternion =
+        new THREE.Quaternion()
+          .setFromUnitVectors(
+            new THREE.Vector3(
+              0,
+              0,
+              1
+            ),
+            up
+          );
+
+      mesh.rotateZ(
+        THREE.MathUtils.degToRad(
+          continent.rotation
+        )
+      );
+
+      mesh.userData.morraContinentId =
+        continent.id;
+
+      mesh.userData.morraContinentName =
+        continent.name;
+
+      this.continents.add(
+        mesh
+      );
+    }
+
+    this.morra.mesh.add(
+      this.continents
+    );
+
     this.celestialPresentation =
       new CelestialPresentationSystem(
         scene,
@@ -636,6 +738,12 @@ export class MorraSystem {
     this.orbitSystem.dispose();
 
     this.celestialInteractionSystem.dispose();
+
+    this.continents.clear();
+
+    this.morra.mesh.remove(
+      this.continents
+    );
 
     this.surfaceFieldVisualizer.dispose();
 
