@@ -224,14 +224,23 @@ export class EclipseShadowVisualizer {
               float occluderRadius =
                 occluderAngularRadii[i];
 
-              float fullUmbra =
-                smoothstep(
+              float umbraEdge =
+                max(
                   occluderRadius -
-                  sourceRadius -
-                  softness *
                   sourceRadius,
-                  occluderRadius -
-                  sourceRadius +
+                  0.0
+                );
+
+              float fullUmbra =
+                1.0 -
+                smoothstep(
+                  max(
+                    0.0,
+                    umbraEdge -
+                    softness *
+                    sourceRadius
+                  ),
+                  umbraEdge +
                   softness *
                   sourceRadius,
                   angularSeparation
@@ -240,12 +249,15 @@ export class EclipseShadowVisualizer {
               float penumbra =
                 1.0 -
                 smoothstep(
-                  sourceRadius +
-                  occluderRadius -
-                  softness *
-                  sourceRadius,
-                  sourceRadius +
+                  max(
+                    0.0,
+                    occluderRadius -
+                    sourceRadius -
+                    softness *
+                    sourceRadius
+                  ),
                   occluderRadius +
+                  sourceRadius +
                   softness *
                   sourceRadius,
                   angularSeparation
