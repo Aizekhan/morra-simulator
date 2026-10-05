@@ -276,6 +276,13 @@ export class EnvironmentInspectorPanel {
         )
       ].join("");
 
+      const primaryOccluder =
+        contribution.primaryOccluderId
+          ? "<div style=\"margin:2px 0 5px 8px;opacity:.65;font-size:10px\">PRIMARY OCCLUDER: " +
+            contribution.primaryOccluderId +
+            "</div>"
+          : "";
+
       const blockers =
         contribution.blockingOccluderIds.length > 0
           ? "<div style=\"margin:2px 0 5px 8px;opacity:.65;font-size:10px\">BLOCKERS: " +
@@ -298,6 +305,7 @@ export class EnvironmentInspectorPanel {
         shadowState +
         "</span></div>" +
         contributionRows +
+        primaryOccluder +
         blockers +
         "</div>";
     }
