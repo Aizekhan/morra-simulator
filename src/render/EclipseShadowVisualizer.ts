@@ -538,24 +538,39 @@ export class EclipseShadowVisualizer {
             )
             .length();
 
-        const shadowRadius =
-          occluder.radius +
-          (
-            morraDistance -
-            projection
-          ) *
-          (
-            source.radius +
-            occluder.radius
-          ) /
+        const projectedOccluderRadius =
+          occluder.radius *
+          morraDistance /
           Math.max(
-            morraDistance,
+            projection,
             1e-6
           );
 
+        const projectedSourceRadius =
+          source.radius *
+          (
+            morraDistance -
+            projection
+          ) /
+          Math.max(
+            projection,
+            1e-6
+          );
+
+        const umbraRadius =
+          Math.max(
+            0,
+            projectedOccluderRadius -
+            projectedSourceRadius
+          );
+
+        const penumbraRadius =
+          projectedOccluderRadius +
+          projectedSourceRadius;
+
         if(
           lateral >
-          shadowRadius
+          penumbraRadius
         ) {
           continue;
         }
