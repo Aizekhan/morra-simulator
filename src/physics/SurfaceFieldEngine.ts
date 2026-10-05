@@ -574,8 +574,18 @@ export class SurfaceFieldEngine {
               contribution =>
                 contribution.sourceId === "small-sun"
             )?.light ?? 0,
-          northMoonLight: 0,
-          equatorMoonLight: 0
+          northMoonLight:
+            contributions.find(
+              contribution =>
+                contribution.sourceId ===
+                "north-moon-reflection"
+            )?.light ?? 0,
+          equatorMoonLight:
+            contributions.find(
+              contribution =>
+                contribution.sourceId ===
+                "equator-moon-reflection"
+            )?.light ?? 0
         };
 
         samples[index] =
