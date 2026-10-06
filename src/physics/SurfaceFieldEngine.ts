@@ -628,11 +628,27 @@ export class SurfaceFieldEngine {
           0.7152 * spectrumGreen +
           0.0722 * spectrumBlue;
 
+        const surfaceMaterial =
+          this.config.surfaceMaterial ?? {
+            albedo: 0,
+            diffuseResponse: 0
+          };
+
+        const reflectedSurfaceLight =
+          sample.radiation.light *
+          THREE.MathUtils.clamp(
+            surfaceMaterial.albedo *
+            surfaceMaterial.diffuseResponse,
+            0,
+            1
+          );
+
         const sampleData: SurfaceFieldSample = {
           latitude,
           longitude,
           light:
-            sample.radiation.light,
+            sample.radiation.light +
+            reflectedSurfaceLight,
           heat:
             sample.radiation.heat,
           magic:
