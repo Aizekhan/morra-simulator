@@ -5,9 +5,6 @@ import type {
 } from "../physics/SurfaceFieldEngine";
 
 export type SurfaceFieldChannel =
-  | "LIGHT"
-  | "HEAT"
-  | "MAGIC"
   | "MAGOSPHERE"
   | "ANOMALY"
   | "SHADOW"
@@ -45,7 +42,7 @@ export class SurfaceFieldVisualizer {
 
   private channel:
     SurfaceFieldChannel =
-      "MAGIC";
+      "MAGIC_TOTAL";
 
   private opacity =
     0.48;
@@ -295,18 +292,6 @@ export class SurfaceFieldVisualizer {
       this.channel
     ) {
 
-      case "LIGHT":
-        return {
-          low: 0x07142c,
-          high: 0xfff1a8
-        };
-
-      case "HEAT":
-        return {
-          low: 0x10204a,
-          high: 0xff3b20
-        };
-
       case "MAGOSPHERE":
         return {
           low: 0x2b0710,
@@ -397,11 +382,11 @@ export class SurfaceFieldVisualizer {
           high: 0xffc247
         };
 
-      case "MAGIC":
+      case "MAGIC_TOTAL":
       default:
         return {
           low: 0x12002d,
-          high: 0x46e6ff
+          high: 0x6f4dff
         };
     }
   }
@@ -612,12 +597,6 @@ export class SurfaceFieldVisualizer {
       this.channel
     ) {
 
-      case "LIGHT":
-        return map.light;
-
-      case "HEAT":
-        return map.heat;
-
       case "MAGOSPHERE":
         return map.magosphereStability;
 
@@ -677,12 +656,6 @@ export class SurfaceFieldVisualizer {
     switch(
       this.channel
     ) {
-
-      case "LIGHT":
-        return map.lightStats;
-
-      case "HEAT":
-        return map.heatStats;
 
       case "MAGOSPHERE":
         return {
