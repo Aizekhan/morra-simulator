@@ -98,9 +98,6 @@ export class RadiationEngine {
 
   static readonly BASE_RADIATION_RANGE = 10000;
 
-  private static readonly MINIMUM_INFLUENCE_FACTOR =
-    1e-6;
-
   private static readonly EPSILON =
     1e-8;
 
