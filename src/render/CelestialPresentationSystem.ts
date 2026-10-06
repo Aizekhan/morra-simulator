@@ -77,6 +77,9 @@ export class CelestialPresentationSystem {
         0
       );
 
+      mesh.frustumCulled =
+        false;
+
       this.scene.add(
         mesh
       );
@@ -156,6 +159,8 @@ export class CelestialPresentationSystem {
       proxy.mesh.position.copy(
         worldPosition
       );
+
+      proxy.mesh.updateMatrixWorld();
 
       proxy.mesh.layers.set(
         0
