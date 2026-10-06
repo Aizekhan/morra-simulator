@@ -71,6 +71,9 @@ export class RadiationEngine {
 
   static readonly BASE_RADIATION_RANGE = 10000;
 
+  private static readonly MINIMUM_INFLUENCE_FACTOR =
+    1e-6;
+
   private static readonly EPSILON =
     1e-8;
 
@@ -165,22 +168,36 @@ export class RadiationEngine {
       const visibilityFactor =
         visibility.factor;
 
-      const inverseSquare =
+      const normalizedDistance =
+        distance /
+        Math.max(
+          source.body.radius,
+          RadiationEngine.EPSILON
+        );
+
+      const geometricFalloff =
         1 /
-        (
-          distance *
-          distance
+        Math.max(
+          normalizedDistance *
+          normalizedDistance,
+          RadiationEngine.EPSILON
+        );
+
+      const influence =
+        Math.max(
+          RadiationEngine.MINIMUM_INFLUENCE_FACTOR,
+          geometricFalloff
         );
 
       const directLightContribution =
         source.lightPower *
-        inverseSquare *
+        influence *
         illuminationFactor *
         visibilityFactor;
 
       const directHeatContribution =
         source.heatPower *
-        inverseSquare *
+        influence *
         illuminationFactor *
         visibilityFactor;
 
@@ -222,12 +239,12 @@ export class RadiationEngine {
 
       unobstructedLight +=
         source.lightPower *
-        inverseSquare *
+        influence *
         illuminationFactor;
 
       unobstructedHeat +=
         source.heatPower *
-        inverseSquare *
+        influence *
         illuminationFactor;
 
       unobstructedMagic +=
