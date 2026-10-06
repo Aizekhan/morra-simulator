@@ -604,11 +604,6 @@ export class EclipseShadowVisualizer {
     this.material.uniforms.eclipseCount.value =
       count;
 
-    this.material.uniforms.umbraAngularRadii.needsUpdate =
-      true;
-
-    this.material.uniforms.penumbraAngularRadii.needsUpdate =
-      true;
   }
 
   setRadius(
