@@ -694,11 +694,6 @@ export class RadiationConeVisualizer {
     return bodies;
   }
 
-  private referenceSourceRadius() {
-
-    return 40;
-  }
-
   private clear() {
 
     for(
