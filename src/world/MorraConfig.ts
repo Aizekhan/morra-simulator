@@ -7,7 +7,7 @@ export const MORRA_CONFIG = {
   // Default world scale: Jupiter-class radius (render/simulation units remain configurable).
   MORRA_RADIUS: 69911,
 
-  MORRA_COLOR: 0x3366ff,
+  MORRA_COLOR: 0xffffff,
 
   MORRA_VISIBLE: true,
 
