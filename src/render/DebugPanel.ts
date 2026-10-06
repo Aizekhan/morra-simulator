@@ -31,6 +31,8 @@ interface EccentricityControl {
 
     orbitRadius: number;
 
+    orbitEccentricity: number;
+
   };
 
   clearance: number;
