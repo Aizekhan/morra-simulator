@@ -168,6 +168,8 @@ export class SurfaceFieldEngine {
       environment;
 
     this.config = {
+      surfaceMaterial:
+        config.surfaceMaterial,
       latitudeSegments:
         Math.max(
           4,
@@ -213,9 +215,13 @@ export class SurfaceFieldEngine {
       next.updateIntervalHours !==
         this.config.updateIntervalHours ||
       next.updateIntervalMilliseconds !==
-        this.config.updateIntervalMilliseconds;
+        this.config.updateIntervalMilliseconds ||
+      next.surfaceMaterial !==
+        this.config.surfaceMaterial;
 
     this.config = {
+      surfaceMaterial:
+        next.surfaceMaterial,
       latitudeSegments:
         Math.max(
           4,
