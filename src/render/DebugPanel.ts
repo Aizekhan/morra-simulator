@@ -44,7 +44,7 @@ export class DebugPanel {
     CameraController | null = null;
 
   private cameraControls:
-    { distance: number } | null = null;
+    { distance: number; zoom: number } | null = null;
 
   constructor(
     timeControls: TimeControls,
@@ -300,7 +300,8 @@ export class DebugPanel {
       cameraController;
 
     this.cameraControls = {
-      distance: 0
+      distance: 0,
+      zoom: cameraController.getZoomLevel()
     };
   }
 
@@ -943,6 +944,9 @@ export class DebugPanel {
     ) {
       this.cameraControls.distance =
         this.cameraController.getDistance();
+
+      this.cameraControls.zoom =
+        this.cameraController.getZoomLevel();
     }
 
     for (
