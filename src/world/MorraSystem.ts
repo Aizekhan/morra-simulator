@@ -580,6 +580,9 @@ export class MorraSystem {
         MORRA_CONFIG.SURFACE_FIELD.latitudeSegments
       );
 
+    // The surface-field shader blends diagnostics over the actual world map,
+    // so enabling a field never destroys geographic readability.
+
     this.morra.mesh.userData.presentationMinimumPixels =
       28;
 
@@ -991,6 +994,10 @@ export class MorraSystem {
           true;
 
         this.morra.setSurfaceTextureEquirectangular(
+          loaded
+        );
+
+        this.surfaceFieldVisualizer.setBaseTexture(
           loaded
         );
 
