@@ -26,6 +26,13 @@ interface CelestialSourceConfig {
   lightPower: number;
   heatPower: number;
   magicPower: number;
+
+  /**
+   * Optional emission geometry override used by the physical
+   * radiation layer. Defaults to the body's visual radius.
+   */
+  emissionReferenceRadius?: number;
+
   visible: () => boolean;
 }
 
@@ -129,6 +136,8 @@ export class CelestialInteractionSystem {
               source.heatPower * runtimeScale,
             magicPower:
               source.magicPower * runtimeScale,
+            emissionReferenceRadius:
+              source.emissionReferenceRadius,
             allowSecondaryReflection:
               false,
             allowIndirectReflection:
