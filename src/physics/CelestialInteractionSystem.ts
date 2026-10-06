@@ -129,6 +129,8 @@ export class CelestialInteractionSystem {
               source.heatPower * runtimeScale,
             magicPower:
               source.magicPower * runtimeScale,
+            allowSecondaryReflection:
+              false,
             allowIndirectReflection:
               false
           };
