@@ -414,12 +414,6 @@ export class CelestialBody {
       this.orbitSpeed *
       absoluteHours;
 
-    this.angle =
-      this.initialAngle +
-      direction *
-      this.orbitSpeed *
-      absoluteHours;
-
     this.mesh.position.copy(
       OrbitMath.getPosition(
         this.orbitRadius,
