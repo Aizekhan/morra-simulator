@@ -806,9 +806,38 @@ export class MorraSystem {
         MORRA_CONFIG.AXIS_TILT
       );
 
-    this.morra.mesh.rotation.z = axisTilt;
-    this.morra.mesh.rotation.y =
-      MORRA_CONFIG.ROTATION_SPEED * absoluteHours;
+    // The tilt belongs to the spin axis; the daily rotation must occur
+    // around that tilted axis, not around the global Y axis.
+    const spinAngle =
+      MORRA_CONFIG.ROTATION_SPEED *
+      absoluteHours;
+
+    const axisQuaternion =
+      new THREE.Quaternion()
+        .setFromAxisAngle(
+          new THREE.Vector3(0, 0, 1),
+          axisTilt
+        );
+
+    const spinQuaternion =
+      new THREE.Quaternion()
+        .setFromAxisAngle(
+          new THREE.Vector3(0, 1, 0),
+          spinAngle
+        );
+
+    this.morra.mesh.quaternion.copy(
+      axisQuaternion
+    );
+    this.morra.mesh.quaternion.multiply(
+      axisQuaternion.clone().invert()
+    );
+    this.morra.mesh.quaternion.multiply(
+      spinQuaternion
+    );
+    this.morra.mesh.quaternion.multiply(
+      axisQuaternion
+    );
 
     this.axis.update(
       this.morra.radius,
