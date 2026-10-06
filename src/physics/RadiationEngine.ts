@@ -15,6 +15,13 @@ export interface RadiationSource {
   heatPower: number;
 
   magicPower: number;
+
+  /**
+   * Explicit reflected sources (such as moonlight) are terminal:
+   * they illuminate the surface but do not recursively generate
+   * another indirect-reflection pass.
+   */
+  allowIndirectReflection?: boolean;
 }
 
 export interface RadiationContribution {
@@ -227,12 +234,14 @@ export class RadiationEngine {
         visibilityFactor;
 
       const reflectedLightContribution =
-        this.evaluateIndirectLight(
-          worldPoint,
-          normal,
-          source,
-          occluders
-        );
+        source.allowIndirectReflection === false
+          ? 0
+          : this.evaluateIndirectLight(
+              worldPoint,
+              normal,
+              source,
+              occluders
+            );
 
       const lightContribution =
         directLightContribution +
