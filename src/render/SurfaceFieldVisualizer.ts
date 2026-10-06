@@ -140,6 +140,10 @@ export class SurfaceFieldVisualizer {
           spectrumTexture: {
             value:
               this.valueTexture
+          },
+          baseTexture: {
+            value:
+              null
           }
         },
         vertexShader: `
@@ -163,6 +167,7 @@ export class SurfaceFieldVisualizer {
           uniform vec3 lowColor;
           uniform vec3 highColor;
           uniform sampler2D spectrumTexture;
+          uniform sampler2D baseTexture;
           uniform bool channelSpectrum;
 
           varying vec2 vUv;
@@ -181,7 +186,13 @@ export class SurfaceFieldVisualizer {
                 vUv
               ).r;
 
-            vec3 color =
+            vec4 base =
+              texture2D(
+                baseTexture,
+                vUv
+              );
+
+            vec3 fieldColor =
               channelSpectrum
                 ? spectrum.rgb
                 : mix(
@@ -190,8 +201,14 @@ export class SurfaceFieldVisualizer {
                     value
                   );
 
+            vec3 color =
+              mix(
+                base.rgb,
+                fieldColor,
+                opacity
+              );
+
             float alpha =
-              opacity *
               smoothstep(
                 0.0,
                 0.001,
@@ -205,7 +222,7 @@ export class SurfaceFieldVisualizer {
             gl_FragColor =
               vec4(
                 color,
-                alpha
+                max(base.a, 1.0)
               );
           }
         `
