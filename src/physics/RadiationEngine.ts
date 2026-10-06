@@ -101,11 +101,10 @@ export class RadiationEngine {
 
   /**
    * Explicit moon reflection is modeled in CelestialInteractionSystem.
-   * Generic surface reflection stays disabled until a material model
-   * for Morra's surface is authored explicitly.
+   * Surface reflection stays disabled here because this engine evaluates
+   * incident radiation at receivers. Secondary transport belongs in an
+   * explicit reflector model so energy is not double-counted. 
    */
-
-  static readonly BASE_RADIATION_RANGE = 10000;
 
   private static readonly EPSILON =
     1e-8;
