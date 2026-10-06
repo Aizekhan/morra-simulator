@@ -172,7 +172,9 @@ function animate() {
       intensity:
         MORRA_CONFIG.LIGHTS.LARGE.intensity,
       visible:
-        simulation.morraSystem.sunLarge.mesh.visible
+        simulation.morraSystem.sunLarge.mesh.visible,
+      sourceRadius:
+        simulation.morraSystem.sunLarge.radius
     },
     {
       mesh:
@@ -182,7 +184,9 @@ function animate() {
       intensity:
         MORRA_CONFIG.LIGHTS.MEDIUM.intensity,
       visible:
-        simulation.morraSystem.sunMedium.mesh.visible
+        simulation.morraSystem.sunMedium.mesh.visible,
+      sourceRadius:
+        simulation.morraSystem.sunMedium.radius
     },
     {
       mesh:
@@ -192,7 +196,9 @@ function animate() {
       intensity:
         MORRA_CONFIG.LIGHTS.SMALL.intensity,
       visible:
-        simulation.morraSystem.sunSmall.mesh.visible
+        simulation.morraSystem.sunSmall.mesh.visible,
+      sourceRadius:
+        simulation.morraSystem.sunSmall.radius
     }
   ]);
 
