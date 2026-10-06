@@ -66,6 +66,21 @@ cameraController.setMorraRadius(
   simulation.morraSystem.morra.radius
 );
 
+cameraController.setSystemExtent(
+  Math.max(
+    simulation.morraSystem.sunLarge.orbitRadius +
+      simulation.morraSystem.sunLarge.radius,
+    simulation.morraSystem.sunMedium.orbitRadius +
+      simulation.morraSystem.sunMedium.radius,
+    simulation.morraSystem.sunSmall.orbitRadius +
+      simulation.morraSystem.sunSmall.radius,
+    simulation.morraSystem.moonNorth.orbitRadius +
+      simulation.morraSystem.moonNorth.radius,
+    simulation.morraSystem.moonEquator.orbitRadius +
+      simulation.morraSystem.moonEquator.radius
+  )
+);
+
 const debugPanel =
   new DebugPanel(
     simulation.timeControls,
@@ -145,6 +160,21 @@ function animate() {
 
   cameraController.setMorraRadius(
     simulation.morraSystem.morra.radius
+  );
+
+  cameraController.setSystemExtent(
+    Math.max(
+      simulation.morraSystem.sunLarge.orbitRadius +
+        simulation.morraSystem.sunLarge.radius,
+      simulation.morraSystem.sunMedium.orbitRadius +
+        simulation.morraSystem.sunMedium.radius,
+      simulation.morraSystem.sunSmall.orbitRadius +
+        simulation.morraSystem.sunSmall.radius,
+      simulation.morraSystem.moonNorth.orbitRadius +
+        simulation.morraSystem.moonNorth.radius,
+      simulation.morraSystem.moonEquator.orbitRadius +
+        simulation.morraSystem.moonEquator.radius
+    )
   );
 
   cameraController.update();
