@@ -240,17 +240,14 @@ export class EclipseShadowVisualizer {
                   shadowSeparation
                 );
 
-              vec3 sourceDirection =
-                normalize(
-                  sourcePositions[i] -
-                  vWorldPosition
-                );
-
-              float facing =
+              float sourceFacing =
                 max(
                   dot(
                     vWorldNormal,
-                    sourceDirection
+                    normalize(
+                      sourcePositions[i] -
+                      vWorldPosition
+                    )
                   ),
                   0.0
                 );
@@ -263,7 +260,7 @@ export class EclipseShadowVisualizer {
                     penumbra *
                     0.65
                   ) *
-                  facing
+                  sourceFacing
                 );
             }
 
