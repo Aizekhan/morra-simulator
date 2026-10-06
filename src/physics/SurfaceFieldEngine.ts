@@ -47,6 +47,8 @@ export interface SurfaceFieldSample {
   spectrumRed: number;
   spectrumGreen: number;
   spectrumBlue: number;
+  spectrumIntensity: number;
+  dayNight: number;
 }
 
 export interface SurfaceFieldStats {
@@ -92,6 +94,8 @@ export interface SurfaceFieldMap {
   spectrumRed: Float32Array;
   spectrumGreen: Float32Array;
   spectrumBlue: Float32Array;
+  spectrumIntensity: Float32Array;
+  dayNight: Float32Array;
 
   largeSunLightStats: SurfaceFieldStats;
   mediumSunLightStats: SurfaceFieldStats;
@@ -110,6 +114,10 @@ export interface SurfaceFieldMap {
   umbraStats: SurfaceFieldStats;
 
   penumbraStats: SurfaceFieldStats;
+
+  spectrumStats: SurfaceFieldStats;
+
+  dayNightStats: SurfaceFieldStats;
 }
 
 export class SurfaceFieldEngine {
@@ -351,6 +359,12 @@ export class SurfaceFieldEngine {
     const spectrumBlue =
       new Float32Array(count);
 
+    const spectrumIntensity =
+      new Float32Array(count);
+
+    const dayNight =
+      new Float32Array(count);
+
     let northMoonLightSum = 0;
     let equatorMoonLightSum = 0;
 
@@ -435,6 +449,11 @@ export class SurfaceFieldEngine {
 
     let penumbraMax =
       Number.NEGATIVE_INFINITY;
+
+    let spectrumSum = 0;
+    let spectrumMin = Number.POSITIVE_INFINITY;
+    let spectrumMax = Number.NEGATIVE_INFINITY;
+    let dayNightSum = 0;
 
     for(
       let y = 0;
@@ -551,6 +570,44 @@ export class SurfaceFieldEngine {
               )
           );
 
+        const directSunLight =
+          contributions
+            .filter(
+              contribution =>
+                contribution.sourceId === "large-sun" ||
+                contribution.sourceId === "medium-sun" ||
+                contribution.sourceId === "small-sun"
+            )
+            .reduce(
+              (sum, contribution) =>
+                sum + contribution.directLight,
+              0
+            );
+
+        // Derived diagnostic colour bands, not physical spectral bins.
+        const spectrumRed =
+          Math.min(
+            1,
+            sample.radiation.light +
+            sample.radiation.magic * 0.15
+          );
+        const spectrumGreen =
+          Math.min(
+            1,
+            sample.radiation.heat +
+            sample.radiation.light * 0.05
+          );
+        const spectrumBlue =
+          Math.min(
+            1,
+            sample.radiation.magic +
+            sample.radiation.light * 0.2
+          );
+        const spectrumIntensity =
+          0.2126 * spectrumRed +
+          0.7152 * spectrumGreen +
+          0.0722 * spectrumBlue;
+
         const sampleData: SurfaceFieldSample = {
           latitude,
           longitude,
@@ -605,24 +662,14 @@ export class SurfaceFieldEngine {
                 contribution.sourceId ===
                 "equator-moon-reflection"
             )?.light ?? 0,
-          spectrumRed:
-            Math.min(
-              1,
-              sample.radiation.light +
-              sample.radiation.magic * 0.15
-            ),
-          spectrumGreen:
-            Math.min(
-              1,
-              sample.radiation.heat +
-              sample.radiation.light * 0.05
-            ),
-          spectrumBlue:
-            Math.min(
-              1,
-              sample.radiation.magic +
-              sample.radiation.light * 0.2
-            )
+          spectrumRed,
+          spectrumGreen,
+          spectrumBlue,
+          spectrumIntensity,
+          dayNight:
+            directSunLight > 0.000001
+              ? 1
+              : 0
         };
 
         samples[index] =
@@ -675,6 +722,10 @@ export class SurfaceFieldEngine {
 
         spectrumBlue[index] =
           sampleData.spectrumBlue;
+        spectrumIntensity[index] =
+          sampleData.spectrumIntensity;
+        dayNight[index] =
+          sampleData.dayNight;
 
         northMoonLightSum +=
           sampleData.northMoonLight;
@@ -802,6 +853,11 @@ export class SurfaceFieldEngine {
             sampleData.penumbra
           );
 
+        spectrumSum += sampleData.spectrumIntensity;
+        spectrumMin = Math.min(spectrumMin, sampleData.spectrumIntensity);
+        spectrumMax = Math.max(spectrumMax, sampleData.spectrumIntensity);
+        dayNightSum += sampleData.dayNight;
+
         lightMin =
           Math.min(
             lightMin,
@@ -861,6 +917,8 @@ export class SurfaceFieldEngine {
       spectrumRed,
       spectrumGreen,
       spectrumBlue,
+      spectrumIntensity,
+      dayNight,
       largeSunLightStats: {
         min: largeSunLightMin,
         max: largeSunLightMax,
@@ -939,6 +997,16 @@ export class SurfaceFieldEngine {
         average:
           penumbraSum /
           count
+      },
+      spectrumStats: {
+        min: spectrumMin,
+        max: spectrumMax,
+        average: spectrumSum / count
+      },
+      dayNightStats: {
+        min: 0,
+        max: 1,
+        average: dayNightSum / count
       }
     };
   }
