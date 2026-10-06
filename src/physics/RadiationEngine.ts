@@ -17,6 +17,15 @@ export interface RadiationSource {
   magicPower: number;
 
   /**
+   * Optional explicit source emission reference. When present,
+   * radiation power can be derived from source geometry rather than
+   * treating lightPower/heatPower/magicPower as distance-independent.
+   * These fields remain optional so existing experimental profiles
+   * keep their authored semantics.
+   */
+  emissionReferenceRadius?: number;
+
+  /**
    * Whether this source should contribute to the illumination
    * of an explicit secondary reflector. Primary suns are disabled
    * here because moon reflection is modeled explicitly.
