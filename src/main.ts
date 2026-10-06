@@ -68,7 +68,8 @@ cameraController.setMorraRadius(
 
 const debugPanel =
   new DebugPanel(
-    simulation.timeControls
+    simulation.timeControls,
+    cameraController
   );
 
 const timeHud =
