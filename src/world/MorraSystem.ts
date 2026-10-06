@@ -909,8 +909,11 @@ export class MorraSystem {
       MORRA_CONFIG.SURFACE_FIELD.opacity
     );
 
+    // The physical LIGHT_TOTAL layer is part of Morra's final surface
+    // appearance. DEBUG.showSurfaceField controls only diagnostic UI,
+    // not whether physical illumination is rendered.
     this.surfaceFieldVisualizer.setEnabled(
-      showSurfaceField
+      true
     );
 
     if(fieldMap) {
