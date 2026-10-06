@@ -943,8 +943,7 @@ export class DebugPanel {
     ) {
       this.cameraControls.distance =
         this.cameraController.getDistance();
-
-      }
+    }
 
     for (
       const control of
