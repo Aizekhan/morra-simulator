@@ -40,6 +40,52 @@ export class CameraController {
     );
   }
 
+  setZoomLevel(level: number) {
+    const normalized =
+      THREE.MathUtils.clamp(
+        level,
+        0,
+        1
+      );
+
+    const logarithmicRange =
+      Math.log(
+        this.maximumDistance /
+        this.minimumSurfaceDistance
+      );
+
+    this.setDistance(
+      this.minimumSurfaceDistance *
+      Math.exp(
+        logarithmicRange *
+        (1 - normalized)
+      )
+    );
+  }
+
+  getZoomLevel() {
+    const logarithmicRange =
+      Math.log(
+        this.maximumDistance /
+        this.minimumSurfaceDistance
+      );
+
+    if(logarithmicRange <= 0) {
+      return 0.5;
+    }
+
+    return THREE.MathUtils.clamp(
+      1 -
+      Math.log(
+        this.distance /
+        this.minimumSurfaceDistance
+      ) /
+      logarithmicRange,
+      0,
+      1
+    );
+  }
+
   resetView() {
     this.distance = this.getFramingDistance();
     this.yaw = 0;
