@@ -34,6 +34,8 @@ interface MoonTarget {
   id: string;
 
   body: CelestialBody;
+
+  reflectionId: string;
 }
 
 export class CelestialInteractionSystem {
@@ -98,7 +100,11 @@ export class CelestialInteractionSystem {
         (body, index) => ({
           id:
             `moon-${index + 1}`,
-          body
+          body,
+          reflectionId:
+            index === 0
+              ? "north-moon-reflection"
+              : "equator-moon-reflection"
         })
       );
   }
@@ -162,8 +168,96 @@ export class CelestialInteractionSystem {
   }
 
   private updateMoonReflections() {
-    // Reflections are currently handled by the radiation engine.
-    // Keep this hook valid while the simulator is running.
+    if(!MORRA_CONFIG.MOON_REFLECTION.enabled) {
+      for(const moon of this.moonTargets) {
+        this.radiation.removeDynamicSource(
+          moon.reflectionId
+        );
+      }
+      return;
+    }
+
+    const sunSources =
+      this.sourceConfigs.filter(
+        source =>
+          source.id === "large-sun" ||
+          source.id === "medium-sun" ||
+          source.id === "small-sun"
+      );
+
+    for(const moon of this.moonTargets) {
+      const sourceContributions = [];
+
+      for(const sun of sunSources) {
+        const runtimeScale =
+          this.getRuntimeRadiationScale(
+            sun.id
+          );
+
+        const sunPosition =
+          sun.body.mesh.getWorldPosition(
+            new THREE.Vector3()
+          );
+
+        const moonPosition =
+          moon.body.mesh.getWorldPosition(
+            new THREE.Vector3()
+          );
+
+        const distance =
+          Math.max(
+            moonPosition.distanceTo(
+              sunPosition
+            ),
+            1
+          );
+
+        const incoming =
+          sun.lightPower *
+          runtimeScale *
+          MORRA_CONFIG.MOON_REFLECTION.albedo *
+          (moon.body.radius * moon.body.radius) /
+          (distance * distance);
+
+        sourceContributions.push(
+          incoming
+        );
+      }
+
+      const reflectedPower =
+        sourceContributions.reduce(
+          (sum, value) => sum + value,
+          0
+        ) *
+        MORRA_CONFIG.MOON_REFLECTION.intensityScale;
+
+      if(reflectedPower <= 0) {
+        this.radiation.removeDynamicSource(
+          moon.reflectionId
+        );
+        continue;
+      }
+
+      const boundedPower =
+        THREE.MathUtils.clamp(
+          reflectedPower,
+          0,
+          MORRA_CONFIG.MOON_REFLECTION.maxIntensity
+        );
+
+      this.radiation.addDynamicSource({
+        id:
+          moon.reflectionId,
+        body:
+          moon.body,
+        lightPower:
+          boundedPower,
+        heatPower:
+          0,
+        magicPower:
+          0
+      });
+    }
   }
 
   dispose() {
