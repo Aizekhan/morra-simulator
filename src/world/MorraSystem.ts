@@ -113,25 +113,29 @@ export class MorraSystem {
     this.axis.axisLine.position.copy(
       this.morra.mesh.position
     );
-    this.axis.axisLine.rotation.copy(
-      this.morra.mesh.rotation
+    this.axis.axisLine.quaternion.copy(
+      this.morra.mesh.quaternion
     );
 
-    this.axis.northPole.position.copy(
-      new THREE.Vector3(0, this.morra.radius, 0)
+    this.axis.northPole.position.set(
+      0,
+      this.morra.radius,
+      0
     );
-    this.axis.northPole.position.applyEuler(
-      this.morra.mesh.rotation
+    this.axis.northPole.position.applyQuaternion(
+      this.morra.mesh.quaternion
     );
     this.axis.northPole.position.add(
       this.morra.mesh.position
     );
 
-    this.axis.southPole.position.copy(
-      new THREE.Vector3(0, -this.morra.radius, 0)
+    this.axis.southPole.position.set(
+      0,
+      -this.morra.radius,
+      0
     );
-    this.axis.southPole.position.applyEuler(
-      this.morra.mesh.rotation
+    this.axis.southPole.position.applyQuaternion(
+      this.morra.mesh.quaternion
     );
     this.axis.southPole.position.add(
       this.morra.mesh.position
@@ -140,8 +144,8 @@ export class MorraSystem {
     this.axis.equator.position.copy(
       this.morra.mesh.position
     );
-    this.axis.equator.rotation.copy(
-      this.morra.mesh.rotation
+    this.axis.equator.quaternion.copy(
+      this.morra.mesh.quaternion
     );
   }
 
