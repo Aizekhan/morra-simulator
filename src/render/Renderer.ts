@@ -114,10 +114,46 @@ export class Renderer {
       this.ambientLight
     );
 
+    // These lights are a presentation layer only. Their positions and
+    // colors follow the celestial bodies; physical radiation remains the
+    // authoritative simulation used by SurfaceFieldEngine.
+
     window.addEventListener(
       "resize",
       this.handleResize
     );
+  }
+
+  syncCelestialLights(
+    bodies: Array<{
+      mesh: THREE.Object3D;
+      color: number;
+      intensity: number;
+      visible: boolean;
+    }>
+  ) {
+    while(this.celestialLights.length < bodies.length) {
+      const light =
+        new THREE.PointLight(0xffffff, 0, 0);
+
+      this.scene.add(light);
+      this.celestialLights.push(light);
+    }
+
+    bodies.forEach((body, index) => {
+      const light =
+        this.celestialLights[index];
+
+      light.color.setHex(body.color);
+      light.intensity = body.visible ? body.intensity * 0.02 : 0;
+      light.distance = 0;
+      light.decay = 2;
+      light.position.copy(body.mesh.getWorldPosition(new THREE.Vector3()));
+    });
+
+    for(let i = bodies.length; i < this.celestialLights.length; i++) {
+      this.celestialLights[i].intensity = 0;
+    }
   }
 
   update(
@@ -147,6 +183,12 @@ export class Renderer {
       "resize",
       this.handleResize
     );
+
+    for(const light of this.celestialLights) {
+      light.removeFromParent();
+    }
+
+    this.celestialLights.length = 0;
 
     this.renderer.dispose();
 
