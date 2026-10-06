@@ -17,6 +17,13 @@ export interface RadiationSource {
   magicPower: number;
 
   /**
+   * Whether this source should contribute to the illumination
+   * of an explicit secondary reflector. Primary suns are disabled
+   * here because moon reflection is modeled explicitly.
+   */
+  allowSecondaryReflection?: boolean;
+
+  /**
    * Explicit reflected sources (such as moonlight) are terminal:
    * they illuminate the surface but do not recursively generate
    * another indirect-reflection pass.
