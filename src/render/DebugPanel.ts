@@ -40,6 +40,12 @@ export class DebugPanel {
   private eccentricityControls:
     EccentricityControl[] = [];
 
+  private cameraController:
+    CameraController | null = null;
+
+  private cameraControls:
+    { distance: number } | null = null;
+
   constructor(
     timeControls: TimeControls,
     cameraController: CameraController
@@ -296,15 +302,11 @@ export class DebugPanel {
     sides.close();
     folder.close();
 
-    const syncDistance = () => {
-      controls.distance =
-        cameraController.getDistance();
-      requestAnimationFrame(
-        syncDistance
-      );
-    };
+    this.cameraController =
+      cameraController;
 
-    syncDistance();
+    this.cameraControls =
+      controls;
   }
 
   private createMorraFolder() {
@@ -939,6 +941,14 @@ export class DebugPanel {
   }
 
   update() {
+
+    if(
+      this.cameraController &&
+      this.cameraControls
+    ) {
+      this.cameraControls.distance =
+        this.cameraController.getDistance();
+    }
 
     for (
       const control of
