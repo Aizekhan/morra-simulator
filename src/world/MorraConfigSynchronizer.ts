@@ -34,6 +34,23 @@ export class MorraConfigSynchronizer {
 
   sync() {
 
+    // Visibility is a live render-state switch. Keep all celestial meshes
+    // synchronized directly from their GUI/config flags every simulation tick.
+    this.bodies.sunLarge.mesh.visible =
+      MORRA_CONFIG.SUN_LARGE.visible;
+
+    this.bodies.sunMedium.mesh.visible =
+      MORRA_CONFIG.SUN_MEDIUM.visible;
+
+    this.bodies.sunSmall.mesh.visible =
+      MORRA_CONFIG.SUN_SMALL.visible;
+
+    this.bodies.moonNorth.mesh.visible =
+      MORRA_CONFIG.MOON_NORTH.visible;
+
+    this.bodies.moonEquator.mesh.visible =
+      MORRA_CONFIG.MOON_EQUATOR.visible;
+
     const morraRadius =
       Math.max(
         0.1,
