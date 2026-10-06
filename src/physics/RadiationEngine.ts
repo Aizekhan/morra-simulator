@@ -651,12 +651,35 @@ export class RadiationEngine {
         continue;
       }
 
-      const sourceIrradiance =
-        source.lightPower /
-        (
-          sourceOccluderDistance *
-          sourceOccluderDistance
+      const sourceNormalizedDistance =
+        sourceOccluderDistance /
+        Math.max(
+          source.body.radius,
+          RadiationEngine.EPSILON
+        );
+
+      const sourceFalloff =
+        1 /
+        Math.max(
+          sourceNormalizedDistance *
+          sourceNormalizedDistance,
+          RadiationEngine.EPSILON
+        );
+
+      const sourceReferenceArea =
+        Math.max(
+          source.body.radius,
+          RadiationEngine.EPSILON
         ) *
+        Math.max(
+          source.body.radius,
+          RadiationEngine.EPSILON
+        );
+
+      const sourceIrradiance =
+        source.lightPower *
+        sourceFalloff *
+        sourceReferenceArea *
         sourceVisibility.factor;
 
       const toPoint =
