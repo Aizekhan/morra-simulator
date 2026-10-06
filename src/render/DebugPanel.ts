@@ -11,6 +11,10 @@ import {
   OrbitMath
 } from "../astronomy/OrbitMath";
 
+import {
+  CelestialBody
+} from "../astronomy/CelestialBody";
+
 interface EccentricityControl {
 
   controller: {
@@ -46,9 +50,22 @@ export class DebugPanel {
   private cameraControls:
     { distance: number; zoom: number } | null = null;
 
+  private orbitPositionControls:
+    Array<{
+      value: number;
+      body: CelestialBody;
+    }> = [];
+
   constructor(
     timeControls: TimeControls,
-    cameraController: CameraController
+    cameraController: CameraController,
+    celestialBodies: {
+      sunLarge: CelestialBody;
+      sunMedium: CelestialBody;
+      sunSmall: CelestialBody;
+      moonNorth: CelestialBody;
+      moonEquator: CelestialBody;
+    }
   ) {
 
     this.gui =
@@ -80,9 +97,13 @@ export class DebugPanel {
 
     this.createMorraFolder();
 
-    this.createSunFolders();
+    this.createSunFolders(
+      celestialBodies
+    );
 
-    this.createMoonFolders();
+    this.createMoonFolders(
+      celestialBodies
+    );
 
     this.createLightingFolder();
 
@@ -341,7 +362,15 @@ export class DebugPanel {
     folder.close();
   }
 
-  private createSunFolders() {
+  private createSunFolders(
+    celestialBodies: {
+      sunLarge: CelestialBody;
+      sunMedium: CelestialBody;
+      sunSmall: CelestialBody;
+      moonNorth: CelestialBody;
+      moonEquator: CelestialBody;
+    }
+  ) {
 
     const root =
       this.gui.addFolder(
@@ -352,21 +381,24 @@ export class DebugPanel {
       root,
       "☀ Large Sun",
       MORRA_CONFIG.SUN_LARGE,
-      MORRA_CONFIG.LIGHTS.LARGE
+      MORRA_CONFIG.LIGHTS.LARGE,
+      celestialBodies.sunLarge
     );
 
     this.createSunFolder(
       root,
       "☀ Medium Sun",
       MORRA_CONFIG.SUN_MEDIUM,
-      MORRA_CONFIG.LIGHTS.MEDIUM
+      MORRA_CONFIG.LIGHTS.MEDIUM,
+      celestialBodies.sunMedium
     );
 
     this.createSunFolder(
       root,
       "☀ Small Sun",
       MORRA_CONFIG.SUN_SMALL,
-      MORRA_CONFIG.LIGHTS.SMALL
+      MORRA_CONFIG.LIGHTS.SMALL,
+      celestialBodies.sunSmall
     );
 
     root.close();
@@ -391,7 +423,8 @@ export class DebugPanel {
     },
     light: {
       color: number;
-    }
+    },
+    body: CelestialBody
   ) {
 
     const folder =
@@ -425,15 +458,32 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.step
     ).name("ORBIT RADIUS").listen();
 
+    const orbitPosition = {
+      value:
+        body.angle
+    };
+
     folder.add(
-      sun,
-      "angle",
+      orbitPosition,
+      "value",
       -Math.PI,
       Math.PI,
       0.0001
     )
       .name("ORBIT POSITION")
-      .listen();
+      .listen()
+      .onChange(
+        (value: number) =>
+          body.setOrbitPosition(
+            value
+          )
+      );
+
+    this.orbitPositionControls.push({
+      value:
+        orbitPosition.value,
+      body
+    });
 
     folder.add(
       sun,
@@ -493,7 +543,15 @@ export class DebugPanel {
     folder.close();
   }
 
-  private createMoonFolders() {
+  private createMoonFolders(
+    celestialBodies: {
+      sunLarge: CelestialBody;
+      sunMedium: CelestialBody;
+      sunSmall: CelestialBody;
+      moonNorth: CelestialBody;
+      moonEquator: CelestialBody;
+    }
+  ) {
 
     const root =
       this.gui.addFolder(
@@ -503,13 +561,15 @@ export class DebugPanel {
     this.createMoonFolder(
       root,
       "🌙 North Moon",
-      MORRA_CONFIG.MOON_NORTH
+      MORRA_CONFIG.MOON_NORTH,
+      celestialBodies.moonNorth
     );
 
     this.createMoonFolder(
       root,
       "🌙 Equator Moon",
-      MORRA_CONFIG.MOON_EQUATOR
+      MORRA_CONFIG.MOON_EQUATOR,
+      celestialBodies.moonEquator
     );
 
     const reflection =
@@ -562,14 +622,14 @@ export class DebugPanel {
       orbitColor: number;
       orbitRadius: number;
       orbitSpeed: number;
-      angle: number;
       orbitInclination: number;
       orbitAscendingNode: number;
       orbitEccentricity: number;
       orbitPlaneOffset: number;
       reverseOrbit: boolean;
       visible: boolean;
-    }
+    },
+    body: CelestialBody
   ) {
 
     const folder =
@@ -608,15 +668,32 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.step
     ).name("ORBIT RADIUS").listen();
 
+    const orbitPosition = {
+      value:
+        body.angle
+    };
+
     folder.add(
-      moon,
-      "angle",
+      orbitPosition,
+      "value",
       -Math.PI,
       Math.PI,
       0.0001
     )
       .name("ORBIT POSITION")
-      .listen();
+      .listen()
+      .onChange(
+        (value: number) =>
+          body.setOrbitPosition(
+            value
+          )
+      );
+
+    this.orbitPositionControls.push({
+      value:
+        orbitPosition.value,
+      body
+    });
 
     folder.add(
       moon,
@@ -969,6 +1046,14 @@ export class DebugPanel {
 
       this.cameraControls.zoom =
         this.cameraController.getZoomLevel();
+    }
+
+    for(
+      const control of
+      this.orbitPositionControls
+    ) {
+      control.value =
+        control.body.angle;
     }
 
     for (
