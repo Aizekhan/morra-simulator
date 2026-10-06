@@ -49,6 +49,8 @@ export class SurfaceFieldVisualizer {
 
   private surfaceRadius = 1;
 
+  private physicalLightScale = 0.000001;
+
 
 
   private channel:
@@ -170,6 +172,10 @@ export class SurfaceFieldVisualizer {
           physicalGamma: {
             value:
               0.42
+          },
+          physicalLightScale: {
+            value:
+              this.physicalLightScale
           }
         },
         vertexShader: `
@@ -193,6 +199,7 @@ export class SurfaceFieldVisualizer {
           uniform float physicalExposure;
           uniform float physicalFloor;
           uniform float physicalGamma;
+          uniform float physicalLightScale;
 
           varying vec2 vUv;
 
@@ -203,7 +210,11 @@ export class SurfaceFieldVisualizer {
             }
 
             float rawLight = max(texture2D(fieldTexture, vUv).r, 0.0);
-            float normalizedLight = clamp(rawLight * physicalExposure, 0.0, 1.0);
+            float normalizedLight = clamp(
+              rawLight * physicalExposure,
+              0.0,
+              1.0
+            );
             float surfaceLight = mix(
               physicalFloor,
               1.0,
@@ -624,21 +635,28 @@ export class SurfaceFieldVisualizer {
           : 0;
 
       const normalized =
-        hasRange
+        this.channel === "LIGHT_TOTAL"
           ? THREE.MathUtils.clamp(
-              (
-                rawValue -
-                stats.min
-              ) /
-              range,
+              rawValue *
+              this.physicalLightScale,
               0,
               1
             )
-          : THREE.MathUtils.clamp(
-              rawValue,
-              0,
-              1
-            );
+          : hasRange
+            ? THREE.MathUtils.clamp(
+                (
+                  rawValue -
+                  stats.min
+                ) /
+                range,
+                0,
+                1
+              )
+            : THREE.MathUtils.clamp(
+                rawValue,
+                0,
+                1
+              );
 
       const offset =
         index *
