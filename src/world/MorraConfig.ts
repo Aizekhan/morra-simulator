@@ -4,29 +4,26 @@ export const MORRA_CONFIG = {
   // MORRA
   // =========================
 
-  // Default world scale: Jupiter-class radius (render/simulation units remain configurable).
+  // Canonical starting scale: Jupiter-class world.
   MORRA_RADIUS: 69911,
 
   MORRA_COLOR: 0xffffff,
 
   MORRA_VISIBLE: true,
 
-  // Render-only world-map texture. Empty means the procedural surface
-  // remains in use until an authored equirectangular map is added.
   MORRA_SURFACE_TEXTURE: "/textures/worlds/morra-world-map.png",
 
   MORRA_SURFACE_TEXTURE_OPACITY: 1,
 
   MORRA_SURFACE_TEXTURE_ENABLED: true,
 
-  // Render-only base emissive so Morra remains visually readable
-  // when the physical light sources are on the far side.
-  // Keep the real Morra mesh visibly readable at system scale; this is render-only and does not change physical radiation.
   MORRA_BASE_EMISSIVE: 0.35,
 
-  AXIS_TILT: 0,
+  // Canonical axial tilt.
+  AXIS_TILT: 25,
 
-  ROTATION_SPEED: 0.01,
+  // Calibrated so one simulator orbit equals 365 days.
+  ROTATION_SPEED: 360 / (30 * 24),
 
   // =========================
   // TIME
@@ -34,14 +31,14 @@ export const MORRA_CONFIG = {
 
   TIME_SPEED: 1,
 
-  HOURS_IN_DAY: 120,
+  HOURS_IN_DAY: 30,
 
   DAYS_IN_MONTH: 40,
 
   MONTHS_IN_YEAR: 12,
 
   // =========================
-  // LIGHTING
+  // VISUAL LIGHT CALIBRATION
   // =========================
 
   LIGHTS: {
@@ -49,33 +46,21 @@ export const MORRA_CONFIG = {
     ambient: 0.15,
 
     LARGE: {
-
       color: 0xffcc88,
-
       intensity: 50,
-
-      distance: 10000
-
+      distance: 2000000
     },
 
     MEDIUM: {
-
       color: 0xffaa55,
-
       intensity: 30,
-
-      distance: 10000
-
+      distance: 2000000
     },
 
     SMALL: {
-
       color: 0xffffcc,
-
       intensity: 20,
-
-      distance: 10000
-
+      distance: 2000000
     }
 
   },
@@ -86,16 +71,20 @@ export const MORRA_CONFIG = {
 
   MOON_NORTH: {
 
-    radius: 6991,
+    // ≈ 900 km diameter.
+    radius: 450,
 
     color: 0xcccccc,
 
     orbitColor: 0x999999,
 
-    orbitRadius: 140000,
+    // ≈ 100,000 km center-to-center.
+    orbitRadius: 100000,
 
-    orbitSpeed: 0.02,
+    // 40-day period.
+    orbitSpeed: 360 / (40 * 30),
 
+    // Canonical starting polar orbit.
     orbitPlane: "YZ" as const,
 
     orbitInclination: 0,
@@ -114,17 +103,21 @@ export const MORRA_CONFIG = {
 
   MOON_EQUATOR: {
 
-    radius: 6991,
+    // ≈ 400 km diameter.
+    radius: 200,
 
     color: 0x888888,
 
     orbitColor: 0x666666,
 
-    orbitRadius: 350000,
+    // ≈ 160,000 km center-to-center.
+    orbitRadius: 160000,
 
-    orbitSpeed: 0.01,
+    // 67-day period.
+    orbitSpeed: 360 / (67 * 30),
 
-    orbitPlane: "XZ" as const,
+    // Perpendicular to the equatorial orbital plane.
+    orbitPlane: "YZ" as const,
 
     orbitInclination: 0,
 
@@ -146,23 +139,23 @@ export const MORRA_CONFIG = {
 
   SUN_LARGE: {
 
-    // Provisional source-role binding for the physical engine.
-    // The canonical mapping of "large/medium/small" to
-    // first/second/third celestial bodies is still editable here.
     radiationRole: "MAGIC" as const,
 
-    // Large magical luminary ≈ 7 Earth radii.
-    radius: 44597,
+    // ≈ 2500 km diameter.
+    radius: 1250,
 
-    orbitRadius: 700000,
+    // ≈ 300,000 km from Morra's center.
+    orbitRadius: 300000,
 
-    orbitSpeed: 0.0015,
+    // 365-day period.
+    orbitSpeed: 360 / (365 * 30),
 
-    orbitPlaneOffset: 300,
+    // 25° orbit inclination relative to Morra's equator.
+    orbitPlaneOffset: 0,
 
     orbitPlane: "XZ" as const,
 
-    orbitInclination: 0,
+    orbitInclination: 25,
 
     orbitAscendingNode: 0,
 
@@ -178,14 +171,17 @@ export const MORRA_CONFIG = {
 
     radiationRole: "LIFE" as const,
 
-    // Life luminary ≈ 4 Earth radii.
-    radius: 25484,
+    // ≈ 1500 km diameter.
+    radius: 750,
 
-    orbitRadius: 500000,
+    // ≈ 220,000 km from Morra's center.
+    orbitRadius: 220000,
 
-    orbitSpeed: 0.002,
+    // 180-day period.
+    orbitSpeed: 360 / (180 * 30),
 
-    orbitPlaneOffset: 150,
+    // Almost equatorial.
+    orbitPlaneOffset: 0,
 
     orbitPlane: "XZ" as const,
 
@@ -205,13 +201,16 @@ export const MORRA_CONFIG = {
 
     radiationRole: "FIRE" as const,
 
-    // Small luminary ≈ Earth radius.
-    radius: 6371,
+    // ≈ 800 km diameter.
+    radius: 400,
 
-    orbitRadius: 300000,
+    // ≈ 500,000 km from Morra's center.
+    orbitRadius: 500000,
 
-    orbitSpeed: 0.003,
+    // 600-day period.
+    orbitSpeed: 360 / (600 * 30),
 
+    // Polar orbit.
     orbitPlaneOffset: 0,
 
     orbitPlane: "YZ" as const,
@@ -232,8 +231,6 @@ export const MORRA_CONFIG = {
   // RADIATION CALIBRATION
   // =========================
 
-  // Relative source strengths used by the new physical engine.
-  // These are implementation calibration values, not new canon.
   RADIATION_PROFILES: {
 
     MAGIC: {
@@ -260,7 +257,6 @@ export const MORRA_CONFIG = {
   // MOON REFLECTION
   // =========================
 
-  // Simulator rendering calibration, not canon.
   MOON_REFLECTION: {
 
     enabled: true,
@@ -316,7 +312,6 @@ export const MORRA_CONFIG = {
 
     enabled: false,
 
-    // Debug visualization scale. Keep shadow volumes visible at system scale.
     length: 180000,
 
     opacity: 0.18,
@@ -335,7 +330,6 @@ export const MORRA_CONFIG = {
 
     enabled: true,
 
-    // Debug visualization scale. It must follow the enlarged Jupiter-class system.
     length: 180000,
 
     radialScale: 1,
@@ -352,29 +346,29 @@ export const MORRA_CONFIG = {
   // DEBUG
   // =========================
 
-DEBUG: {
+  DEBUG: {
 
-  showAxis: true,
+    showAxis: true,
 
-  showEquator: true,
+    showEquator: true,
 
-  showOrbits: true,
+    showOrbits: true,
 
-  showLightHelpers: true,
+    showLightHelpers: true,
 
-  showTimePanel: true,
+    showTimePanel: true,
 
-  showTimeline: true,
+    showTimeline: true,
 
-  showSurfaceField: false,
+    showSurfaceField: false,
 
-  showRadiationRays: false,
+    showRadiationRays: false,
 
-  showDirectIllumination: false,
+    showDirectIllumination: false,
 
-  showEclipseShadows: true
+    showEclipseShadows: true
 
-},
+  },
 
   // =========================
   // GUI LIMITS
@@ -383,143 +377,87 @@ DEBUG: {
   LIMITS: {
 
     MORRA_RADIUS: {
-
       min: 100,
-
       max: 100000,
-
       step: 1
-
     },
 
     AXIS_TILT: {
-
       min: 0,
-
       max: 90,
-
       step: 0.1
-
     },
 
     ORBIT_INCLINATION: {
-
       min: -180,
-
       max: 180,
-
       step: 0.1
-
     },
 
     ORBIT_PLANE_OFFSET: {
-
       min: -5000,
-
       max: 5000,
-
       step: 1
-
     },
 
     ORBIT_ASCENDING_NODE: {
-
       min: 0,
-
       max: 360,
-
       step: 0.1
-
     },
 
     ORBIT_ECCENTRICITY: {
-
       min: 0,
-
       max: 0.99,
-
       step: 0.001
-
     },
 
     ROTATION_SPEED: {
-
       min: 0,
-
       max: 1,
-
       step: 0.001
-
     },
 
     TIME_SPEED: {
-
       min: 0,
-
       max: 500000,
-
       step: 1
-
     },
 
     ORBIT_RADIUS: {
-
       min: 50,
-
       max: 2000000,
-
       step: 10
-
     },
 
     ORBIT_SPEED: {
-
       min: 0,
-
       max: 0.05,
-
       step: 0.0001
-
     },
 
     BODY_RADIUS: {
-
       min: 1,
-
       max: 100000,
-
       step: 1
-
     },
 
     BODY_HEIGHT: {
-
       min: -5000,
-
       max: 5000,
-
       step: 1
-
     },
 
     LIGHT_INTENSITY: {
-
       min: 0,
-
       max: 500,
-
       step: 1
-
     },
 
     LIGHT_DISTANCE: {
-
       min: 100,
-
-      max: 50000,
-
+      max: 2000000,
       step: 100
-
     }
 
   }
