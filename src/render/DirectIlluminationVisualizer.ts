@@ -458,11 +458,13 @@ export class DirectIlluminationVisualizer {
           .clone()
           .normalize();
 
+      // The reflected segment ends on the Morra-facing surface point,
+      // matching the same direction used by the physics probe.
       const surfacePoint =
         center
           .clone()
           .addScaledVector(
-            moonToMorraDirection.clone().negate(),
+            moonToMorraDirection,
             radius * 1.002
           );
 
@@ -708,7 +710,7 @@ export class DirectIlluminationVisualizer {
           0,
           1
         ),
-        moonToMorraDirection.clone().negate()
+        moonToMorraDirection
       );
 
       visual.spot.scale.setScalar(
