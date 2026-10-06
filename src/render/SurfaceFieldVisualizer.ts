@@ -150,6 +150,10 @@ export class SurfaceFieldVisualizer {
           baseTexture: {
             value:
               null
+          },
+          physicalExposure: {
+            value:
+              1
           }
         },
         vertexShader: `
@@ -175,6 +179,7 @@ export class SurfaceFieldVisualizer {
           uniform sampler2D spectrumTexture;
           uniform sampler2D baseTexture;
           uniform bool channelSpectrum;
+          uniform float physicalExposure;
 
           varying vec2 vUv;
 
@@ -196,6 +201,27 @@ export class SurfaceFieldVisualizer {
               texture2D(
                 baseTexture,
                 vUv
+              );
+
+            // LIGHT_TOTAL stores the physically evaluated incident radiation.
+            // Convert its normalized diagnostic signal into presentation
+            // brightness without altering the underlying field values.
+            float physicalLight =
+              clamp(
+                texture2D(
+                  fieldTexture,
+                  vUv
+                ).r *
+                physicalExposure,
+                0.0,
+                1.0
+              );
+
+            vec3 physicallyLitBase =
+              base.rgb *
+              (
+                0.08 +
+                0.92 * physicalLight
               );
 
             vec3 fieldColor =
@@ -222,11 +248,13 @@ export class SurfaceFieldVisualizer {
               );
 
             vec3 color =
-              mix(
-                base.rgb,
-                fieldColor,
-                fieldBlend
-              );
+              channelSpectrum
+                ? mix(
+                    physicallyLitBase,
+                    fieldColor,
+                    fieldBlend
+                  )
+                : physicallyLitBase;
 
             float fieldPresence =
               smoothstep(
