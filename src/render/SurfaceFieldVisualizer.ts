@@ -242,10 +242,20 @@ export class SurfaceFieldVisualizer {
               discard;
             }
 
+            // Keep the geographic texture visually present under diagnostics.
+            // The field is an overlay, not an opaque replacement texture.
+            float finalAlpha =
+              clamp(
+                0.18 +
+                fieldBlend * 0.82,
+                0.0,
+                1.0
+              );
+
             gl_FragColor =
               vec4(
                 color,
-                max(base.a, 1.0)
+                finalAlpha
               );
           }
         `
