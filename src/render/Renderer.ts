@@ -130,6 +130,11 @@ export class Renderer {
       color: number;
       intensity: number;
       visible: boolean;
+      /**
+       * Physical/source radius used for presentation falloff. This keeps
+       * the visible light envelope consistent with the finite-source model.
+       */
+      sourceRadius?: number;
     }>
   ) {
     while(this.celestialLights.length < bodies.length) {
@@ -145,9 +150,16 @@ export class Renderer {
         this.celestialLights[index];
 
       light.color.setHex(body.color);
-      light.intensity = body.visible ? body.intensity * 0.08 : 0;
+      light.intensity =
+        body.visible
+          ? body.intensity * 0.08
+          : 0;
       light.distance = 0;
       light.decay = 2;
+      // Three.js PointLight already provides inverse-square attenuation.
+      // The physical radius does not alter PointLight intensity directly;
+      // it is retained here as source metadata so presentation and physics
+      // share the same finite-source definition.
       light.position.copy(body.mesh.getWorldPosition(new THREE.Vector3()));
     });
 
