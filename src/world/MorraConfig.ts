@@ -286,9 +286,6 @@ export const MORRA_CONFIG = {
     updateIntervalHours: 0.25,
 
     channel: "LIGHT_TOTAL" as
-      "LIGHT" |
-      "HEAT" |
-      "MAGIC" |
       "MAGOSPHERE" |
       "ANOMALY" |
       "SHADOW" |
@@ -302,7 +299,8 @@ export const MORRA_CONFIG = {
       "SMALL_SUN" |
       "NORTH_MOON" |
       "EQUATOR_MOON" |
-      "SPECTRUM",
+      "SPECTRUM" |
+      "DAY_NIGHT",
 
     opacity: 0.55
 
