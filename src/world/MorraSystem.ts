@@ -554,7 +554,9 @@ export class MorraSystem {
           updateIntervalHours:
             MORRA_CONFIG.SURFACE_FIELD.updateIntervalHours,
           updateIntervalMilliseconds:
-            100
+            100,
+          surfaceMaterial:
+            MORRA_CONFIG.SURFACE_MATERIAL
         }
       );
 
