@@ -691,6 +691,24 @@ export class DebugPanel {
     ).name("ECLIPSE SHADOW").listen();
 
     folder.add(
+      MORRA_CONFIG,
+      "MORRA_SURFACE_TEXTURE_ENABLED"
+    ).name("WORLD MAP").listen();
+
+    folder.add(
+      MORRA_CONFIG,
+      "MORRA_SURFACE_TEXTURE_OPACITY",
+      0,
+      1,
+      0.01
+    ).name("MAP OPACITY").listen();
+
+    folder.add(
+      MORRA_CONFIG,
+      "MORRA_SURFACE_TEXTURE"
+    ).name("MAP PATH").listen();
+
+    folder.add(
       MORRA_CONFIG.DEBUG,
       "showRadiationRays"
     ).name("POINT DEBUG").listen();
