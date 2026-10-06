@@ -244,7 +244,8 @@ export class RadiationEngine {
               normal,
               source,
               occluders
-            );
+            )
+          : 0;
 
       const lightContribution =
         directLightContribution +
