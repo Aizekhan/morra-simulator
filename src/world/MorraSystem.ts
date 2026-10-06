@@ -867,8 +867,8 @@ export class MorraSystem {
     this.celestialInteractionSystem.update();
 
     // Keep the physical surface field as the authoritative visual source.
-    // Presentation lights are only used as secondary scene illumination;
-    // Morra itself consumes the physical field through the renderer.
+    // Presentation point lights are disabled for the planet so they cannot
+    // globally wash the Morra surface.
     this.surfaceFieldEngine.setConfig({
       surfaceMaterial:
         MORRA_CONFIG.SURFACE_MATERIAL,
