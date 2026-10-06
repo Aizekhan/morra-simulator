@@ -867,7 +867,8 @@ export class MorraSystem {
     this.celestialInteractionSystem.update();
 
     // Keep the physical surface field as the authoritative visual source.
-    // The Three.js PointLights remain a presentation aid only.
+    // Presentation lights are only used as secondary scene illumination;
+    // Morra itself consumes the physical field through the renderer.
     this.surfaceFieldEngine.setConfig({
       surfaceMaterial:
         MORRA_CONFIG.SURFACE_MATERIAL,
