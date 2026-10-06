@@ -640,9 +640,6 @@ export class SurfaceFieldVisualizer {
         return map.heat;
 
       case "MAGIC_TOTAL":
-        return map.magic;
-
-      case "MAGIC":
       default:
         return map.magic;
     }
@@ -721,9 +718,6 @@ export class SurfaceFieldVisualizer {
         return map.heatStats;
 
       case "MAGIC_TOTAL":
-        return map.magicStats;
-
-      case "MAGIC":
       default:
         return map.magicStats;
     }
