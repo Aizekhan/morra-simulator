@@ -212,12 +212,26 @@ export class CelestialInteractionSystem {
             1
           );
 
+        const moonVisibility =
+          this.radiation.getVisibilityFactor(
+            moonPosition,
+            {
+              id: sun.id,
+              body: sun.body,
+              lightPower: sun.lightPower * runtimeScale,
+              heatPower: 0,
+              magicPower: 0
+            },
+            this.getMoonBodies()
+          );
+
         const incoming =
           sun.lightPower *
           runtimeScale *
           MORRA_CONFIG.MOON_REFLECTION.albedo *
           (moon.body.radius * moon.body.radius) /
-          (distance * distance);
+          (distance * distance) *
+          moonVisibility;
 
         sourceContributions.push(
           incoming
