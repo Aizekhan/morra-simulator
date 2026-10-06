@@ -620,28 +620,28 @@ export class SurfaceFieldEngine {
             );
 
         // Derived diagnostic colour bands, not physical spectral bins.
-        const spectrumRed =
+        const spectrumRedValue =
           Math.min(
             1,
             sample.radiation.light +
             sample.radiation.magic * 0.15
           );
-        const spectrumGreen =
+        const spectrumGreenValue =
           Math.min(
             1,
             sample.radiation.heat +
             sample.radiation.light * 0.05
           );
-        const spectrumBlue =
+        const spectrumBlueValue =
           Math.min(
             1,
             sample.radiation.magic +
             sample.radiation.light * 0.2
           );
-        const spectrumIntensity =
-          0.2126 * spectrumRed +
-          0.7152 * spectrumGreen +
-          0.0722 * spectrumBlue;
+        const spectrumIntensityValue =
+          0.2126 * spectrumRedValue +
+          0.7152 * spectrumGreenValue +
+          0.0722 * spectrumBlueValue;
 
         // Surface material parameters are carried by configuration only.
         // Incident radiation remains the authoritative surface field until
@@ -700,10 +700,14 @@ export class SurfaceFieldEngine {
                 contribution.sourceId ===
                 "equator-moon-reflection"
             )?.light ?? 0,
-          spectrumRed,
-          spectrumGreen,
-          spectrumBlue,
-          spectrumIntensity,
+          spectrumRed:
+            spectrumRedValue,
+          spectrumGreen:
+            spectrumGreenValue,
+          spectrumBlue:
+            spectrumBlueValue,
+          spectrumIntensity:
+            spectrumIntensityValue,
           dayNight:
             directSunLight > 0.000001
               ? 1
@@ -754,13 +758,10 @@ export class SurfaceFieldEngine {
 
         spectrumRed[index] =
           sampleData.spectrumRed;
-
         spectrumGreen[index] =
           sampleData.spectrumGreen;
-
         spectrumBlue[index] =
           sampleData.spectrumBlue;
-
         spectrumIntensity[index] =
           sampleData.spectrumIntensity;
 
