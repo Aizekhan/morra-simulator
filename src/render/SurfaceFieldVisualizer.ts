@@ -228,7 +228,7 @@ export class SurfaceFieldVisualizer {
       1;
 
     this.overlay.scale.setScalar(
-      this.surfaceRadius * 1.006
+      this.surfaceRadius * 1.001
     );
 
     this.morra.add(
