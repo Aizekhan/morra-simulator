@@ -6,23 +6,100 @@ export class CameraController {
 
   distance = 2500;
 
+  zoomSpeed = 1;
+
   // The camera may zoom from system scale down to just above Morra's surface.
   private morraRadius = 120;
 
+  private initializedForMorra = false;
+
   setMorraRadius(radius: number) {
     this.morraRadius = Math.max(0.1, radius);
+
+    if(!this.initializedForMorra) {
+      this.distance = this.getFramingDistance();
+      this.initializedForMorra = true;
+      return;
+    }
+
     this.distance = Math.max(
       this.distance,
       this.minimumSurfaceDistance
     );
   }
 
+  getDistance() {
+    return this.distance;
+  }
+
+  setDistance(distance: number) {
+    this.distance = THREE.MathUtils.clamp(
+      distance,
+      this.minimumSurfaceDistance,
+      this.maximumDistance
+    );
+  }
+
+  resetView() {
+    this.distance = this.getFramingDistance();
+    this.yaw = 0;
+    this.pitch = 0.2;
+  }
+
+  snapToView(
+    view:
+      "FRONT" |
+      "BACK" |
+      "WEST" |
+      "EAST" |
+      "SOUTH" |
+      "NORTH"
+  ) {
+    switch(view) {
+      case "FRONT":
+        this.yaw = 0;
+        this.pitch = 0;
+        break;
+      case "BACK":
+        this.yaw = Math.PI;
+        this.pitch = 0;
+        break;
+      case "WEST":
+        this.yaw = Math.PI / 2;
+        this.pitch = 0;
+        break;
+      case "EAST":
+        this.yaw = -Math.PI / 2;
+        this.pitch = 0;
+        break;
+      case "NORTH":
+        this.yaw = 0;
+        this.pitch = Math.PI / 2 - 0.001;
+        break;
+      case "SOUTH":
+        this.yaw = 0;
+        this.pitch = -Math.PI / 2 + 0.001;
+        break;
+    }
+  }
+
   private get minimumSurfaceDistance() {
     return this.morraRadius * 1.001;
   }
 
+  private get maximumDistance() {
+    return Math.max(
+      this.morraRadius * 50,
+      1000000
+    );
+  }
+
+  private getFramingDistance() {
+    return this.morraRadius * 2.6;
+  }
+
   yaw = 0;
-  pitch = 0.3;
+  pitch = 0.2;
 
   dragging = false;
 
@@ -88,17 +165,17 @@ export class CameraController {
       "wheel",
       (e) => {
 
-        this.distance +=
-          e.deltaY * 0.5;
-
-        this.distance =
-          Math.max(
-            this.minimumSurfaceDistance,
-            Math.min(
-              1000000,
-              this.distance
-            )
+        const zoomFactor =
+          Math.exp(
+            e.deltaY *
+            0.001 *
+            this.zoomSpeed
           );
+
+        this.setDistance(
+          this.distance *
+          zoomFactor
+        );
 
       }
     );
