@@ -61,7 +61,9 @@ export class DirectIlluminationVisualizer {
   ) {
     const phaseCosine =
       THREE.MathUtils.clamp(
-        moonToSource.dot(moonToMorraDirection),
+        moonToSource.dot(
+          moonToMorraDirection
+        ),
         -1,
         1
       );
@@ -73,21 +75,6 @@ export class DirectIlluminationVisualizer {
     0.5;
   }
 
-
-  private readonly engine:
-    CelestialInteractionSystem;
-
-  private readonly root:
-    THREE.Group;
-
-  private readonly visuals:
-    SourceVisual[] = [];
-
-  private readonly moonVisuals:
-    MoonVisual[] = [];
-
-  private enabled =
-    true;
 
   constructor(
     scene: THREE.Scene,
