@@ -45,6 +45,9 @@ export class CelestialInteractionSystem {
   private readonly moonTargets:
     MoonTarget[];
 
+  private readonly sourceConfigs:
+    CelestialSourceConfig[];
+
   constructor(
     _scene: THREE.Scene,
     morra: CelestialBody,
@@ -54,6 +57,9 @@ export class CelestialInteractionSystem {
   ) {
 
     this.sources =
+      sources;
+
+    this.sourceConfigs =
       sources;
 
     const radiationSources:
@@ -94,6 +100,26 @@ export class CelestialInteractionSystem {
   }
 
   update() {
+    const radiationSources =
+      this.sourceConfigs.map(
+        source => ({
+          id:
+            source.id,
+          body:
+            source.body,
+          lightPower:
+            source.lightPower,
+          heatPower:
+            source.heatPower,
+          magicPower:
+            source.magicPower
+        })
+      );
+
+    this.radiation.setSources(
+      radiationSources
+    );
+
     this.updateMoonReflections();
   }
 
