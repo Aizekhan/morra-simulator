@@ -163,62 +163,10 @@ function animate() {
   // Presentation lights must be synchronized after the deterministic
   // astronomy/physics step so visuals use exactly the same source positions
   // as radiation, shadows and surface fields for this frame.
-  renderer.syncCelestialLights([
-    {
-      mesh:
-        simulation.morraSystem.sunLarge.mesh,
-      color:
-        MORRA_CONFIG.LIGHTS.LARGE.color,
-      intensity:
-        MORRA_CONFIG.LIGHTS.LARGE.intensity,
-      visible:
-        simulation.morraSystem.sunLarge.mesh.visible,
-      sourceRadius:
-        simulation.morraSystem.sunLarge.radius,
-      referenceDistance:
-        simulation.morraSystem.sunLarge.orbitRadius,
-      radiationScale:
-        MORRA_CONFIG.LIGHTS.LARGE.radiationScale,
-      presentationScale:
-        MORRA_CONFIG.LIGHTS.LARGE.presentationScale
-    },
-    {
-      mesh:
-        simulation.morraSystem.sunMedium.mesh,
-      color:
-        MORRA_CONFIG.LIGHTS.MEDIUM.color,
-      intensity:
-        MORRA_CONFIG.LIGHTS.MEDIUM.intensity,
-      visible:
-        simulation.morraSystem.sunMedium.mesh.visible,
-      sourceRadius:
-        simulation.morraSystem.sunMedium.radius,
-      referenceDistance:
-        simulation.morraSystem.sunMedium.orbitRadius,
-      radiationScale:
-        MORRA_CONFIG.LIGHTS.MEDIUM.radiationScale,
-      presentationScale:
-        MORRA_CONFIG.LIGHTS.MEDIUM.presentationScale
-    },
-    {
-      mesh:
-        simulation.morraSystem.sunSmall.mesh,
-      color:
-        MORRA_CONFIG.LIGHTS.SMALL.color,
-      intensity:
-        MORRA_CONFIG.LIGHTS.SMALL.intensity,
-      visible:
-        simulation.morraSystem.sunSmall.mesh.visible,
-      sourceRadius:
-        simulation.morraSystem.sunSmall.radius,
-      referenceDistance:
-        simulation.morraSystem.sunSmall.orbitRadius,
-      radiationScale:
-        MORRA_CONFIG.LIGHTS.SMALL.radiationScale,
-      presentationScale:
-        MORRA_CONFIG.LIGHTS.SMALL.presentationScale
-    }
-  ]);
+  // Keep celestial point lights available for auxiliary scene objects,
+  // but do not use them to shade Morra itself. Morra's surface is rendered
+  // from the authoritative physical LIGHT_TOTAL field.
+  renderer.syncCelestialLights([]);
 
   cameraController.setMorraRadius(
     simulation.morraSystem.morra.radius
