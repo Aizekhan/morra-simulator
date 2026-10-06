@@ -288,7 +288,7 @@ export class CelestialBody {
         THREE.ClampToEdgeWrapping;
       texture.wrapT =
         THREE.ClampToEdgeWrapping;
-      texture.flipY = false;
+      texture.flipY = true;
     }
 
     this.setSurfaceTexture(
