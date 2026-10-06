@@ -316,7 +316,8 @@ export const MORRA_CONFIG = {
 
     enabled: false,
 
-    // Debug visualization scale. Keep shadow volumes visible at system scale.\n    length: 180000,
+    // Debug visualization scale. Keep shadow volumes visible at system scale.
+    length: 180000,
 
     opacity: 0.18,
 
@@ -334,7 +335,8 @@ export const MORRA_CONFIG = {
 
     enabled: true,
 
-    // Debug visualization scale. It must follow the enlarged Jupiter-class system.\n    length: 180000,
+    // Debug visualization scale. It must follow the enlarged Jupiter-class system.
+    length: 180000,
 
     radialScale: 1,
 
