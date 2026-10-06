@@ -108,8 +108,8 @@ export class Renderer {
         0
       );
 
-    // Keep ambient light as a low baseline only. Celestial point lights
-    // are attached to the actual source bodies and provide visible shading.
+    // Keep ambient light near zero. Visible surface illumination comes from
+    // the current celestial source lights rather than a global wash.
     this.scene.add(
       this.ambientLight
     );
