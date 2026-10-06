@@ -223,7 +223,7 @@ export class SurfaceFieldVisualizer {
       );
 
     this.overlay.renderOrder =
-      2;
+      1;
 
     this.morra.add(
       this.overlay
