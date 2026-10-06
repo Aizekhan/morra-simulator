@@ -413,7 +413,6 @@ export class DebugPanel {
       radius: number;
       orbitRadius: number;
       orbitSpeed: number;
-      angle: number;
       orbitPlaneOffset: number;
       orbitInclination: number;
       orbitAscendingNode: number;
