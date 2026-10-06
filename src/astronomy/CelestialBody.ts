@@ -119,6 +119,9 @@ export class CelestialBody {
         this.material
       );
 
+    this.mesh.userData.surfaceLightingOwnedByField =
+      true;
+
     this.mesh.layers.set(
       0
     );
