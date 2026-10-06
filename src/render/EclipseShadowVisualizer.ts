@@ -550,13 +550,6 @@ export class EclipseShadowVisualizer {
           continue;
         }
 
-        const shadowCenter =
-          sourcePosition
-            .clone()
-            .addScaledVector(
-              axis,
-              morraDistance
-            );
         sourcePositions[count].copy(
           sourcePosition
         );
