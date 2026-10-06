@@ -861,7 +861,8 @@ export class MorraSystem {
         MORRA_CONFIG.SURFACE_FIELD.longitudeSegments,
       updateIntervalHours:
         MORRA_CONFIG.SURFACE_FIELD.updateIntervalHours,
-      // SurfaceField is a diagnostic map, not a render-frame lighting system.
+      // SurfaceField remains the physical diagnostic source. The visible
+      // planet shading is driven separately by the celestial presentation lights.
       updateIntervalMilliseconds:
         MORRA_CONFIG.SURFACE_FIELD.updateIntervalHours > 0
           ? 250
