@@ -120,8 +120,8 @@ export class SurfaceFieldVisualizer {
 
     this.material =
       new THREE.ShaderMaterial({
-        transparent: true,
-        depthWrite: false,
+        transparent: false,
+        depthWrite: true,
         side: THREE.DoubleSide,
         toneMapped: false,
         uniforms: {
@@ -206,7 +206,7 @@ export class SurfaceFieldVisualizer {
 
             gl_FragColor = vec4(
               base.rgb * surfaceLight,
-              base.a
+              1.0
             );
           }
         `
