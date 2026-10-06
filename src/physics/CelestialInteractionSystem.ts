@@ -255,8 +255,43 @@ export class CelestialInteractionSystem {
           (distance * distance) *
           moonVisibility;
 
+        // Phase is evaluated from the Sun-Moon-Morra geometry.
+        const sunDirection =
+          sunPosition
+            .clone()
+            .sub(moonPosition)
+            .normalize();
+
+        const observerDirection =
+          this.environment.morra.mesh
+            .getWorldPosition(
+              new THREE.Vector3()
+            )
+            .sub(moonPosition)
+            .normalize();
+
+        const phaseCosine =
+          THREE.MathUtils.clamp(
+            sunDirection.dot(
+              observerDirection
+            ),
+            -1,
+            1
+          );
+
+        const illuminatedFraction =
+          (
+            1 +
+            phaseCosine
+          ) *
+          0.5;
+
+        const phaseAdjustedIncoming =
+          incoming *
+          illuminatedFraction;
+
         sourceContributions.push(
-          incoming
+          phaseAdjustedIncoming
         );
       }
 
