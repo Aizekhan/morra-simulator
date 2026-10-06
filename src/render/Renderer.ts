@@ -8,6 +8,9 @@ export class Renderer {
 
   private ambientLight: THREE.AmbientLight;
 
+  private readonly celestialLights:
+    THREE.PointLight[] = [];
+
 
   constructor() {
 
@@ -105,9 +108,8 @@ export class Renderer {
         0
       );
 
-    // Physical illumination comes from Morra's celestial radiation model.
-    // Ambient light is disabled so it cannot create a second, detached
-    // lighting solution that moves independently from the physical model.
+    // Keep ambient light as a low baseline only. Celestial point lights
+    // are attached to the actual source bodies and provide visible shading.
     this.scene.add(
       this.ambientLight
     );
