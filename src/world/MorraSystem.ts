@@ -91,6 +91,12 @@ export class MorraSystem {
   eclipseShadowVisualizer:
     EclipseShadowVisualizer;
 
+  private worldTexture:
+    THREE.Texture | null = null;
+
+  private worldTexturePath =
+    "";
+
   continents:
     THREE.Group;
 
@@ -720,6 +726,8 @@ export class MorraSystem {
 
     this.configSynchronizer.sync();
 
+    this.applyWorldTexture();
+
     const axisTilt =
       THREE.MathUtils.degToRad(
         MORRA_CONFIG.AXIS_TILT
@@ -830,6 +838,70 @@ export class MorraSystem {
     this.shadowVolumeVisualizer.update();
   }
 
+  private applyWorldTexture() {
+
+    const enabled =
+      MORRA_CONFIG.MORRA_SURFACE_TEXTURE_ENABLED;
+
+    const path =
+      MORRA_CONFIG.MORRA_SURFACE_TEXTURE.trim();
+
+    if(
+      !enabled ||
+      path.length === 0
+    ) {
+      if(this.worldTexture) {
+        this.worldTexture.dispose();
+        this.worldTexture = null;
+      }
+
+      this.morra.setSurfaceTexture(
+        null
+      );
+
+      this.worldTexturePath =
+        "";
+
+      return;
+    }
+
+    if(
+      path ===
+      this.worldTexturePath
+    ) {
+      return;
+    }
+
+    new THREE.TextureLoader().load(
+      path,
+      loaded => {
+
+        loaded.colorSpace =
+          THREE.SRGBColorSpace;
+
+        loaded.needsUpdate =
+          true;
+
+        this.morra.setSurfaceTextureRepeat(
+          loaded
+        );
+
+        if(
+          this.worldTexture &&
+          this.worldTexture !== loaded
+        ) {
+          this.worldTexture.dispose();
+        }
+
+        this.worldTexture =
+          loaded;
+
+        this.worldTexturePath =
+          path;
+      }
+    );
+  }
+
   updatePresentation(
     camera:
       THREE.PerspectiveCamera,
@@ -862,6 +934,12 @@ export class MorraSystem {
     this.shadowVolumeVisualizer.dispose();
 
     this.eclipseShadowVisualizer.dispose();
+
+    if(this.worldTexture) {
+      this.worldTexture.dispose();
+      this.worldTexture = null;
+    }
+
 
 
 
