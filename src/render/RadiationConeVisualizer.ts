@@ -291,19 +291,6 @@ export class RadiationConeVisualizer {
         source.radius + this.morra.radius
       );
 
-    const angularRadius =
-      Math.asin(
-        THREE.MathUtils.clamp(
-          source.radius /
-          Math.max(
-            sourceDistanceFromMorra,
-            1e-6
-          ),
-          0,
-          0.999999
-        )
-      );
-
     const influenceRange =
       Math.max(
         this.length,
