@@ -772,6 +772,12 @@ export class MorraSystem {
       this.continents
     );
 
+    // The physical surface-lighting sphere must sit just outside the
+    // geographic surface so it is visible without z-fighting.
+    this.surfaceFieldVisualizer.setRadius(
+      this.morra.radius
+    );
+
     this.celestialPresentation =
       new CelestialPresentationSystem(
         scene,
