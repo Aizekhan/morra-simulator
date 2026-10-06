@@ -134,9 +134,12 @@ export class CameraController {
   }
 
   private get maximumDistance() {
-    return Math.max(
-      this.morraRadius * 50,
-      1000000
+    return Math.min(
+      Math.max(
+        this.morraRadius * 50,
+        1000000
+      ),
+      4500000
     );
   }
 
