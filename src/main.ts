@@ -160,6 +160,13 @@ function animate() {
   const frame =
     simulation.update();
 
+  // Build the authoritative physical surface field even when the diagnostic
+  // overlay is hidden. Rendering must never fall back to an unrelated light
+  // calculation just because debug visualization is disabled.
+  simulation.morraSystem.surfaceFieldEngine.getOrCreateMap(
+    frame.time.totalHours
+  );
+
   // Presentation lights must be synchronized after the deterministic
   // astronomy/physics step so visuals use exactly the same source positions
   // as radiation, shadows and surface fields for this frame.
