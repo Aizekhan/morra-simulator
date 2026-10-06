@@ -339,16 +339,10 @@ export class SurfaceFieldHUD {
           high: "#ff3218"
         };
       case "MAGIC_TOTAL":
-        return {
-          low: "#12002d",
-          high: "#6f4dff"
-        };
-
-      case "MAGIC":
       default:
         return {
           low: "#12002d",
-          high: "#46e6ff"
+          high: "#6f4dff"
         };
     }
   }
