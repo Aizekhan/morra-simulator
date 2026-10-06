@@ -29,6 +29,10 @@ export interface RadiationContribution {
 
   light: number;
 
+  directLight: number;
+
+  reflectedLight: number;
+
   heat: number;
 
   magic: number;
@@ -274,6 +278,12 @@ export class RadiationEngine {
 
         light:
           lightContribution,
+
+        directLight:
+          directLightContribution,
+
+        reflectedLight:
+          reflectedLightContribution,
 
         heat:
           heatContribution,
