@@ -528,7 +528,15 @@ export class DirectIlluminationVisualizer {
             );
 
         const sourceIrradiance =
-          source.lightPower /
+          source.lightPower *
+          (
+            source.emissionReferenceRadius ??
+            source.body.radius
+          ) *
+          (
+            source.emissionReferenceRadius ??
+            source.body.radius
+          ) /
           (
             sourceDistance *
             sourceDistance
