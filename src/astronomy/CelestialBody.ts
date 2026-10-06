@@ -51,8 +51,11 @@ export class CelestialBody {
 
   angle: number;
 
-  private manualOrbitPosition:
+  private manualOrbitPhase:
     number | null = null;
+
+  private lastAbsoluteHours =
+    0;
 
   orbitPlane: OrbitPlane;
 
@@ -354,22 +357,33 @@ export class CelestialBody {
     angle: number
   ) {
 
-    this.manualOrbitPosition =
+    const normalizedAngle =
       THREE.MathUtils.euclideanModulo(
         angle + Math.PI,
         Math.PI * 2
       ) -
       Math.PI;
 
+    const direction =
+      this.reverseOrbit
+        ? -1
+        : 1;
+
+    this.manualOrbitPhase =
+      normalizedAngle -
+      direction *
+      this.orbitSpeed *
+      this.lastAbsoluteHours;
+
     this.angle =
-      this.manualOrbitPosition;
+      normalizedAngle;
 
     this.updateAtCurrentAngle();
   }
 
   clearManualOrbitPosition() {
 
-    this.manualOrbitPosition =
+    this.manualOrbitPhase =
       null;
   }
 
@@ -447,18 +461,21 @@ export class CelestialBody {
     absoluteHours: number
   ) {
 
+    this.lastAbsoluteHours =
+      absoluteHours;
+
     const direction =
       this.reverseOrbit
         ? -1
         : 1;
 
+    const phase =
+      this.manualOrbitPhase ??
+      this.initialAngle;
+
     this.angle =
       THREE.MathUtils.euclideanModulo(
-        (
-          this.manualOrbitPosition !== null
-            ? this.manualOrbitPosition
-            : this.initialAngle
-        ) +
+        phase +
         direction *
         this.orbitSpeed *
         absoluteHours +
