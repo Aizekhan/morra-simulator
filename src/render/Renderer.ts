@@ -162,12 +162,6 @@ export class Renderer {
           new THREE.Vector3()
         );
 
-      const sourceDistance =
-        Math.max(
-          sourcePosition.length(),
-          1
-        );
-
       const finiteSourceScale =
         body.sourceRadius !== undefined &&
         body.referenceDistance !== undefined
