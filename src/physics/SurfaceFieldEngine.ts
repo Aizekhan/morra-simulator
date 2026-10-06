@@ -634,21 +634,11 @@ export class SurfaceFieldEngine {
             diffuseResponse: 0
           };
 
-        const reflectedSurfaceLight =
-          sample.radiation.light *
-          THREE.MathUtils.clamp(
-            surfaceMaterial.albedo *
-            surfaceMaterial.diffuseResponse,
-            0,
-            1
-          );
-
         const sampleData: SurfaceFieldSample = {
           latitude,
           longitude,
           light:
-            sample.radiation.light +
-            reflectedSurfaceLight,
+            sample.radiation.light,
           heat:
             sample.radiation.heat,
           magic:
