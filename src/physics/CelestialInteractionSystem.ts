@@ -222,7 +222,10 @@ export class CelestialInteractionSystem {
               heatPower: 0,
               magicPower: 0
             },
-            this.getMoonBodies()
+            [
+              ...this.getSourceBodies(),
+              ...this.getMoonBodies()
+            ]
           );
 
         const incoming =
