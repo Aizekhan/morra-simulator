@@ -222,6 +222,17 @@ export class CelestialInteractionSystem {
         new THREE.Vector3()
       );
 
+    const observerPosition =
+      this.environment.morra.mesh.getWorldPosition(
+        new THREE.Vector3()
+      );
+
+    const observerDirection =
+      observerPosition
+        .clone()
+        .sub(moonPosition)
+        .normalize();
+
     const occluders = [
       ...this.getSourceBodies(),
       ...this.getMoonBodies()
@@ -229,8 +240,13 @@ export class CelestialInteractionSystem {
       body => body !== moon.body
     );
 
-    const samples = 32;
-    let visibleLitSum = 0;
+    // Integrate only the hemisphere actually visible from Morra.
+    // Every sun contributes independently at every visible surface point.
+    // This makes multi-sun phases an emergent result of geometry instead
+    // of a single scalar phase multiplier.
+    const samples = 64;
+    let reflectedVisibleSum = 0;
+    let visibleWeightSum = 0;
 
     for(let i = 0; i < samples; i++) {
       const phi =
@@ -254,6 +270,16 @@ export class CelestialInteractionSystem {
           Math.sin(phi) * Math.sin(theta)
         );
 
+      const visibleCosine =
+        Math.max(
+          0,
+          normal.dot(observerDirection)
+        );
+
+      if(visibleCosine <= 0) {
+        continue;
+      }
+
       const samplePoint =
         moonPosition
           .clone()
@@ -262,10 +288,13 @@ export class CelestialInteractionSystem {
             moon.body.radius
           );
 
-      let sampleIncoming = 0;
+      let incomingIrradiance = 0;
 
       for(const sun of sunSources) {
-        if(!sun.body.mesh.visible) {
+        if(
+          !sun.body.mesh.visible ||
+          !sun.visible()
+        ) {
           continue;
         }
 
@@ -295,13 +324,13 @@ export class CelestialInteractionSystem {
             .clone()
             .divideScalar(distance);
 
-        const cosine =
+        const receiveCosine =
           Math.max(
             0,
             normal.dot(direction)
           );
 
-        if(cosine <= 0) {
+        if(receiveCosine <= 0) {
           continue;
         }
 
@@ -315,6 +344,8 @@ export class CelestialInteractionSystem {
                 sun.lightPower * runtimeScale,
               heatPower: 0,
               magicPower: 0,
+              emissionReferenceRadius:
+                sun.emissionReferenceRadius,
               allowSecondaryReflection: false,
               allowIndirectReflection: false
             },
@@ -329,29 +360,41 @@ export class CelestialInteractionSystem {
           sun.emissionReferenceRadius ??
           sun.body.radius;
 
+        const emissionAreaScale =
+          emissionRadius *
+          emissionRadius;
+
         const irradiance =
           sun.lightPower *
           runtimeScale *
-          emissionRadius *
-          emissionRadius /
-          (
-            distance *
-            distance
+          emissionAreaScale /
+          Math.max(
+            distance * distance,
+            1
           ) *
-          cosine *
+          receiveCosine *
           visibility;
 
-        sampleIncoming +=
+        incomingIrradiance +=
           irradiance;
       }
 
-      visibleLitSum +=
-        sampleIncoming;
+      // Lambertian reflection into the Morra-visible hemisphere.
+      reflectedVisibleSum +=
+        incomingIrradiance *
+        MORRA_CONFIG.MOON_REFLECTION.albedo *
+        visibleCosine;
+
+      visibleWeightSum +=
+        visibleCosine;
     }
 
-    return visibleLitSum /
-      samples *
-      MORRA_CONFIG.MOON_REFLECTION.albedo;
+    if(visibleWeightSum <= 0) {
+      return 0;
+    }
+
+    return reflectedVisibleSum /
+      visibleWeightSum;
   }
 
   private updateMoonReflections() {
