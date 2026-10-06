@@ -5,6 +5,10 @@ import {
 } from "../astronomy/CelestialBody";
 
 import {
+  MORRA_CONFIG
+} from "../world/MorraConfig";
+
+import {
   MorraEnvironmentEngine
 } from "../physics/MorraEnvironmentEngine";
 
@@ -102,18 +106,25 @@ export class CelestialInteractionSystem {
   update() {
     const radiationSources =
       this.sourceConfigs.map(
-        source => ({
-          id:
-            source.id,
-          body:
-            source.body,
-          lightPower:
-            source.lightPower,
-          heatPower:
-            source.heatPower,
-          magicPower:
-            source.magicPower
-        })
+        source => {
+          const runtimeScale =
+            this.getRuntimeRadiationScale(
+              source.id
+            );
+
+          return {
+            id:
+              source.id,
+            body:
+              source.body,
+            lightPower:
+              source.lightPower * runtimeScale,
+            heatPower:
+              source.heatPower * runtimeScale,
+            magicPower:
+              source.magicPower * runtimeScale
+          };
+        }
       );
 
     this.radiation.setSources(
@@ -121,6 +132,21 @@ export class CelestialInteractionSystem {
     );
 
     this.updateMoonReflections();
+  }
+
+  private getRuntimeRadiationScale(
+    sourceId: string
+  ) {
+    switch(sourceId) {
+      case "large-sun":
+        return MORRA_CONFIG.LIGHTS.LARGE.intensity / 50;
+      case "medium-sun":
+        return MORRA_CONFIG.LIGHTS.MEDIUM.intensity / 30;
+      case "small-sun":
+        return MORRA_CONFIG.LIGHTS.SMALL.intensity / 20;
+      default:
+        return 1;
+    }
   }
 
   getSourceBodies() {
