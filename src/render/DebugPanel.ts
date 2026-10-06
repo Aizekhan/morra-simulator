@@ -857,8 +857,8 @@ export class DebugPanel {
       MORRA_CONFIG.RADIATION_CONES,
       "length",
       100,
-      10000,
-      25
+      500000,
+      1000
     ).name("LENGTH").listen();
 
     radiationFolder.add(
