@@ -32,6 +32,12 @@ export class SurfaceFieldVisualizer {
   private readonly material:
     THREE.ShaderMaterial;
 
+  private baseTexture:
+    THREE.Texture | null = null;
+
+  private baseTextureOwned =
+    false;
+
   private readonly texture:
     THREE.DataTexture;
 
@@ -251,6 +257,20 @@ export class SurfaceFieldVisualizer {
     this.setEnabled(
       false
     );
+  }
+
+  setBaseTexture(
+    texture: THREE.Texture | null
+  ) {
+    if(this.baseTextureOwned && this.baseTexture) {
+      this.baseTexture.dispose();
+    }
+
+    this.baseTexture = texture;
+    this.baseTextureOwned = false;
+
+    this.material.uniforms.baseTexture.value =
+      texture ?? this.texture;
   }
 
   setChannel(
@@ -798,6 +818,10 @@ export class SurfaceFieldVisualizer {
   }
 
   dispose() {
+
+    if(this.baseTextureOwned && this.baseTexture) {
+      this.baseTexture.dispose();
+    }
 
     this.overlay.geometry.dispose();
 
