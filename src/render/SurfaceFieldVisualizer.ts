@@ -225,6 +225,10 @@ export class SurfaceFieldVisualizer {
     this.overlay.renderOrder =
       1;
 
+    this.overlay.scale.setScalar(
+      69911 * 1.006
+    );
+
     this.morra.add(
       this.overlay
     );
