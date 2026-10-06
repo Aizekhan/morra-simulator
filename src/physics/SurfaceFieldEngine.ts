@@ -350,11 +350,11 @@ export class SurfaceFieldEngine {
     const equatorMoonLight =
       new Float32Array(count);
 
-    const spectrumRed = new Float32Array(count);
-    const spectrumGreen = new Float32Array(count);
-    const spectrumBlue = new Float32Array(count);
-    const spectrumIntensity = new Float32Array(count);
-    const dayNight = new Float32Array(count);
+    const spectrumRed: Float32Array<ArrayBufferLike> = new Float32Array(count);
+    const spectrumGreen: Float32Array<ArrayBufferLike> = new Float32Array(count);
+    const spectrumBlue: Float32Array<ArrayBufferLike> = new Float32Array(count);
+    const spectrumIntensity: Float32Array<ArrayBufferLike> = new Float32Array(count);
+    const dayNight: Float32Array<ArrayBufferLike> = new Float32Array(count);
 
     let northMoonLightSum = 0;
     let equatorMoonLightSum = 0;
