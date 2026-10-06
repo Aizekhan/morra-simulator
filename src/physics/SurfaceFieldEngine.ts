@@ -22,6 +22,13 @@ export interface SurfaceMaterialProperties {
 
 export interface SurfaceFieldConfig {
 
+  /**
+   * Material response is explicit but not yet applied to radiation.
+   * Keep it in configuration so the next surface-reflection step
+   * has one authoritative place for material parameters.
+   */
+  surfaceMaterial?: SurfaceMaterialProperties;
+
   latitudeSegments: number;
 
   longitudeSegments: number;
