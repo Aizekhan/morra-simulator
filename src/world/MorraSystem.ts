@@ -42,6 +42,10 @@ import {
 } from "../render/EclipseShadowVisualizer";
 
 import {
+  RadiationRayVisualizer
+} from "../render/RadiationRayVisualizer";
+
+import {
   MORRA_CONTINENTS,
   latitudeLongitudeToDirection
 } from "./MorraContinents";
@@ -90,6 +94,9 @@ export class MorraSystem {
 
   eclipseShadowVisualizer:
     EclipseShadowVisualizer;
+
+  radiationRayVisualizer:
+    RadiationRayVisualizer;
 
   private worldTexture:
     THREE.Texture | null = null;
@@ -587,6 +594,12 @@ export class MorraSystem {
         MORRA_CONFIG.RADIATION_CONES.edgeOpacity
     });
 
+    this.radiationRayVisualizer =
+      new RadiationRayVisualizer(
+        scene,
+        this.environmentEngine
+      );
+
     this.eclipseShadowVisualizer =
       new EclipseShadowVisualizer(
         scene,
@@ -824,6 +837,12 @@ export class MorraSystem {
       this.sunSmall
     ]);
 
+    this.radiationRayVisualizer.setEnabled(
+      MORRA_CONFIG.DEBUG.showLightHelpers
+    );
+
+    this.radiationRayVisualizer.update();
+
     this.eclipseShadowVisualizer.setConfig({
       enabled:
         MORRA_CONFIG.DEBUG.showEclipseShadows
@@ -942,6 +961,8 @@ export class MorraSystem {
     this.surfaceFieldVisualizer.dispose();
 
     this.radiationConeVisualizer.dispose();
+
+    this.radiationRayVisualizer.dispose();
 
     this.shadowVolumeVisualizer.dispose();
 
