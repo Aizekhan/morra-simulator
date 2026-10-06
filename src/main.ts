@@ -153,7 +153,9 @@ function animate() {
     animate
   );
 
-  renderer.update();
+  renderer.update(
+    MORRA_CONFIG.LIGHTS.ambient
+  );
 
   const frame =
     simulation.update();
