@@ -131,10 +131,16 @@ export class Renderer {
       intensity: number;
       visible: boolean;
       /**
-       * Physical/source radius used for presentation falloff. This keeps
-       * the visible light envelope consistent with the finite-source model.
+       * Physical/source radius used for presentation falloff.
        */
       sourceRadius?: number;
+      /**
+       * Optional physical source intensity multiplier. When supplied,
+       * the PointLight uses the same finite-source inverse-square scale
+       * as the authoritative radiation model at the Morra center distance.
+       */
+      radiationScale?: number;
+      referenceDistance?: number;
     }>
   ) {
     while(this.celestialLights.length < bodies.length) {
@@ -150,17 +156,45 @@ export class Renderer {
         this.celestialLights[index];
 
       light.color.setHex(body.color);
+
+      const sourcePosition =
+        body.mesh.getWorldPosition(
+          new THREE.Vector3()
+        );
+
+      const sourceDistance =
+        Math.max(
+          sourcePosition.length(),
+          1
+        );
+
+      const finiteSourceScale =
+        body.sourceRadius !== undefined &&
+        body.referenceDistance !== undefined
+          ? (
+              body.sourceRadius *
+              body.sourceRadius
+            ) /
+            Math.max(
+              body.referenceDistance *
+              body.referenceDistance,
+              1
+            )
+          : 1;
+
       light.intensity =
         body.visible
-          ? body.intensity * 0.08
+          ? body.intensity *
+            finiteSourceScale *
+            (body.radiationScale ?? 1)
           : 0;
+
       light.distance = 0;
       light.decay = 2;
-      // Three.js PointLight already provides inverse-square attenuation.
-      // The physical radius does not alter PointLight intensity directly;
-      // it is retained here as source metadata so presentation and physics
-      // share the same finite-source definition.
-      light.position.copy(body.mesh.getWorldPosition(new THREE.Vector3()));
+
+      light.position.copy(
+        sourcePosition
+      );
     });
 
     for(let i = bodies.length; i < this.celestialLights.length; i++) {
