@@ -211,15 +211,23 @@ export class SurfaceFieldVisualizer {
               mix(
                 base.rgb,
                 fieldColor,
-                opacity
+                opacity * smoothstep(
+                  0.0,
+                  0.001,
+                  value
+                ) +
+                opacity * 0.35
               );
 
-            float alpha =
+            float fieldPresence =
               smoothstep(
                 0.0,
                 0.001,
                 value
               );
+
+            float alpha =
+              fieldPresence;
 
             if(alpha <= 0.001) {
               discard;
