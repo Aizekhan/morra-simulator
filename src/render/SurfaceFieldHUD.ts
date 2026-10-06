@@ -278,7 +278,9 @@ export class SurfaceFieldHUD {
       case "EQUATOR_MOON":
         return map.equatorMoonLightStats;
       case "SPECTRUM":
-        return map.lightStats;
+        return map.spectrumStats;
+      case "DAY_NIGHT":
+        return map.dayNightStats;
       case "LIGHT_TOTAL":
         return map.lightStats;
       case "HEAT_TOTAL":
