@@ -628,12 +628,9 @@ export class SurfaceFieldEngine {
           0.7152 * spectrumGreen +
           0.0722 * spectrumBlue;
 
-        const surfaceMaterial =
-          this.config.surfaceMaterial ?? {
-            albedo: 0,
-            diffuseResponse: 0
-          };
-
+        // Surface material parameters are carried by the field configuration,
+        // but are deliberately not applied here until a full secondary-light
+        // transport model exists. Incident radiation remains authoritative.
         const sampleData: SurfaceFieldSample = {
           latitude,
           longitude,
