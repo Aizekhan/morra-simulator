@@ -722,8 +722,10 @@ export class SurfaceFieldEngine {
 
         spectrumBlue[index] =
           sampleData.spectrumBlue;
+
         spectrumIntensity[index] =
           sampleData.spectrumIntensity;
+
         dayNight[index] =
           sampleData.dayNight;
 
