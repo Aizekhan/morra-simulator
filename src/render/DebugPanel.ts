@@ -690,6 +690,16 @@ export class DebugPanel {
       "showRadiationRays"
     ).name("POINT DEBUG").listen();
 
+    folder.add(
+      MORRA_CONFIG.RADIATION_CONES,
+      "enabled"
+    ).name("RADIATION VISIBLE").listen();
+
+    folder.add(
+      MORRA_CONFIG.SHADOW_VOLUMES,
+      "enabled"
+    ).name("SHADOWS VISIBLE").listen();
+
     const radiationFolder =
       folder.addFolder(
         "RADIATION CONES"
