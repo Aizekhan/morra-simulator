@@ -104,6 +104,47 @@ export class MorraSystem {
   private worldTexturePath =
     "";
 
+  /**
+   * Keep Morra's visual axis helpers in the same transform space as
+   * the planet surface. The helpers are authored in Morra-local
+   * coordinates and follow the planet's full orientation in world space.
+   */
+  private updateAxisHelpers() {
+    this.axis.axisLine.position.copy(
+      this.morra.mesh.position
+    );
+    this.axis.axisLine.rotation.copy(
+      this.morra.mesh.rotation
+    );
+
+    this.axis.northPole.position.copy(
+      new THREE.Vector3(0, this.morra.radius, 0)
+    );
+    this.axis.northPole.position.applyEuler(
+      this.morra.mesh.rotation
+    );
+    this.axis.northPole.position.add(
+      this.morra.mesh.position
+    );
+
+    this.axis.southPole.position.copy(
+      new THREE.Vector3(0, -this.morra.radius, 0)
+    );
+    this.axis.southPole.position.applyEuler(
+      this.morra.mesh.rotation
+    );
+    this.axis.southPole.position.add(
+      this.morra.mesh.position
+    );
+
+    this.axis.equator.position.copy(
+      this.morra.mesh.position
+    );
+    this.axis.equator.rotation.copy(
+      this.morra.mesh.rotation
+    );
+  }
+
   continents:
     THREE.Group;
 
@@ -761,8 +802,10 @@ export class MorraSystem {
 
     this.axis.update(
       this.morra.radius,
-      MORRA_CONFIG.AXIS_TILT
+      0
     );
+
+    this.updateAxisHelpers();
 
     // One deterministic simulation step:
     // 1) move every celestial body first;
