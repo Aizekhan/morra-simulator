@@ -889,10 +889,13 @@ export class MorraSystem {
     const showSurfaceField =
       MORRA_CONFIG.DEBUG.showSurfaceField;
 
+    // The physical field is required for the surface presentation even when
+    // the diagnostic overlay is hidden. Reuse the same cached map instead of
+    // running a second radiation calculation.
     const fieldMap =
-      showSurfaceField
-        ? this.surfaceFieldEngine.update(absoluteHours)
-        : null;
+      this.surfaceFieldEngine.getOrCreateMap(
+        absoluteHours
+      );
 
     this.surfaceFieldVisualizer.setRadius(
       this.morra.radius
