@@ -274,6 +274,42 @@ export class CelestialBody {
     }
   }
 
+  setSurfaceTexture(
+    texture: THREE.Texture | null
+  ) {
+
+    if(
+      !(this.material instanceof
+      THREE.MeshBasicMaterial)
+    ) {
+      return;
+    }
+
+    this.material.map =
+      texture;
+
+    this.material.needsUpdate =
+      true;
+  }
+
+  setSurfaceTextureRepeat(
+    texture: THREE.Texture | null
+  ) {
+
+    if(
+      texture
+    ) {
+      texture.wrapS =
+        THREE.RepeatWrapping;
+      texture.wrapT =
+        THREE.ClampToEdgeWrapping;
+    }
+
+    this.setSurfaceTexture(
+      texture
+    );
+  }
+
   setColor(
     color: number
   ) {
