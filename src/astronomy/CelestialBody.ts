@@ -363,7 +363,20 @@ export class CelestialBody {
 
   private updateAtCurrentAngle() {
 
-    this.updateAtCurrentAngle();
+    this.mesh.position.copy(
+      OrbitMath.getPosition(
+        this.orbitRadius,
+        this.orbitEccentricity,
+        this.angle,
+        this.orbitPlane,
+        this.orbitInclination,
+        this.orbitAscendingNode,
+        this.orbitPlaneOffset,
+        this.orbitOffsetX,
+        this.orbitOffsetY,
+        this.orbitOffsetZ
+      )
+    );
   }
 
   setOrbitPlaneOffset(
