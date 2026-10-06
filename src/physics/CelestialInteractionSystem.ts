@@ -88,7 +88,9 @@ export class CelestialInteractionSystem {
           heatPower:
             source.heatPower,
           magicPower:
-            source.magicPower
+            source.magicPower,
+          emissionReferenceRadius:
+            source.emissionReferenceRadius
         })
       );
 
