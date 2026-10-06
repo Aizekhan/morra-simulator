@@ -324,12 +324,6 @@ export class RadiationConeVisualizer {
       Math.max(
         this.rangeScale,
         0.01
-      ) *
-      Math.sqrt(
-        Math.max(
-          source.lightPower ?? 1,
-          1e-6
-        )
       );
 
     const coneDepth =
