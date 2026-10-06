@@ -292,17 +292,16 @@ export class CelestialBody {
       true;
   }
 
-  setSurfaceTextureRepeat(
+  setSurfaceTextureEquirectangular(
     texture: THREE.Texture | null
   ) {
 
-    if(
-      texture
-    ) {
+    if(texture) {
       texture.wrapS =
-        THREE.RepeatWrapping;
+        THREE.ClampToEdgeWrapping;
       texture.wrapT =
         THREE.ClampToEdgeWrapping;
+      texture.flipY = false;
     }
 
     this.setSurfaceTexture(
