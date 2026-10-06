@@ -524,6 +524,14 @@ export class SurfaceFieldVisualizer {
     );
   }
 
+  /**
+   * Expose the latest physical field texture for consumers that need the
+   * authoritative surface signal without enabling the diagnostic overlay.
+   */
+  getValueTexture() {
+    return this.valueTexture;
+  }
+
   setRadius(
     radius: number
   ) {
