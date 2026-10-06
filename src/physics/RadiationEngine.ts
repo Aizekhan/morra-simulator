@@ -237,9 +237,9 @@ export class RadiationEngine {
         visibilityFactor;
 
       const reflectedLightContribution =
-        source.allowIndirectReflection === false
-          ? 0
-          : this.evaluateIndirectLight(
+        this.enableIndirectReflection &&
+        source.allowIndirectReflection !== false
+          ? this.evaluateIndirectLight(
               worldPoint,
               normal,
               source,
