@@ -25,7 +25,7 @@ export class Renderer {
         window.innerWidth /
           window.innerHeight,
         1,
-        5000000
+        100000000
       );
 
     this.camera.layers.set(
