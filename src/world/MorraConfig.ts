@@ -12,11 +12,11 @@ export const MORRA_CONFIG = {
 
   // Render-only world-map texture. Empty means the procedural surface
   // remains in use until an authored equirectangular map is added.
-  MORRA_SURFACE_TEXTURE: "",
+  MORRA_SURFACE_TEXTURE: "/textures/worlds/morra-world-map.png",
 
   MORRA_SURFACE_TEXTURE_OPACITY: 1,
 
-  MORRA_SURFACE_TEXTURE_ENABLED: false,
+  MORRA_SURFACE_TEXTURE_ENABLED: true,
 
   // Render-only base emissive so Morra remains visually readable
   // when the physical light sources are on the far side.
