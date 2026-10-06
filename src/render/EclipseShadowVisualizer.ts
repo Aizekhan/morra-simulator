@@ -387,8 +387,8 @@ export class EclipseShadowVisualizer {
       this.material.uniforms.penumbraAngularRadii.value as
       Float32Array;
 
-    this.material.uniforms.sourcePositions.needsUpdate = true;
-    this.material.uniforms.shadowCenters.needsUpdate = true;
+    
+    
 
     for(let i = 0; i < 4; i++) {
       sourcePositions[i].set(0, 0, 0);
@@ -464,11 +464,6 @@ export class EclipseShadowVisualizer {
         ) {
           continue;
         }
-
-        const direction =
-          sourceToOccluder
-            .normalize();
-
         const sourceToMorra =
           center
             .clone()
@@ -562,15 +557,6 @@ export class EclipseShadowVisualizer {
               axis,
               morraDistance
             );
-
-        const projectedOffset =
-          occluderPosition
-            .clone()
-            .sub(
-              shadowCenter
-            )
-            .length();
-
         sourcePositions[count].copy(
           sourcePosition
         );
