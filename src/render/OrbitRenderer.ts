@@ -109,14 +109,14 @@ export class OrbitRenderer {
       );
     }
 
-    const oldGeometry =
-      line.geometry;
-
-    line.geometry =
+    const geometry =
       new THREE.BufferGeometry()
       .setFromPoints(points);
 
-    oldGeometry.dispose();
+    line.geometry.dispose();
+
+    line.geometry =
+      geometry;
 
     const material =
       line.material;
