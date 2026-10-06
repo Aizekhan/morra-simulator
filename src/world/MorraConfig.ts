@@ -210,12 +210,12 @@ export const MORRA_CONFIG = {
     // 600-day period.
     orbitSpeed: 360 / (600 * 30),
 
-    // Polar orbit.
+    // Perpendicular to the equatorial orbital plane.
     orbitPlaneOffset: 0,
 
-    orbitPlane: "YZ" as const,
+    orbitPlane: "XZ" as const,
 
-    orbitInclination: 0,
+    orbitInclination: 90,
 
     orbitAscendingNode: 0,
 
