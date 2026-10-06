@@ -209,19 +209,21 @@ export class EclipseShadowVisualizer {
                 penumbraAngularRadii[i];
 
               float umbraEdge =
-                1.0 -
-                smoothstep(
-                  max(
-                    0.0,
-                    umbraRadius -
+                umbraRadius > 0.0
+                ? 1.0 -
+                  smoothstep(
+                    max(
+                      0.0,
+                      umbraRadius -
+                      softness *
+                      umbraRadius
+                    ),
+                    umbraRadius +
                     softness *
-                    umbraRadius
-                  ),
-                  umbraRadius +
-                  softness *
-                  umbraRadius,
-                  shadowSeparation
-                );
+                    umbraRadius,
+                    shadowSeparation
+                  )
+                : 0.0;
 
               float penumbra =
                 1.0 -
