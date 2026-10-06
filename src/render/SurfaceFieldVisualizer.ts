@@ -628,10 +628,10 @@ export class SurfaceFieldVisualizer {
         return map.equatorMoonLight;
 
       case "SPECTRUM":
-        return map.light;
+        return map.spectrumIntensity;
 
       case "DAY_NIGHT":
-        return map.light;
+        return map.dayNight;
 
       case "LIGHT_TOTAL":
         return map.light;
@@ -713,15 +713,10 @@ export class SurfaceFieldVisualizer {
         return map.equatorMoonLightStats;
 
       case "SPECTRUM":
-        return map.lightStats;
+        return map.spectrumStats;
 
       case "DAY_NIGHT":
-        return {
-          min: 0,
-          max: 1,
-          average:
-            this.averageDayNight(map)
-        };
+        return map.dayNightStats;
 
       case "LIGHT_TOTAL":
         return map.lightStats;
@@ -753,34 +748,6 @@ export class SurfaceFieldVisualizer {
         values.length,
         1
       );
-  }
-
-  private averageDayNight(
-    map:
-      SurfaceFieldMap
-  ) {
-
-    let sum = 0;
-
-    for(
-      const value of
-      map.light
-    ) {
-
-      sum +=
-        value >
-        0
-          ? 1
-          : 0;
-    }
-
-    return (
-      sum /
-      Math.max(
-        map.light.length,
-        1
-      )
-    );
   }
 
   private recreateTexture(
