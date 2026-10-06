@@ -213,82 +213,145 @@ export class CelestialInteractionSystem {
     0.5;
   }
 
-  private getMultiSunMoonIllumination(
+  private getMoonSurfaceIllumination(
     sunSources: CelestialSourceConfig[],
-    moon: MoonTarget,
-    observerPosition: THREE.Vector3
+    moon: MoonTarget
   ) {
     const moonPosition =
       moon.body.mesh.getWorldPosition(
         new THREE.Vector3()
       );
 
-    let total = 0;
+    const occluders = [
+      ...this.getSourceBodies(),
+      ...this.getMoonBodies()
+    ].filter(
+      body => body !== moon.body
+    );
 
-    for(const sun of sunSources) {
-      const runtimeScale =
-        this.getRuntimeRadiationScale(
-          sun.id
-        );
+    const samples = 32;
+    let visibleLitSum = 0;
 
-      if(!sun.body.mesh.visible) {
-        continue;
-      }
-
-      const sunPosition =
-        sun.body.mesh.getWorldPosition(
-          new THREE.Vector3()
-        );
-
-      const distance =
-        Math.max(
-          moonPosition.distanceTo(
-            sunPosition
-          ),
-          1
-        );
-
-      const visibility =
-        this.radiation.getVisibilityFactor(
-          moonPosition,
-          {
-            id: sun.id,
-            body: sun.body,
-            lightPower: sun.lightPower * runtimeScale,
-            heatPower: 0,
-            magicPower: 0,
-            allowSecondaryReflection: false,
-            allowIndirectReflection: false
-          },
-          [
-            ...this.getSourceBodies(),
-            ...this.getMoonBodies()
-          ].filter(
-            body => body !== moon.body
+    for(let i = 0; i < samples; i++) {
+      const phi =
+        Math.acos(
+          THREE.MathUtils.clamp(
+            1 - 2 * ((i + 0.5) / samples),
+            -1,
+            1
           )
         );
 
-      const irradiance =
-        sun.lightPower *
-        runtimeScale *
-        (moon.body.radius * moon.body.radius) /
-        (distance * distance) *
-        visibility;
+      const theta =
+        Math.PI *
+        (3 - Math.sqrt(5)) *
+        i;
 
-      const visiblePhase =
-        this.getMoonPhaseFraction(
-          sunPosition,
-          moonPosition,
-          observerPosition
+      const normal =
+        new THREE.Vector3(
+          Math.sin(phi) * Math.cos(theta),
+          Math.cos(phi),
+          Math.sin(phi) * Math.sin(theta)
         );
 
-      total +=
-        irradiance *
-        MORRA_CONFIG.MOON_REFLECTION.albedo *
-        visiblePhase;
+      const samplePoint =
+        moonPosition
+          .clone()
+          .addScaledVector(
+            normal,
+            moon.body.radius
+          );
+
+      let sampleIncoming = 0;
+
+      for(const sun of sunSources) {
+        if(!sun.body.mesh.visible) {
+          continue;
+        }
+
+        const runtimeScale =
+          this.getRuntimeRadiationScale(
+            sun.id
+          );
+
+        const sunPosition =
+          sun.body.mesh.getWorldPosition(
+            new THREE.Vector3()
+          );
+
+        const toSun =
+          sunPosition
+            .clone()
+            .sub(samplePoint);
+
+        const distance =
+          Math.max(
+            toSun.length(),
+            1
+          );
+
+        const direction =
+          toSun
+            .clone()
+            .divideScalar(distance);
+
+        const cosine =
+          Math.max(
+            0,
+            normal.dot(direction)
+          );
+
+        if(cosine <= 0) {
+          continue;
+        }
+
+        const visibility =
+          this.radiation.getVisibilityFactor(
+            samplePoint,
+            {
+              id: sun.id,
+              body: sun.body,
+              lightPower:
+                sun.lightPower * runtimeScale,
+              heatPower: 0,
+              magicPower: 0,
+              allowSecondaryReflection: false,
+              allowIndirectReflection: false
+            },
+            occluders
+          );
+
+        if(visibility <= 0) {
+          continue;
+        }
+
+        const emissionRadius =
+          sun.emissionReferenceRadius ??
+          sun.body.radius;
+
+        const irradiance =
+          sun.lightPower *
+          runtimeScale *
+          emissionRadius *
+          emissionRadius /
+          (
+            distance *
+            distance
+          ) *
+          cosine *
+          visibility;
+
+        sampleIncoming +=
+          irradiance;
+      }
+
+      visibleLitSum +=
+        sampleIncoming;
     }
 
-    return total;
+    return visibleLitSum /
+      samples *
+      MORRA_CONFIG.MOON_REFLECTION.albedo;
   }
 
   private updateMoonReflections() {
@@ -315,15 +378,14 @@ export class CelestialInteractionSystem {
       );
 
     for(const moon of this.moonTargets) {
-      // The moon's apparent brightness is the sum of the contributions from
-      // every visible sun. Each sun gets its own source distance, shadowing
-      // and phase relative to Morra; the result is then treated as one
-      // reflected radiation source for Morra.
+      // Sample the moon's full visible surface. Each surface point receives
+      // the sum of all visible suns, with its own normal, distance and
+      // eclipse/visibility factor. The integrated reflected response becomes
+      // the moon's apparent brightness to Morra.
       const reflectedPower =
-        this.getMultiSunMoonIllumination(
+        this.getMoonSurfaceIllumination(
           sunSources,
-          moon,
-          observerPosition
+          moon
         ) *
         MORRA_CONFIG.MOON_REFLECTION.intensityScale;
 
