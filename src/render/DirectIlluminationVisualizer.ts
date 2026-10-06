@@ -493,29 +493,31 @@ export class DirectIlluminationVisualizer {
       let colorWeight =
         0;
 
+      const visibleSunSources =
+        sources.filter(
+          source =>
+            source.id === "large-sun" ||
+            source.id === "medium-sun" ||
+            source.id === "small-sun"
+        );
+
       for(
         const source
-        of sources
+        of visibleSunSources
       ) {
-
-        if(
-          !source.body.mesh.visible
-        ) {
+        if(!source.body.mesh.visible) {
           continue;
         }
 
         const sourcePosition =
-          source.body.mesh
-            .getWorldPosition(
-              new THREE.Vector3()
-            );
+          source.body.mesh.getWorldPosition(
+            new THREE.Vector3()
+          );
 
         const moonToSource =
           sourcePosition
             .clone()
-            .sub(
-              moonPosition
-            );
+            .sub(moonPosition);
 
         const sourceDistance =
           Math.max(
@@ -526,22 +528,17 @@ export class DirectIlluminationVisualizer {
         moonToSource.normalize();
 
         const visibility =
-          this.engine.radiation
-            .getVisibilityDetails(
-              moonPosition,
-              source,
-              occluders
-            );
+          this.engine.radiation.getVisibilityDetails(
+            moonPosition,
+            source,
+            occluders
+          );
 
         const sourceIrradiance =
           source.lightPower *
-          (
-            source.emissionReferenceRadius ??
-            source.body.radius
-          ) *
-          (
-            source.emissionReferenceRadius ??
-            source.body.radius
+          Math.pow(
+            source.emissionReferenceRadius ?? source.body.radius,
+            2
           ) /
           (
             sourceDistance *
@@ -586,10 +583,8 @@ export class DirectIlluminationVisualizer {
           reflected >
           strongestContribution
         ) {
-
           strongestContribution =
             reflected;
-
           strongestSource =
             source;
         }
