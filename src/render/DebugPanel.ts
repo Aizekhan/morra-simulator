@@ -426,6 +426,16 @@ export class DebugPanel {
 
     folder.add(
       sun,
+      "angle",
+      -Math.PI,
+      Math.PI,
+      0.0001
+    )
+      .name("ORBIT POSITION")
+      .listen();
+
+    folder.add(
+      sun,
       "orbitPlaneOffset",
       MORRA_CONFIG.LIMITS.ORBIT_PLANE_OFFSET.min,
       MORRA_CONFIG.LIMITS.ORBIT_PLANE_OFFSET.max,
@@ -595,6 +605,16 @@ export class DebugPanel {
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.max,
       MORRA_CONFIG.LIMITS.ORBIT_RADIUS.step
     ).name("ORBIT RADIUS").listen();
+
+    folder.add(
+      moon,
+      "angle",
+      -Math.PI,
+      Math.PI,
+      0.0001
+    )
+      .name("ORBIT POSITION")
+      .listen();
 
     folder.add(
       moon,
