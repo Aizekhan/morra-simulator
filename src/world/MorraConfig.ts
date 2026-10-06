@@ -92,7 +92,7 @@ export const MORRA_CONFIG = {
 
     orbitColor: 0x999999,
 
-    orbitRadius: 250,
+    orbitRadius: 76000,
 
     orbitSpeed: 0.02,
 
@@ -120,7 +120,7 @@ export const MORRA_CONFIG = {
 
     orbitColor: 0x666666,
 
-    orbitRadius: 450,
+    orbitRadius: 110000,
 
     orbitSpeed: 0.01,
 
@@ -154,7 +154,7 @@ export const MORRA_CONFIG = {
     // Large magical luminary ≈ 7 Earth radii.
     radius: 44597,
 
-    orbitRadius: 1800,
+    orbitRadius: 180000,
 
     orbitSpeed: 0.0015,
 
@@ -181,7 +181,7 @@ export const MORRA_CONFIG = {
     // Life luminary ≈ 4 Earth radii.
     radius: 25484,
 
-    orbitRadius: 1200,
+    orbitRadius: 120000,
 
     orbitSpeed: 0.002,
 
@@ -208,7 +208,7 @@ export const MORRA_CONFIG = {
     // Small luminary ≈ Earth radius.
     radius: 6371,
 
-    orbitRadius: 700,
+    orbitRadius: 70000,
 
     orbitSpeed: 0.003,
 
@@ -382,7 +382,7 @@ DEBUG: {
 
     MORRA_RADIUS: {
 
-      min: 50,
+      min: 100,
 
       max: 100000,
 
@@ -454,7 +454,7 @@ DEBUG: {
 
       min: 0,
 
-      max: 10000,
+      max: 500000,
 
       step: 1
 
