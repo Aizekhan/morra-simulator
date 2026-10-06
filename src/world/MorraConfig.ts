@@ -4,7 +4,8 @@ export const MORRA_CONFIG = {
   // MORRA
   // =========================
 
-  // Default world scale: Jupiter-class radius (render/simulation units remain configurable).\n  MORRA_RADIUS: 69911,
+  // Default world scale: Jupiter-class radius (render/simulation units remain configurable).
+  MORRA_RADIUS: 69911,
 
   MORRA_COLOR: 0x3366ff,
 
@@ -150,7 +151,8 @@ export const MORRA_CONFIG = {
     // first/second/third celestial bodies is still editable here.
     radiationRole: "MAGIC" as const,
 
-    // Large magical luminary ≈ 7 Earth radii.\n    radius: 44597,
+    // Large magical luminary ≈ 7 Earth radii.
+    radius: 44597,
 
     orbitRadius: 1800,
 
@@ -176,7 +178,8 @@ export const MORRA_CONFIG = {
 
     radiationRole: "LIFE" as const,
 
-    // Life luminary ≈ 4 Earth radii.\n    radius: 25484,
+    // Life luminary ≈ 4 Earth radii.
+    radius: 25484,
 
     orbitRadius: 1200,
 
@@ -202,7 +205,8 @@ export const MORRA_CONFIG = {
 
     radiationRole: "FIRE" as const,
 
-    // Small luminary ≈ Earth radius.\n    radius: 6371,
+    // Small luminary ≈ Earth radius.
+    radius: 6371,
 
     orbitRadius: 700,
 
@@ -380,7 +384,7 @@ DEBUG: {
 
       min: 50,
 
-      max: 1000,
+      max: 100000,
 
       step: 1
 
@@ -480,7 +484,7 @@ DEBUG: {
 
       min: 1,
 
-      max: 500,
+      max: 100000,
 
       step: 1
 
