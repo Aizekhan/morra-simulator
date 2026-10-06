@@ -188,12 +188,6 @@ export class SurfaceFieldHUD {
   ) {
 
     switch(channel) {
-      case "LIGHT":
-        return "LIGHT";
-      case "HEAT":
-        return "HEAT";
-      case "MAGIC":
-        return "MAGIC";
       case "MAGOSPHERE":
         return "MAGOSPHERE";
       case "ANOMALY":
@@ -235,12 +229,6 @@ export class SurfaceFieldHUD {
   ) {
 
     switch(channel) {
-      case "LIGHT":
-        return map.lightStats;
-      case "HEAT":
-        return map.heatStats;
-      case "MAGIC":
-        return map.magicStats;
       case "MAGOSPHERE":
         return {
           min: 0,
