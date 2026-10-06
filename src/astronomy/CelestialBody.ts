@@ -40,6 +40,10 @@ export class CelestialBody {
     THREE.MeshStandardMaterial |
     THREE.MeshBasicMaterial;
 
+  private readonly renderMode:
+    "STANDARD" |
+    "SELF_LUMINOUS";
+
   radius: number;
 
   orbitRadius: number;
@@ -95,6 +99,9 @@ export class CelestialBody {
     const renderMode =
       options.renderMode ??
       "STANDARD";
+
+    this.renderMode =
+      renderMode;
 
     if(
       renderMode ===
