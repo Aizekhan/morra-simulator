@@ -209,21 +209,25 @@ export class RadiationEngine {
         distance *
         distance;
 
+      const emissionRadius =
+        source.emissionReferenceRadius ??
+        source.body.radius;
+
       const sourceReferenceArea =
         Math.max(
-          source.body.radius,
+          emissionRadius,
           RadiationEngine.EPSILON
         ) *
         Math.max(
-          source.body.radius,
+          emissionRadius,
           RadiationEngine.EPSILON
         );
 
       /*
-       * Inverse-square attenuation is applied to the source's
-       * explicit reference area. This keeps light/heat scaling
-       * dependent on actual source distance instead of cancelling
-       * the distance term by normalizing and multiplying by radius².
+       * Inverse-square attenuation is explicit:
+       * received flux scales as source reference area / distance².
+       * The reference radius is optional so an authored source can
+       * keep its physical emission scale independent from display size.
        */
       const influence =
         sourceReferenceArea /
