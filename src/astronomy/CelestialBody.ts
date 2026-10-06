@@ -107,8 +107,10 @@ export class CelestialBody {
         ? new THREE.MeshBasicMaterial({
             color: color
           })
-        : new THREE.MeshBasicMaterial({
-            color: 0xffffff
+        : new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            roughness: 1,
+            metalness: 0
           });
 
     this.mesh =
@@ -269,8 +271,12 @@ export class CelestialBody {
   ) {
 
     if(
-      !(this.material instanceof
-      THREE.MeshBasicMaterial)
+      !(
+        this.material instanceof
+        THREE.MeshBasicMaterial ||
+        this.material instanceof
+        THREE.MeshStandardMaterial
+      )
     ) {
       return;
     }
