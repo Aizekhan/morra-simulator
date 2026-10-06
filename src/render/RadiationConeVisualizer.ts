@@ -285,14 +285,52 @@ export class RadiationConeVisualizer {
       return;
     }
 
-    const sizeFactor =
-      source.radius /
-      Math.max(this.referenceSourceRadius(), 1e-6);
+    const sourceDistanceFromMorra =
+      Math.max(
+        targetDistance,
+        source.radius + this.morra.radius
+      );
+
+    const angularRadius =
+      Math.asin(
+        THREE.MathUtils.clamp(
+          source.radius /
+          Math.max(
+            sourceDistanceFromMorra,
+            1e-6
+          ),
+          0,
+          0.999999
+        )
+      );
+
+    const sourceInfluenceRange =
+      Math.max(
+        source.radius,
+        1
+      ) /
+      Math.sin(
+        Math.max(
+          angularRadius,
+          1e-6
+        )
+      );
 
     const influenceRange =
-      this.length *
-      sizeFactor *
-      this.rangeScale;
+      Math.max(
+        this.length,
+        sourceDistanceFromMorra
+      ) *
+      Math.max(
+        this.rangeScale,
+        0.01
+      ) *
+      Math.sqrt(
+        Math.max(
+          source.lightPower ?? 1,
+          1e-6
+        )
+      );
 
     const coneDepth =
       Math.min(
@@ -308,12 +346,17 @@ export class RadiationConeVisualizer {
       Math.max(source.radius, 0.01);
 
     const radiusGrowth =
-      Math.tan(
-        THREE.MathUtils.clamp(
-          source.radius /
-          Math.max(targetDistance, 1e-6),
-          0,
-          0.45
+      (
+        Math.tan(
+          THREE.MathUtils.clamp(
+            angularRadius,
+            0,
+            Math.PI / 2
+          )
+        ) /
+        Math.max(
+          sourceInfluenceRange,
+          1
         )
       ) * this.radialScale;
 
