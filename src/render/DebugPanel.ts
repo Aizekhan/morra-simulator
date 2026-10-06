@@ -856,6 +856,37 @@ export class DebugPanel {
     folder.close();
   }
 
+  update() {
+
+    for (const control of this.orbitPositionControls) {
+      control.value = control.body.angle;
+    }
+
+    for (const item of this.eccentricityControls) {
+      const maxEccentricity =
+        OrbitMath.getMaxEccentricity(
+          item.config.orbitRadius,
+          item.config.radius + item.clearance
+        );
+
+      item.controller.max(maxEccentricity);
+
+      if (item.config.orbitEccentricity > maxEccentricity) {
+        item.config.orbitEccentricity = maxEccentricity;
+      }
+    }
+
+    if (this.cameraController && this.cameraControls) {
+      this.cameraControls.zoom =
+        this.cameraController.getZoomLevel();
+    }
+  }
+
+  destroy() {
+    this.gui.destroy();
+  }
+
+
   private createDebugFolder() {
 
     const folder =
