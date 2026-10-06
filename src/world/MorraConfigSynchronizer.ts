@@ -118,19 +118,19 @@ export class MorraConfigSynchronizer {
     this.syncBody(
       this.bodies.sunLarge,
       MORRA_CONFIG.SUN_LARGE,
-      morraRadius + MORRA_CONFIG.SUN_LARGE.radius + 100
+      morraRadius + MORRA_CONFIG.SUN_LARGE.radius + 1000
     );
 
     this.syncBody(
       this.bodies.sunMedium,
       MORRA_CONFIG.SUN_MEDIUM,
-      morraRadius + MORRA_CONFIG.SUN_MEDIUM.radius + 100
+      morraRadius + MORRA_CONFIG.SUN_MEDIUM.radius + 1000
     );
 
     this.syncBody(
       this.bodies.sunSmall,
       MORRA_CONFIG.SUN_SMALL,
-      morraRadius + MORRA_CONFIG.SUN_SMALL.radius + 100
+      morraRadius + MORRA_CONFIG.SUN_SMALL.radius + 1000
     );
   }
 
