@@ -1,6 +1,7 @@
 import GUI from "lil-gui";
 
 import { TimeControls } from "./TimeControls";
+import { CameraController } from "./CameraController";
 
 import {
   MORRA_CONFIG
@@ -40,7 +41,8 @@ export class DebugPanel {
     EccentricityControl[] = [];
 
   constructor(
-    timeControls: TimeControls
+    timeControls: TimeControls,
+    cameraController: CameraController
   ) {
 
     this.gui =
@@ -65,6 +67,10 @@ export class DebugPanel {
     );
 
     this.createCalendarFolder();
+
+    this.createCameraFolder(
+      cameraController
+    );
 
     this.createMorraFolder();
 
@@ -183,6 +189,122 @@ export class DebugPanel {
     ).name("MONTHS / YEAR").listen();
 
     folder.close();
+  }
+
+  private createCameraFolder(
+    cameraController: CameraController
+  ) {
+
+    const folder =
+      this.gui.addFolder(
+        "📷 CAMERA"
+      );
+
+    const controls = {
+      distance:
+        cameraController.getDistance(),
+      zoomSpeed:
+        cameraController.zoomSpeed,
+      reset: () =>
+        cameraController.resetView(),
+      front: () =>
+        cameraController.snapToView("FRONT"),
+      back: () =>
+        cameraController.snapToView("BACK"),
+      west: () =>
+        cameraController.snapToView("WEST"),
+      east: () =>
+        cameraController.snapToView("EAST"),
+      north: () =>
+        cameraController.snapToView("NORTH"),
+      south: () =>
+        cameraController.snapToView("SOUTH")
+    };
+
+    folder.add(
+      controls,
+      "distance",
+      1,
+      5000000,
+      100
+    )
+      .name("DISTANCE")
+      .listen()
+      .onChange(
+        (value: number) => {
+          cameraController.setDistance(
+            value
+          );
+        }
+      );
+
+    folder.add(
+      controls,
+      "zoomSpeed",
+      0.2,
+      3,
+      0.1
+    )
+      .name("ZOOM SPEED")
+      .onChange(
+        (value: number) => {
+          cameraController.zoomSpeed =
+            value;
+        }
+      );
+
+    folder.add(
+      controls,
+      "reset"
+    ).name("RESET VIEW");
+
+    const sides =
+      folder.addFolder(
+        "VIEW SIDE"
+      );
+
+    sides.add(
+      controls,
+      "front"
+    ).name("FRONT");
+
+    sides.add(
+      controls,
+      "back"
+    ).name("BACK");
+
+    sides.add(
+      controls,
+      "west"
+    ).name("WEST");
+
+    sides.add(
+      controls,
+      "east"
+    ).name("EAST");
+
+    sides.add(
+      controls,
+      "north"
+    ).name("NORTH");
+
+    sides.add(
+      controls,
+      "south"
+    ).name("SOUTH");
+
+    sides.close();
+    folder.close();
+
+    const syncDistance = () => {
+      controls.distance =
+        cameraController.getDistance();
+      requestAnimationFrame(
+        syncDistance
+      );
+    };
+
+    syncDistance();
   }
 
   private createMorraFolder() {
