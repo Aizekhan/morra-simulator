@@ -71,15 +71,15 @@ export const MORRA_CONFIG = {
 
   MOON_NORTH: {
 
-    // ≈ 900 km diameter.
-    radius: 450,
+    // ≈ 10,000 km visual/simulation diameter.
+    radius: 5000,
 
     color: 0xcccccc,
 
     orbitColor: 0x999999,
 
-    // ≈ 100,000 km center-to-center.
-    orbitRadius: 100000,
+    // Starting orbit radius doubled.
+    orbitRadius: 200000,
 
     // 40-day period.
     orbitSpeed: 360 / (40 * 30),
@@ -103,15 +103,15 @@ export const MORRA_CONFIG = {
 
   MOON_EQUATOR: {
 
-    // ≈ 400 km diameter.
-    radius: 200,
+    // ≈ 16,000 km visual/simulation diameter.
+    radius: 8000,
 
     color: 0x888888,
 
     orbitColor: 0x666666,
 
-    // ≈ 160,000 km center-to-center.
-    orbitRadius: 160000,
+    // Starting orbit radius doubled.
+    orbitRadius: 320000,
 
     // 67-day period.
     orbitSpeed: 360 / (67 * 30),
@@ -141,11 +141,11 @@ export const MORRA_CONFIG = {
 
     radiationRole: "MAGIC" as const,
 
-    // ≈ 2500 km diameter.
-    radius: 1250,
+    // ≈ 11,000 km visual/simulation diameter.
+    radius: 5500,
 
-    // ≈ 300,000 km from Morra's center.
-    orbitRadius: 300000,
+    // Starting orbit radius is doubled from the authored 300,000 km reference.
+    orbitRadius: 600000,
 
     // 365-day period.
     orbitSpeed: 360 / (365 * 30),
@@ -171,11 +171,11 @@ export const MORRA_CONFIG = {
 
     radiationRole: "LIFE" as const,
 
-    // ≈ 1500 km diameter.
-    radius: 750,
+    // ≈ 15,000 km visual/simulation diameter.
+    radius: 7500,
 
-    // ≈ 220,000 km from Morra's center.
-    orbitRadius: 220000,
+    // Starting orbit radius is doubled from the authored 220,000 km reference.
+    orbitRadius: 440000,
 
     // 180-day period.
     orbitSpeed: 360 / (180 * 30),
@@ -201,11 +201,11 @@ export const MORRA_CONFIG = {
 
     radiationRole: "FIRE" as const,
 
-    // ≈ 800 km diameter.
-    radius: 400,
+    // ≈ 22,000 km visual/simulation diameter.
+    radius: 11000,
 
-    // ≈ 500,000 km from Morra's center.
-    orbitRadius: 500000,
+    // Starting orbit radius is doubled from the authored 500,000 km reference.
+    orbitRadius: 1000000,
 
     // 600-day period.
     orbitSpeed: 360 / (600 * 30),
