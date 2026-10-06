@@ -118,10 +118,16 @@ export class Renderer {
     );
   }
 
-  update() {
+  update(
+    ambientIntensity = 0
+  ) {
 
     this.ambientLight.intensity =
-      0;
+      THREE.MathUtils.clamp(
+        ambientIntensity,
+        0,
+        10
+      );
 
   }
 
