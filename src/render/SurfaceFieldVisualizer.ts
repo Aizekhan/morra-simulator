@@ -198,6 +198,10 @@ export class SurfaceFieldVisualizer {
 
           void main() {
             vec4 base = texture2D(baseTexture, vUv);
+            if(base.a <= 0.001) {
+              base = vec4(vec3(0.42), 1.0);
+            }
+
             float rawLight = max(texture2D(fieldTexture, vUv).r, 0.0);
             float normalizedLight = clamp(rawLight * physicalExposure, 0.0, 1.0);
             float surfaceLight = mix(
