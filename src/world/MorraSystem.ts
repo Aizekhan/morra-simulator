@@ -872,7 +872,10 @@ export class MorraSystem {
       return;
     }
 
-    new THREE.TextureLoader().load(
+    const loader =
+      new THREE.TextureLoader();
+
+    loader.load(
       path,
       loaded => {
 
@@ -882,7 +885,7 @@ export class MorraSystem {
         loaded.needsUpdate =
           true;
 
-        this.morra.setSurfaceTextureRepeat(
+        this.morra.setSurfaceTextureEquirectangular(
           loaded
         );
 
