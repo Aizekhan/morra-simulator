@@ -50,7 +50,10 @@ export const MORRA_CONFIG = {
       color: 0xffcc88,
       intensity: 50,
       distance: 2000000,
-      radiationScale: 1
+      radiationScale: 1,
+      presentationScale: 0.08,
+      presentationScale: 0.08,
+      presentationScale: 0.08
     },
 
     MEDIUM: {
