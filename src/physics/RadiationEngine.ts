@@ -199,34 +199,32 @@ export class RadiationEngine {
       const visibilityFactor =
         visibility.factor;
 
-      const normalizedDistance =
-        distance /
+      const distanceSquared =
+        distance *
+        distance;
+
+      const sourceReferenceArea =
         Math.max(
           source.body.radius,
           RadiationEngine.EPSILON
-        );
-
-      const geometricFalloff =
-        1 /
-        Math.max(
-          normalizedDistance *
-          normalizedDistance,
-          RadiationEngine.EPSILON
-        );
-
-      const sourceReferenceDistance =
-        Math.max(
-          source.body.radius,
-          RadiationEngine.EPSILON
-        );
-
-      const influence =
-        Math.max(
-          RadiationEngine.MINIMUM_INFLUENCE_FACTOR,
-          geometricFalloff
         ) *
-        sourceReferenceDistance *
-        sourceReferenceDistance;
+        Math.max(
+          source.body.radius,
+          RadiationEngine.EPSILON
+        );
+
+      /*
+       * Inverse-square attenuation is applied to the source's
+       * explicit reference area. This keeps light/heat scaling
+       * dependent on actual source distance instead of cancelling
+       * the distance term by normalizing and multiplying by radius².
+       */
+      const influence =
+        sourceReferenceArea /
+        Math.max(
+          distanceSquared,
+          RadiationEngine.EPSILON
+        );
 
       const directLightContribution =
         source.lightPower *
