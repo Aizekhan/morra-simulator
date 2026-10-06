@@ -128,7 +128,9 @@ export class CelestialInteractionSystem {
             heatPower:
               source.heatPower * runtimeScale,
             magicPower:
-              source.magicPower * runtimeScale
+              source.magicPower * runtimeScale,
+            allowIndirectReflection:
+              false
           };
         }
       );
