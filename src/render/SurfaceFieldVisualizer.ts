@@ -204,6 +204,11 @@ export class SurfaceFieldVisualizer {
           varying vec2 vUv;
 
           void main() {
+            // DIAGNOSTIC: force the physical surface layer to red.
+            // This proves whether this shader is actually visible.
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+            return;
+
             vec4 base = texture2D(baseTexture, vUv);
             if(base.a <= 0.001) {
               base = vec4(vec3(0.42), 1.0);
