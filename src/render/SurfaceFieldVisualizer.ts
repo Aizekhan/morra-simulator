@@ -559,6 +559,79 @@ export class SurfaceFieldVisualizer {
   }
 
   /**
+   * Apply the physical LIGHT_TOTAL map directly to Morra's StandardMaterial
+   * through a dynamic canvas texture. This is presentation derived from the
+   * authoritative physical samples; it does not feed back into radiation.
+   */
+  updatePhysicalSurfaceTexture(
+    map:
+      SurfaceFieldMap
+  ) {
+    if(
+      map.width !== this.width ||
+      map.height !== this.height
+    ) {
+      this.recreateTexture(
+        map.width,
+        map.height
+      );
+    }
+
+    const data =
+      this.texture.image.data as Uint8Array;
+
+    const min =
+      Number.isFinite(map.lightStats.min)
+        ? map.lightStats.min
+        : 0;
+
+    const max =
+      Number.isFinite(map.lightStats.max)
+        ? map.lightStats.max
+        : 0;
+
+    const range =
+      max > min
+        ? max - min
+        : 1;
+
+    for(
+      let index = 0;
+      index < map.light.length;
+      index++
+    ) {
+      const normalized =
+        THREE.MathUtils.clamp(
+          (
+            map.light[index] -
+            min
+          ) /
+          range,
+          0,
+          1
+        );
+
+      const offset =
+        index * 4;
+
+      const brightness =
+        Math.round(
+          (
+            0.08 +
+            normalized * 0.92
+          ) * 255
+        );
+
+      data[offset] = brightness;
+      data[offset + 1] = brightness;
+      data[offset + 2] = brightness;
+      data[offset + 3] = 255;
+    }
+
+    this.texture.needsUpdate = true;
+  }
+
+  /**
    * Expose the latest physical field texture for consumers that need the
    * authoritative surface signal without enabling the diagnostic overlay.
    */
