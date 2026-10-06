@@ -86,7 +86,7 @@ export const MORRA_CONFIG = {
 
   MOON_NORTH: {
 
-    radius: 18,
+    radius: 6991,
 
     color: 0xcccccc,
 
@@ -114,7 +114,7 @@ export const MORRA_CONFIG = {
 
   MOON_EQUATOR: {
 
-    radius: 24,
+    radius: 6991,
 
     color: 0x888888,
 
