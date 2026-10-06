@@ -49,7 +49,7 @@ export class SurfaceFieldVisualizer {
 
   private surfaceRadius = 1;
 
-  private physicalLightScale = 0.000001;
+  private physicalLightScale = 1000000;
 
 
 
