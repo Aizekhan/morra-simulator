@@ -160,6 +160,14 @@ export class SurfaceFieldVisualizer {
           physicalExposure: {
             value:
               1
+          },
+          physicalFloor: {
+            value:
+              0.045
+          },
+          physicalGamma: {
+            value:
+              0.55
           }
         },
         vertexShader: `
@@ -179,118 +187,27 @@ export class SurfaceFieldVisualizer {
         `,
         fragmentShader: `
           uniform sampler2D fieldTexture;
-          uniform float opacity;
-          uniform vec3 lowColor;
-          uniform vec3 highColor;
-          uniform sampler2D spectrumTexture;
           uniform sampler2D baseTexture;
-          uniform bool channelSpectrum;
           uniform float physicalExposure;
+          uniform float physicalFloor;
+          uniform float physicalGamma;
 
           varying vec2 vUv;
 
           void main() {
+            vec4 base = texture2D(baseTexture, vUv);
+            float rawLight = max(texture2D(fieldTexture, vUv).r, 0.0);
+            float normalizedLight = clamp(rawLight * physicalExposure, 0.0, 1.0);
+            float surfaceLight = mix(
+              physicalFloor,
+              1.0,
+              pow(normalizedLight, physicalGamma)
+            );
 
-            vec4 spectrum =
-              texture2D(
-                spectrumTexture,
-                vUv
-              );
-
-            float value =
-              texture2D(
-                fieldTexture,
-                vUv
-              ).r;
-
-            vec4 base =
-              texture2D(
-                baseTexture,
-                vUv
-              );
-
-            // LIGHT_TOTAL stores the physically evaluated incident radiation.
-            // Convert its normalized diagnostic signal into presentation
-            // brightness without altering the underlying field values.
-            float physicalLight =
-              clamp(
-                texture2D(
-                  fieldTexture,
-                  vUv
-                ).r *
-                physicalExposure,
-                0.0,
-                1.0
-              );
-
-            vec3 physicallyLitBase =
-              base.rgb *
-              (
-                0.08 +
-                0.92 * physicalLight
-              );
-
-            vec3 fieldColor =
-              channelSpectrum
-                ? spectrum.rgb
-                : mix(
-                    lowColor,
-                    highColor,
-                    value
-                  );
-
-            float fieldBlend =
-              clamp(
-                opacity * (
-                  0.35 +
-                  0.65 * smoothstep(
-                    0.0,
-                    0.001,
-                    value
-                  )
-                ),
-                0.0,
-                1.0
-              );
-
-            vec3 color =
-              channelSpectrum
-                ? mix(
-                    physicallyLitBase,
-                    fieldColor,
-                    fieldBlend
-                  )
-                : physicallyLitBase;
-
-            float fieldPresence =
-              smoothstep(
-                0.0,
-                0.001,
-                value
-              );
-
-            float alpha =
-              fieldPresence;
-
-            if(alpha <= 0.001) {
-              discard;
-            }
-
-            // Keep the geographic texture visually present under diagnostics.
-            // The field is an overlay, not an opaque replacement texture.
-            float finalAlpha =
-              clamp(
-                0.18 +
-                fieldBlend * 0.82,
-                0.0,
-                1.0
-              );
-
-            gl_FragColor =
-              vec4(
-                color,
-                finalAlpha
-              );
+            gl_FragColor = vec4(
+              base.rgb * surfaceLight,
+              base.a
+            );
           }
         `
       });
@@ -316,7 +233,7 @@ export class SurfaceFieldVisualizer {
     this.updateSpectrumMode();
 
     this.setEnabled(
-      false
+      true
     );
   }
 
