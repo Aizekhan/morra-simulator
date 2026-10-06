@@ -292,7 +292,7 @@ export class DebugPanel {
       sun,
       "radius",
       MORRA_CONFIG.LIMITS.BODY_RADIUS.min,
-      MORRA_CONFIG.LIMITS.BODY_RADIUS.max,
+      100000,
       MORRA_CONFIG.LIMITS.BODY_RADIUS.step
     ).name("RADIUS").listen();
 
