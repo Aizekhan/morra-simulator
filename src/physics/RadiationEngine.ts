@@ -211,7 +211,7 @@ export class RadiationEngine {
 
       const unobstructedMagicContribution =
         source.magicPower *
-        inverseSquare *
+        influence *
         illuminationFactor;
 
       const directMagicContribution =
