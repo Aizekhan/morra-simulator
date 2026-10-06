@@ -327,18 +327,35 @@ export class RadiationConeVisualizer {
     // The visualization represents finite-source geometry, not a
     // uniform cylinder. Its cross-section is derived from the
     // source's apparent angular size at the Morra-facing distance.
+    // The radiation itself follows inverse-square attenuation, but the
+    // debug volume must visualize the finite angular extent of the source.
+    // A finite source occupies a larger apparent angular disk when viewed
+    // from nearby points, so the tube widens with distance from the emitter.
     const startRadius =
       Math.max(
         source.radius,
         0.01
       );
 
-    const sourceAngle =
+    const startDistance =
+      Math.max(
+        source.radius,
+        0.01
+      );
+
+    const endDistance =
+      Math.max(
+        startDistance +
+        coneDepth,
+        startDistance + 0.01
+      );
+
+    const sourceAngularExtent =
       Math.asin(
         THREE.MathUtils.clamp(
           source.radius /
             Math.max(
-              sourceDistanceFromMorra,
+              startDistance,
               1e-6
             ),
           0,
@@ -348,7 +365,7 @@ export class RadiationConeVisualizer {
 
     const divergenceAngle =
       Math.min(
-        sourceAngle *
+        sourceAngularExtent *
         this.radialScale,
         Math.PI / 3
       );
