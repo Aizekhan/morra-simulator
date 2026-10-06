@@ -207,8 +207,8 @@ export class DebugPanel {
       );
 
     const controls = {
-      distance:
-        cameraController.getDistance(),
+      zoom:
+        cameraController.getZoomLevel(),
       zoomSpeed:
         cameraController.zoomSpeed,
       reset: () =>
@@ -229,16 +229,16 @@ export class DebugPanel {
 
     folder.add(
       controls,
-      "distance",
+      "zoom",
+      0,
       1,
-      5000000,
-      100
+      0.01
     )
-      .name("DISTANCE")
+      .name("ZOOM")
       .listen()
       .onChange(
         (value: number) => {
-          cameraController.setDistance(
+          cameraController.setZoomLevel(
             value
           );
         }
@@ -264,49 +264,44 @@ export class DebugPanel {
       "reset"
     ).name("RESET VIEW");
 
-    const sides =
-      folder.addFolder(
-        "VIEW SIDE"
-      );
-
-    sides.add(
+    folder.add(
       controls,
       "front"
     ).name("FRONT");
 
-    sides.add(
+    folder.add(
       controls,
       "back"
     ).name("BACK");
 
-    sides.add(
+    folder.add(
       controls,
       "west"
     ).name("WEST");
 
-    sides.add(
+    folder.add(
       controls,
       "east"
     ).name("EAST");
 
-    sides.add(
+    folder.add(
       controls,
       "north"
     ).name("NORTH");
 
-    sides.add(
+    folder.add(
       controls,
       "south"
     ).name("SOUTH");
 
-    sides.close();
     folder.close();
 
     this.cameraController =
       cameraController;
 
-    this.cameraControls =
-      controls;
+    this.cameraControls = {
+      distance: 0
+    };
   }
 
   private createMorraFolder() {
@@ -948,6 +943,19 @@ export class DebugPanel {
     ) {
       this.cameraControls.distance =
         this.cameraController.getDistance();
+
+      const cameraZoomControl =
+        this.gui.controllersRecursive().find(
+          controller =>
+            controller.property ===
+            "zoom"
+        );
+
+      if(cameraZoomControl) {
+        cameraZoomControl.setValue(
+          this.cameraController.getZoomLevel()
+        );
+      }
     }
 
     for (
