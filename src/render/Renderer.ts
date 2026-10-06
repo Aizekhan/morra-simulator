@@ -8,8 +8,6 @@ export class Renderer {
 
   private ambientLight: THREE.AmbientLight;
 
-  private worldTextureLoader =
-    new THREE.TextureLoader();
 
   constructor() {
 
