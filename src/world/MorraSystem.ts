@@ -588,6 +588,13 @@ export class MorraSystem {
     this.morra.mesh.userData.presentationMinimumPixels =
       28;
 
+    // Keep the authoritative world mesh visible. The presentation system may
+    // add a readability proxy for distant bodies, but it must never replace
+    // or hide Morra itself.
+    this.morra.mesh.visible =
+      MORRA_CONFIG.MORRA_VISIBLE;
+    this.morra.mesh.frustumCulled = false;
+
     this.moonNorth.mesh.userData.presentationMinimumPixels =
       12;
 
