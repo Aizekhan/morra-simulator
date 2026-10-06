@@ -304,18 +304,6 @@ export class RadiationConeVisualizer {
         )
       );
 
-    const sourceInfluenceRange =
-      Math.max(
-        source.radius,
-        1
-      ) /
-      Math.sin(
-        Math.max(
-          angularRadius,
-          1e-6
-        )
-      );
-
     const influenceRange =
       Math.max(
         this.length,
@@ -336,28 +324,40 @@ export class RadiationConeVisualizer {
       return;
     }
 
+    // The visualization represents finite-source geometry, not a
+    // uniform cylinder. Its cross-section is derived from the
+    // source's apparent angular size at the Morra-facing distance.
     const startRadius =
-      Math.max(source.radius, 0.01);
+      Math.max(
+        source.radius,
+        0.01
+      );
 
-    const radiusGrowth =
-      (
-        Math.tan(
-          THREE.MathUtils.clamp(
-            angularRadius,
-            0,
-            Math.PI / 2
-          )
-        ) /
-        Math.max(
-          sourceInfluenceRange,
-          1
+    const sourceAngle =
+      Math.asin(
+        THREE.MathUtils.clamp(
+          source.radius /
+            Math.max(
+              sourceDistanceFromMorra,
+              1e-6
+            ),
+          0,
+          0.999999
         )
-      ) * this.radialScale;
+      );
 
     const endRadius =
       Math.max(
         startRadius,
-        startRadius + coneDepth * radiusGrowth
+        startRadius +
+        coneDepth *
+        Math.tan(
+          Math.min(
+            sourceAngle *
+            this.radialScale,
+            Math.PI / 3
+          )
+        )
       );
 
     const geometry =
