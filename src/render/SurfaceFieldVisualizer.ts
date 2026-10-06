@@ -114,8 +114,8 @@ export class SurfaceFieldVisualizer {
 
     this.material =
       new THREE.ShaderMaterial({
-        transparent: true,
-        depthWrite: false,
+        transparent: false,
+        depthWrite: true,
         side: THREE.DoubleSide,
         toneMapped: false,
         uniforms: {
