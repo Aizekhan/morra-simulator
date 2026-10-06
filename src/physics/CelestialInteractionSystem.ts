@@ -213,6 +213,84 @@ export class CelestialInteractionSystem {
     0.5;
   }
 
+  private getMultiSunMoonIllumination(
+    sunSources: CelestialSourceConfig[],
+    moon: MoonTarget,
+    observerPosition: THREE.Vector3
+  ) {
+    const moonPosition =
+      moon.body.mesh.getWorldPosition(
+        new THREE.Vector3()
+      );
+
+    let total = 0;
+
+    for(const sun of sunSources) {
+      const runtimeScale =
+        this.getRuntimeRadiationScale(
+          sun.id
+        );
+
+      if(!sun.body.mesh.visible) {
+        continue;
+      }
+
+      const sunPosition =
+        sun.body.mesh.getWorldPosition(
+          new THREE.Vector3()
+        );
+
+      const distance =
+        Math.max(
+          moonPosition.distanceTo(
+            sunPosition
+          ),
+          1
+        );
+
+      const visibility =
+        this.radiation.getVisibilityFactor(
+          moonPosition,
+          {
+            id: sun.id,
+            body: sun.body,
+            lightPower: sun.lightPower * runtimeScale,
+            heatPower: 0,
+            magicPower: 0,
+            allowSecondaryReflection: false,
+            allowIndirectReflection: false
+          },
+          [
+            ...this.getSourceBodies(),
+            ...this.getMoonBodies()
+          ].filter(
+            body => body !== moon.body
+          )
+        );
+
+      const irradiance =
+        sun.lightPower *
+        runtimeScale *
+        (moon.body.radius * moon.body.radius) /
+        (distance * distance) *
+        visibility;
+
+      const visiblePhase =
+        this.getMoonPhaseFraction(
+          sunPosition,
+          moonPosition,
+          observerPosition
+        );
+
+      total +=
+        irradiance *
+        MORRA_CONFIG.MOON_REFLECTION.albedo *
+        visiblePhase;
+    }
+
+    return total;
+  }
+
   private updateMoonReflections() {
     if(!MORRA_CONFIG.MOON_REFLECTION.enabled) {
       for(const moon of this.moonTargets) {
@@ -231,86 +309,21 @@ export class CelestialInteractionSystem {
           source.id === "small-sun"
       );
 
+    const observerPosition =
+      this.environment.morra.mesh.getWorldPosition(
+        new THREE.Vector3()
+      );
+
     for(const moon of this.moonTargets) {
-      const sourceContributions = [];
-
-      for(const sun of sunSources) {
-        const runtimeScale =
-          this.getRuntimeRadiationScale(
-            sun.id
-          );
-
-        const sunPosition =
-          sun.body.mesh.getWorldPosition(
-            new THREE.Vector3()
-          );
-
-        const moonPosition =
-          moon.body.mesh.getWorldPosition(
-            new THREE.Vector3()
-          );
-
-        const distance =
-          Math.max(
-            moonPosition.distanceTo(
-              sunPosition
-            ),
-            1
-          );
-
-        const moonVisibility =
-          this.radiation.getVisibilityFactor(
-            moonPosition,
-            {
-              id: sun.id,
-              body: sun.body,
-              lightPower: sun.lightPower * runtimeScale,
-              heatPower: 0,
-              magicPower: 0,
-              allowSecondaryReflection: false,
-              allowIndirectReflection: false
-            },
-            [
-              ...this.getSourceBodies(),
-              ...this.getMoonBodies()
-            ].filter(
-              body => body !== moon.body
-            )
-          );
-
-        const incoming =
-          sun.lightPower *
-          runtimeScale *
-          MORRA_CONFIG.MOON_REFLECTION.albedo *
-          (moon.body.radius * moon.body.radius) /
-          (distance * distance) *
-          moonVisibility;
-
-        // Each sun has its own phase relative to this moon and Morra.
-        // Contributions are summed, so multiple suns can illuminate the
-        // moon simultaneously without overwriting one another.
-        const phase =
-          this.getMoonPhaseFraction(
-            sunPosition,
-            moonPosition,
-            this.environment.morra.mesh.getWorldPosition(
-              new THREE.Vector3()
-            )
-          );
-
-        const phaseAdjustedIncoming =
-          incoming *
-          phase;
-
-        sourceContributions.push(
-          phaseAdjustedIncoming
-        );
-      }
-
+      // The moon's apparent brightness is the sum of the contributions from
+      // every visible sun. Each sun gets its own source distance, shadowing
+      // and phase relative to Morra; the result is then treated as one
+      // reflected radiation source for Morra.
       const reflectedPower =
-        sourceContributions.reduce(
-          (sum, value) => sum + value,
-          0
+        this.getMultiSunMoonIllumination(
+          sunSources,
+          moon,
+          observerPosition
         ) *
         MORRA_CONFIG.MOON_REFLECTION.intensityScale;
 
