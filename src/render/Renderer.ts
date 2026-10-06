@@ -135,11 +135,16 @@ export class Renderer {
        */
       sourceRadius?: number;
       /**
-       * Optional physical source intensity multiplier. When supplied,
-       * the PointLight uses the same finite-source inverse-square scale
-       * as the authoritative radiation model at the Morra center distance.
+       * Authored physical radiation scale.
        */
       radiationScale?: number;
+      /**
+       * Presentation calibration only.
+       */
+      presentationScale?: number;
+      /**
+       * Distance at which the authored intensity is referenced.
+       */
       referenceDistance?: number;
     }>
   ) {
@@ -162,25 +167,33 @@ export class Renderer {
           new THREE.Vector3()
         );
 
-      const finiteSourceScale =
-        body.sourceRadius !== undefined &&
-        body.referenceDistance !== undefined
+      const referenceDistance =
+        Math.max(
+          body.referenceDistance ?? 1,
+          1
+        );
+
+      const finiteSourceReferenceScale =
+        body.sourceRadius !== undefined
           ? (
               body.sourceRadius *
               body.sourceRadius
             ) /
-            Math.max(
-              body.referenceDistance *
-              body.referenceDistance,
-              1
+            (
+              referenceDistance *
+              referenceDistance
             )
           : 1;
+
+      const presentationScale =
+        body.presentationScale ?? 1;
 
       light.intensity =
         body.visible
           ? body.intensity *
-            finiteSourceScale *
-            (body.radiationScale ?? 1)
+            finiteSourceReferenceScale *
+            (body.radiationScale ?? 1) *
+            presentationScale
           : 0;
 
       light.distance = 0;
