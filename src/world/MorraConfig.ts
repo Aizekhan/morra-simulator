@@ -356,7 +356,9 @@ DEBUG: {
 
   showRadiationRays: false,
 
-  showDirectIllumination: false
+  showDirectIllumination: false,
+
+  showEclipseShadows: true
 
 },
 
