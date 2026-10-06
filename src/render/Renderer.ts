@@ -145,7 +145,7 @@ export class Renderer {
         this.celestialLights[index];
 
       light.color.setHex(body.color);
-      light.intensity = body.visible ? body.intensity * 0.02 : 0;
+      light.intensity = body.visible ? body.intensity * 0.08 : 0;
       light.distance = 0;
       light.decay = 2;
       light.position.copy(body.mesh.getWorldPosition(new THREE.Vector3()));
