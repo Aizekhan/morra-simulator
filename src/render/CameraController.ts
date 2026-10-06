@@ -83,7 +83,7 @@ export class CameraController {
 
         this.distance =
           Math.max(
-            this.minimumSystemDistance,
+            this.minimumSurfaceDistance,
             Math.min(
               1000000,
               this.distance
