@@ -194,7 +194,7 @@ export class EclipseShadowVisualizer {
                 acos(
                   clamp(
                     dot(
-                      surfaceDirection,
+                      pointDirection,
                       shadowCenters[i]
                     ),
                     -1.0,
