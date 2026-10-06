@@ -233,10 +233,9 @@ export class RadiationEngine {
       // The authored source radius controls the effective emitting area,
       // so larger luminous bodies retain more flux at the same distance.
       const influence =
-        sourceReferenceArea /
-        Math.max(
-          distanceSquared,
-          RadiationEngine.EPSILON
+        this.getFiniteSourceInfluence(
+          emissionRadius,
+          distance
         );
 
       const directLightContribution =
@@ -411,6 +410,31 @@ export class RadiationEngine {
     return this.sources.map(
       source =>
         source.id
+    );
+  }
+
+  private getFiniteSourceInfluence(
+    emissionRadius: number,
+    distance: number
+  ) {
+    const radius =
+      Math.max(
+        emissionRadius,
+        RadiationEngine.EPSILON
+      );
+
+    const safeDistance =
+      Math.max(
+        distance,
+        RadiationEngine.EPSILON
+      );
+
+    return (
+      radius *
+      radius
+    ) / (
+      safeDistance *
+      safeDistance
     );
   }
 
