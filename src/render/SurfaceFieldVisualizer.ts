@@ -44,9 +44,6 @@ export class SurfaceFieldVisualizer {
   private readonly valueTexture:
     THREE.DataTexture;
 
-  private readonly physicalLightTexture:
-    THREE.DataTexture;
-
 
 
   private channel:
@@ -104,9 +101,6 @@ export class SurfaceFieldVisualizer {
       THREE.LinearFilter;
 
     this.valueTexture =
-      this.texture;
-
-    this.physicalLightTexture =
       this.texture;
 
     this.texture.magFilter =
@@ -637,10 +631,6 @@ export class SurfaceFieldVisualizer {
    */
   getValueTexture() {
     return this.valueTexture;
-  }
-
-  getPhysicalLightTexture() {
-    return this.physicalLightTexture;
   }
 
   setRadius(
