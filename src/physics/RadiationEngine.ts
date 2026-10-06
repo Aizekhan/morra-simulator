@@ -83,6 +83,12 @@ export class RadiationEngine {
   private readonly enableIndirectReflection =
     false;
 
+  /**
+   * Explicit moon reflection is modeled in CelestialInteractionSystem.
+   * Generic surface reflection stays disabled until a material model
+   * for Morra's surface is authored explicitly.
+   */
+
   static readonly BASE_RADIATION_RANGE = 10000;
 
   private static readonly MINIMUM_INFLUENCE_FACTOR =
