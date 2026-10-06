@@ -543,31 +543,21 @@ export class DirectIlluminationVisualizer {
           ) *
           visibility.factor;
 
-        const phaseAngle =
-          Math.acos(
-            THREE.MathUtils.clamp(
-              -moonToSource.dot(
-                moonToMorraDirection
-              ),
-              -1,
-              1
-            )
+        const phaseCosine =
+          THREE.MathUtils.clamp(
+            moonToSource.dot(
+              moonToMorraDirection
+            ),
+            -1,
+            1
           );
 
         const phase =
           (
-            Math.sin(
-              phaseAngle
-            ) +
-            (
-              Math.PI -
-              phaseAngle
-            ) *
-            Math.cos(
-              phaseAngle
-            )
-          ) /
-          Math.PI;
+            1 +
+            phaseCosine
+          ) *
+          0.5;
 
         const reflected =
           sourceIrradiance *
