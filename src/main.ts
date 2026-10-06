@@ -62,6 +62,10 @@ const cameraController =
     renderer.renderer.domElement
   );
 
+cameraController.setMorraRadius(
+  simulation.morraSystem.morra.radius
+);
+
 const debugPanel =
   new DebugPanel(
     simulation.timeControls
@@ -125,6 +129,10 @@ function animate() {
 
   const frame =
     simulation.update();
+
+  cameraController.setMorraRadius(
+    simulation.morraSystem.morra.radius
+  );
 
   cameraController.update();
 
