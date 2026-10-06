@@ -197,6 +197,19 @@ export class Renderer {
     }
   }
 
+  /**
+   * Presentation lights are optional. The physical surface field is the
+   * authoritative illumination model; this method only keeps the legacy
+   * Three.js lights useful for auxiliary scene objects.
+   */
+  setPresentationLightsEnabled(
+    enabled: boolean
+  ) {
+    for(const light of this.celestialLights) {
+      light.visible = enabled;
+    }
+  }
+
   update(
     ambientIntensity = 0
   ) {
