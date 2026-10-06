@@ -807,6 +807,11 @@ export class MorraSystem {
       this.sunSmall
     ]);
 
+    this.eclipseShadowVisualizer.setConfig({
+      enabled:
+        MORRA_CONFIG.DEBUG.showEclipseShadows
+    });
+
     this.eclipseShadowVisualizer.update(
       this.celestialInteractionSystem.radiation.getSources().map(
         source => source.body
