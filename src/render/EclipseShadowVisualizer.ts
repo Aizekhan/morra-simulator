@@ -13,16 +13,6 @@ export interface EclipseShadowConfig {
   softness: number;
 }
 
-interface EclipsePair {
-
-  source: CelestialBody;
-
-  occluder: CelestialBody;
-
-  material:
-    THREE.ShaderMaterial;
-}
-
 export class EclipseShadowVisualizer {
 
   private readonly morra:
