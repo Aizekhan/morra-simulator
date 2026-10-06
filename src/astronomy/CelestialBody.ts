@@ -347,6 +347,25 @@ export class CelestialBody {
       speed;
   }
 
+  setOrbitPosition(
+    angle: number
+  ) {
+
+    this.angle =
+      THREE.MathUtils.euclideanModulo(
+        angle + Math.PI,
+        Math.PI * 2
+      ) -
+      Math.PI;
+
+    this.updateAtCurrentAngle();
+  }
+
+  private updateAtCurrentAngle() {
+
+    this.updateAtCurrentAngle();
+  }
+
   setOrbitPlaneOffset(
     offset: number
   ) {
