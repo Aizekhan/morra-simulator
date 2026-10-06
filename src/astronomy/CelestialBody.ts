@@ -453,15 +453,19 @@ export class CelestialBody {
         : 1;
 
     this.angle =
-      this.manualOrbitPosition !== null
-        ? this.manualOrbitPosition +
-          direction *
-          this.orbitSpeed *
-          absoluteHours
-        : this.initialAngle +
-          direction *
-          this.orbitSpeed *
-          absoluteHours;
+      THREE.MathUtils.euclideanModulo(
+        (
+          this.manualOrbitPosition !== null
+            ? this.manualOrbitPosition
+            : this.initialAngle
+        ) +
+        direction *
+        this.orbitSpeed *
+        absoluteHours +
+        Math.PI,
+        Math.PI * 2
+      ) -
+      Math.PI;
 
     this.updateAtCurrentAngle();
   }
