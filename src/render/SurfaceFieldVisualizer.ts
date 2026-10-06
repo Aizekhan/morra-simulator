@@ -51,7 +51,7 @@ export class SurfaceFieldVisualizer {
 
   private channel:
     SurfaceFieldChannel =
-      "MAGIC_TOTAL";
+      "LIGHT_TOTAL";
 
   private opacity =
     0.48;
