@@ -170,8 +170,7 @@ function animate() {
       color:
         MORRA_CONFIG.LIGHTS.LARGE.color,
       intensity:
-        MORRA_CONFIG.LIGHTS.LARGE.intensity *
-        MORRA_CONFIG.LIGHTS.LARGE.presentationScale,
+        MORRA_CONFIG.LIGHTS.LARGE.intensity,
       visible:
         simulation.morraSystem.sunLarge.mesh.visible,
       sourceRadius:
@@ -179,7 +178,8 @@ function animate() {
       referenceDistance:
         simulation.morraSystem.sunLarge.orbitRadius,
       radiationScale:
-        MORRA_CONFIG.LIGHTS.LARGE.radiationScale *
+        MORRA_CONFIG.LIGHTS.LARGE.radiationScale,
+      presentationScale:
         MORRA_CONFIG.LIGHTS.LARGE.presentationScale
     },
     {
@@ -188,8 +188,7 @@ function animate() {
       color:
         MORRA_CONFIG.LIGHTS.MEDIUM.color,
       intensity:
-        MORRA_CONFIG.LIGHTS.MEDIUM.intensity *
-        MORRA_CONFIG.LIGHTS.MEDIUM.presentationScale,
+        MORRA_CONFIG.LIGHTS.MEDIUM.intensity,
       visible:
         simulation.morraSystem.sunMedium.mesh.visible,
       sourceRadius:
@@ -197,7 +196,8 @@ function animate() {
       referenceDistance:
         simulation.morraSystem.sunMedium.orbitRadius,
       radiationScale:
-        MORRA_CONFIG.LIGHTS.MEDIUM.radiationScale *
+        MORRA_CONFIG.LIGHTS.MEDIUM.radiationScale,
+      presentationScale:
         MORRA_CONFIG.LIGHTS.MEDIUM.presentationScale
     },
     {
@@ -206,8 +206,7 @@ function animate() {
       color:
         MORRA_CONFIG.LIGHTS.SMALL.color,
       intensity:
-        MORRA_CONFIG.LIGHTS.SMALL.intensity *
-        MORRA_CONFIG.LIGHTS.SMALL.presentationScale,
+        MORRA_CONFIG.LIGHTS.SMALL.intensity,
       visible:
         simulation.morraSystem.sunSmall.mesh.visible,
       sourceRadius:
@@ -215,7 +214,8 @@ function animate() {
       referenceDistance:
         simulation.morraSystem.sunSmall.orbitRadius,
       radiationScale:
-        MORRA_CONFIG.LIGHTS.SMALL.radiationScale *
+        MORRA_CONFIG.LIGHTS.SMALL.radiationScale,
+      presentationScale:
         MORRA_CONFIG.LIGHTS.SMALL.presentationScale
     }
   ]);
