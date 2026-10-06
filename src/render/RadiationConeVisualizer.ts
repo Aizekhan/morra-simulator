@@ -34,7 +34,7 @@ export class RadiationConeVisualizer {
   private readonly root: THREE.Group;
 
   private enabled = true;
-  private length = 2100;
+  private length = 180000;
   private radialScale = 1;
   private rangeScale = 1;
   private opacity = 0.08;
