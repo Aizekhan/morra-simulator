@@ -812,31 +812,25 @@ export class MorraSystem {
       MORRA_CONFIG.ROTATION_SPEED *
       absoluteHours;
 
-    const axisQuaternion =
-      new THREE.Quaternion()
-        .setFromAxisAngle(
-          new THREE.Vector3(0, 0, 1),
-          axisTilt
-        );
+    const tiltQuaternion =
+      new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 0, 1),
+        axisTilt
+      );
 
+    // Morra's local Y axis is the spin axis. Tilt that local axis first,
+    // then apply the elapsed daily angle in Morra-local space.
     const spinQuaternion =
-      new THREE.Quaternion()
-        .setFromAxisAngle(
-          new THREE.Vector3(0, 1, 0),
-          spinAngle
-        );
+      new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        spinAngle
+      );
 
     this.morra.mesh.quaternion.copy(
-      axisQuaternion
-    );
-    this.morra.mesh.quaternion.multiply(
-      axisQuaternion.clone().invert()
+      tiltQuaternion
     );
     this.morra.mesh.quaternion.multiply(
       spinQuaternion
-    );
-    this.morra.mesh.quaternion.multiply(
-      axisQuaternion
     );
 
     this.axis.update(
