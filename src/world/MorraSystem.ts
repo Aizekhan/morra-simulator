@@ -392,15 +392,18 @@ export class MorraSystem {
             lightPower:
               MORRA_CONFIG.RADIATION_PROFILES[
                 MORRA_CONFIG.SUN_LARGE.radiationRole
-              ].lightPower,
+              ].lightPower *
+              MORRA_CONFIG.LIGHTS.LARGE.radiationScale,
             heatPower:
               MORRA_CONFIG.RADIATION_PROFILES[
                 MORRA_CONFIG.SUN_LARGE.radiationRole
-              ].heatPower,
+              ].heatPower *
+              MORRA_CONFIG.LIGHTS.LARGE.radiationScale,
             magicPower:
               MORRA_CONFIG.RADIATION_PROFILES[
                 MORRA_CONFIG.SUN_LARGE.radiationRole
-              ].magicPower,
+              ].magicPower *
+              MORRA_CONFIG.LIGHTS.LARGE.radiationScale,
             visible:
               () =>
                 MORRA_CONFIG.SUN_LARGE.visible
@@ -419,15 +422,18 @@ export class MorraSystem {
             lightPower:
               MORRA_CONFIG.RADIATION_PROFILES[
                 MORRA_CONFIG.SUN_MEDIUM.radiationRole
-              ].lightPower,
+              ].lightPower *
+              MORRA_CONFIG.LIGHTS.MEDIUM.radiationScale,
             heatPower:
               MORRA_CONFIG.RADIATION_PROFILES[
                 MORRA_CONFIG.SUN_MEDIUM.radiationRole
-              ].heatPower,
+              ].heatPower *
+              MORRA_CONFIG.LIGHTS.MEDIUM.radiationScale,
             magicPower:
               MORRA_CONFIG.RADIATION_PROFILES[
                 MORRA_CONFIG.SUN_MEDIUM.radiationRole
-              ].magicPower,
+              ].magicPower *
+              MORRA_CONFIG.LIGHTS.MEDIUM.radiationScale,
             visible:
               () =>
                 MORRA_CONFIG.SUN_MEDIUM.visible
@@ -446,15 +452,18 @@ export class MorraSystem {
             lightPower:
               MORRA_CONFIG.RADIATION_PROFILES[
                 MORRA_CONFIG.SUN_SMALL.radiationRole
-              ].lightPower,
+              ].lightPower *
+              MORRA_CONFIG.LIGHTS.SMALL.radiationScale,
             heatPower:
               MORRA_CONFIG.RADIATION_PROFILES[
                 MORRA_CONFIG.SUN_SMALL.radiationRole
-              ].heatPower,
+              ].heatPower *
+              MORRA_CONFIG.LIGHTS.SMALL.radiationScale,
             magicPower:
               MORRA_CONFIG.RADIATION_PROFILES[
                 MORRA_CONFIG.SUN_SMALL.radiationRole
-              ].magicPower,
+              ].magicPower *
+              MORRA_CONFIG.LIGHTS.SMALL.radiationScale,
             visible:
               () =>
                 MORRA_CONFIG.SUN_SMALL.visible
