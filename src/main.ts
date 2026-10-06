@@ -69,7 +69,19 @@ cameraController.setMorraRadius(
 const debugPanel =
   new DebugPanel(
     simulation.timeControls,
-    cameraController
+    cameraController,
+    {
+      sunLarge:
+        simulation.morraSystem.sunLarge,
+      sunMedium:
+        simulation.morraSystem.sunMedium,
+      sunSmall:
+        simulation.morraSystem.sunSmall,
+      moonNorth:
+        simulation.morraSystem.moonNorth,
+      moonEquator:
+        simulation.morraSystem.moonEquator
+    }
   );
 
 const timeHud =
