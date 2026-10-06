@@ -9,7 +9,19 @@ export class CameraController {
   // The camera looks at Morra's center. Keep it outside the outer
   // moon orbit so zooming cannot move the camera inside the celestial
   // system and push moons outside the 60° viewing frustum.
-  private readonly minimumSystemDistance = 1;
+  private morraRadius = 120;
+
+  setMorraRadius(radius: number) {
+    this.morraRadius = Math.max(0.1, radius);
+    this.distance = Math.max(
+      this.distance,
+      this.minimumSurfaceDistance
+    );
+  }
+
+  private get minimumSurfaceDistance() {
+    return this.morraRadius * 1.001;
+  }
 
   yaw = 0;
   pitch = 0.3;
