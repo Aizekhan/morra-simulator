@@ -944,19 +944,7 @@ export class DebugPanel {
       this.cameraControls.distance =
         this.cameraController.getDistance();
 
-      const cameraZoomControl =
-        this.gui.controllersRecursive().find(
-          controller =>
-            controller.property ===
-            "zoom"
-        );
-
-      if(cameraZoomControl) {
-        cameraZoomControl.setValue(
-          this.cameraController.getZoomLevel()
-        );
       }
-    }
 
     for (
       const control of
