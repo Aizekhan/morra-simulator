@@ -163,11 +163,11 @@ export class SurfaceFieldVisualizer {
           },
           physicalFloor: {
             value:
-              0.045
+              0.025
           },
           physicalGamma: {
             value:
-              0.55
+              0.42
           }
         },
         vertexShader: `
