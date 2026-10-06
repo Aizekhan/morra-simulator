@@ -752,19 +752,19 @@ export class SurfaceFieldEngine {
         equatorMoonLight[index] =
           sampleData.equatorMoonLight;
 
-        (spectrumRed as unknown as Record<number, number>)[index] =
+        spectrumRed[index] =
           sampleData.spectrumRed;
 
-        (spectrumGreen as unknown as Record<number, number>)[index] =
+        spectrumGreen[index] =
           sampleData.spectrumGreen;
 
-        (spectrumBlue as unknown as Record<number, number>)[index] =
+        spectrumBlue[index] =
           sampleData.spectrumBlue;
 
-        (spectrumIntensity as unknown as Record<number, number>)[index] =
+        spectrumIntensity[index] =
           sampleData.spectrumIntensity;
 
-        (dayNight as unknown as Record<number, number>)[index] =
+        dayNight[index] =
           sampleData.dayNight;
 
         northMoonLightSum +=
