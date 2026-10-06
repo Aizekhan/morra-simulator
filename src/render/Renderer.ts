@@ -130,21 +130,9 @@ export class Renderer {
       color: number;
       intensity: number;
       visible: boolean;
-      /**
-       * Physical/source radius used for presentation falloff.
-       */
       sourceRadius?: number;
-      /**
-       * Authored physical radiation scale.
-       */
       radiationScale?: number;
-      /**
-       * Presentation calibration only.
-       */
       presentationScale?: number;
-      /**
-       * Distance at which the authored intensity is referenced.
-       */
       referenceDistance?: number;
     }>
   ) {
