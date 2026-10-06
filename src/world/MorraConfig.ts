@@ -258,6 +258,17 @@ export const MORRA_CONFIG = {
   },
 
   // =========================
+  // SURFACE MATERIAL
+  // =========================
+
+  // Experimental presentation/reflection coefficients.
+  // These do not change the authored world canon.
+  SURFACE_MATERIAL: {
+    albedo: 0.12,
+    diffuseResponse: 1
+  },
+
+  // =========================
   // MOON REFLECTION
   // =========================
 
