@@ -229,6 +229,10 @@ export class RadiationEngine {
        * The reference radius is optional so an authored source can
        * keep its physical emission scale independent from display size.
        */
+      // Finite-source geometric attenuation:
+      // radiation arriving at the receiver follows the inverse-square law.
+      // The authored source radius controls the effective emitting area,
+      // so larger luminous bodies retain more flux at the same distance.
       const influence =
         sourceReferenceArea /
         Math.max(
