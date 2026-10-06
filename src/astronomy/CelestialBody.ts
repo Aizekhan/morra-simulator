@@ -51,6 +51,9 @@ export class CelestialBody {
 
   angle: number;
 
+  private manualOrbitPosition:
+    number | null = null;
+
   orbitPlane: OrbitPlane;
 
   orbitOffsetX: number;
@@ -351,14 +354,23 @@ export class CelestialBody {
     angle: number
   ) {
 
-    this.angle =
+    this.manualOrbitPosition =
       THREE.MathUtils.euclideanModulo(
         angle + Math.PI,
         Math.PI * 2
       ) -
       Math.PI;
 
+    this.angle =
+      this.manualOrbitPosition;
+
     this.updateAtCurrentAngle();
+  }
+
+  clearManualOrbitPosition() {
+
+    this.manualOrbitPosition =
+      null;
   }
 
   private updateAtCurrentAngle() {
@@ -441,25 +453,17 @@ export class CelestialBody {
         : 1;
 
     this.angle =
-      this.initialAngle +
-      direction *
-      this.orbitSpeed *
-      absoluteHours;
+      this.manualOrbitPosition !== null
+        ? this.manualOrbitPosition +
+          direction *
+          this.orbitSpeed *
+          absoluteHours
+        : this.initialAngle +
+          direction *
+          this.orbitSpeed *
+          absoluteHours;
 
-    this.mesh.position.copy(
-      OrbitMath.getPosition(
-        this.orbitRadius,
-        this.orbitEccentricity,
-        this.angle,
-        this.orbitPlane,
-        this.orbitInclination,
-        this.orbitAscendingNode,
-        this.orbitPlaneOffset,
-        this.orbitOffsetX,
-        this.orbitOffsetY,
-        this.orbitOffsetZ
-      )
-    );
+    this.updateAtCurrentAngle();
   }
 
   dispose() {
