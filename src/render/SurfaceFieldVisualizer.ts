@@ -203,25 +203,22 @@ export class SurfaceFieldVisualizer {
                 vUv
               );
 
-            // LIGHT_TOTAL stores the physically evaluated incident radiation.
-            // Convert its normalized diagnostic signal into presentation
-            // brightness without altering the underlying field values.
+            // fieldTexture is the physically evaluated LIGHT_TOTAL map.
+            // Use it only as a presentation brightness multiplier; no
+            // radiation values are fed back into the simulation.
             float physicalLight =
               clamp(
-                texture2D(
-                  fieldTexture,
-                  vUv
-                ).r *
+                value *
                 physicalExposure,
-                0.0,
+                0.03,
                 1.0
               );
 
             vec3 physicallyLitBase =
               base.rgb *
               (
-                0.08 +
-                0.92 * physicalLight
+                0.12 +
+                0.88 * physicalLight
               );
 
             vec3 fieldColor =
