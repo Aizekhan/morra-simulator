@@ -11,7 +11,19 @@ export class CameraController {
   // The camera may zoom from system scale down to just above Morra's surface.
   private morraRadius = 120;
 
+  private systemExtent = 120;
+
   private initializedForMorra = false;
+
+  setSystemExtent(
+    extent: number
+  ) {
+    this.systemExtent =
+      Math.max(
+        this.morraRadius,
+        extent
+      );
+  }
 
   setMorraRadius(radius: number) {
     this.morraRadius = Math.max(0.1, radius);
@@ -87,7 +99,11 @@ export class CameraController {
   }
 
   resetView() {
-    this.distance = this.getFramingDistance();
+    this.distance =
+      Math.min(
+        this.getFramingDistance(),
+        this.maximumDistance
+      );
     this.yaw = 0;
     this.pitch = 0.2;
   }
@@ -136,15 +152,19 @@ export class CameraController {
   private get maximumDistance() {
     return Math.min(
       Math.max(
+        this.systemExtent * 3,
         this.morraRadius * 40,
         1200000
       ),
-      1800000
+      3600000
     );
   }
 
   private getFramingDistance() {
-    return this.morraRadius * 2.6;
+    return Math.max(
+      this.morraRadius * 2.6,
+      this.systemExtent * 2.2
+    );
   }
 
   yaw = 0;
