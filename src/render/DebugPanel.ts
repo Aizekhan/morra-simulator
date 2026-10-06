@@ -687,6 +687,11 @@ export class DebugPanel {
 
     folder.add(
       MORRA_CONFIG.DEBUG,
+      "showEclipseShadows"
+    ).name("ECLIPSE SHADOW").listen();
+
+    folder.add(
+      MORRA_CONFIG.DEBUG,
       "showRadiationRays"
     ).name("POINT DEBUG").listen();
 
