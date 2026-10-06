@@ -47,6 +47,8 @@ export class SurfaceFieldVisualizer {
   private readonly physicalLightTexture:
     THREE.DataTexture;
 
+  private surfaceRadius = 1;
+
 
 
   private channel:
@@ -226,7 +228,7 @@ export class SurfaceFieldVisualizer {
       1;
 
     this.overlay.scale.setScalar(
-      69911 * 1.006
+      this.surfaceRadius * 1.006
     );
 
     this.morra.add(
@@ -567,6 +569,8 @@ export class SurfaceFieldVisualizer {
   setRadius(
     radius: number
   ) {
+
+    this.surfaceRadius = radius;
 
     this.overlay.scale.setScalar(
       radius * 1.006
