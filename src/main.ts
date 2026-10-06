@@ -157,6 +157,39 @@ function animate() {
     MORRA_CONFIG.LIGHTS.ambient
   );
 
+  renderer.syncCelestialLights([
+    {
+      mesh:
+        simulation.morraSystem.sunLarge.mesh,
+      color:
+        MORRA_CONFIG.LIGHTS.LARGE.color,
+      intensity:
+        MORRA_CONFIG.LIGHTS.LARGE.intensity,
+      visible:
+        simulation.morraSystem.sunLarge.mesh.visible
+    },
+    {
+      mesh:
+        simulation.morraSystem.sunMedium.mesh,
+      color:
+        MORRA_CONFIG.LIGHTS.MEDIUM.color,
+      intensity:
+        MORRA_CONFIG.LIGHTS.MEDIUM.intensity,
+      visible:
+        simulation.morraSystem.sunMedium.mesh.visible
+    },
+    {
+      mesh:
+        simulation.morraSystem.sunSmall.mesh,
+      color:
+        MORRA_CONFIG.LIGHTS.SMALL.color,
+      intensity:
+        MORRA_CONFIG.LIGHTS.SMALL.intensity,
+      visible:
+        simulation.morraSystem.sunSmall.mesh.visible
+    }
+  ]);
+
   const frame =
     simulation.update();
 
