@@ -255,7 +255,9 @@ export class CelestialInteractionSystem {
         heatPower:
           0,
         magicPower:
-          0
+          0,
+        allowIndirectReflection:
+          false
       });
     }
   }
