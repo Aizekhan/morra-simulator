@@ -157,6 +157,12 @@ function animate() {
     MORRA_CONFIG.LIGHTS.ambient
   );
 
+  const frame =
+    simulation.update();
+
+  // Presentation lights must be synchronized after the deterministic
+  // astronomy/physics step so visuals use exactly the same source positions
+  // as radiation, shadows and surface fields for this frame.
   renderer.syncCelestialLights([
     {
       mesh:
@@ -189,9 +195,6 @@ function animate() {
         simulation.morraSystem.sunSmall.mesh.visible
     }
   ]);
-
-  const frame =
-    simulation.update();
 
   cameraController.setMorraRadius(
     simulation.morraSystem.morra.radius
