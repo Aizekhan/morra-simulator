@@ -714,19 +714,19 @@ export class SurfaceFieldEngine {
         equatorMoonLight[index] =
           sampleData.equatorMoonLight;
 
-        spectrumRed[index] =
+        (spectrumRed as Float32Array)[index] =
           sampleData.spectrumRed;
 
-        spectrumGreen[index] =
+        (spectrumGreen as Float32Array)[index] =
           sampleData.spectrumGreen;
 
-        spectrumBlue[index] =
+        (spectrumBlue as Float32Array)[index] =
           sampleData.spectrumBlue;
 
-        spectrumIntensity[index] =
+        (spectrumIntensity as Float32Array)[index] =
           sampleData.spectrumIntensity;
 
-        dayNight[index] =
+        (dayNight as Float32Array)[index] =
           sampleData.dayNight;
 
         northMoonLightSum +=
