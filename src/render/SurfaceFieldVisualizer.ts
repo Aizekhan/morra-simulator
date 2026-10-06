@@ -44,11 +44,14 @@ export class SurfaceFieldVisualizer {
   private readonly valueTexture:
     THREE.DataTexture;
 
+  private readonly physicalLightTexture:
+    THREE.DataTexture;
+
 
 
   private channel:
     SurfaceFieldChannel =
-      "LIGHT_TOTAL";
+      "MAGIC_TOTAL";
 
   private opacity =
     0.48;
@@ -103,6 +106,9 @@ export class SurfaceFieldVisualizer {
     this.valueTexture =
       this.texture;
 
+    this.physicalLightTexture =
+      this.texture;
+
     this.texture.magFilter =
       THREE.LinearFilter;
 
@@ -114,8 +120,8 @@ export class SurfaceFieldVisualizer {
 
     this.material =
       new THREE.ShaderMaterial({
-        transparent: false,
-        depthWrite: true,
+        transparent: true,
+        depthWrite: false,
         side: THREE.DoubleSide,
         toneMapped: false,
         uniforms: {
@@ -203,22 +209,25 @@ export class SurfaceFieldVisualizer {
                 vUv
               );
 
-            // fieldTexture is the physically evaluated LIGHT_TOTAL map.
-            // Use it only as a presentation brightness multiplier; no
-            // radiation values are fed back into the simulation.
+            // LIGHT_TOTAL stores the physically evaluated incident radiation.
+            // Convert its normalized diagnostic signal into presentation
+            // brightness without altering the underlying field values.
             float physicalLight =
               clamp(
-                value *
+                texture2D(
+                  fieldTexture,
+                  vUv
+                ).r *
                 physicalExposure,
-                0.03,
+                0.0,
                 1.0
               );
 
             vec3 physicallyLitBase =
               base.rgb *
               (
-                0.12 +
-                0.88 * physicalLight
+                0.08 +
+                0.92 * physicalLight
               );
 
             vec3 fieldColor =
@@ -253,13 +262,34 @@ export class SurfaceFieldVisualizer {
                   )
                 : physicallyLitBase;
 
-            // This material is the physical surface presentation itself,
-            // so it must stay opaque. A diagnostic "presence" test would
-            // accidentally discard the entire unlit hemisphere.
+            float fieldPresence =
+              smoothstep(
+                0.0,
+                0.001,
+                value
+              );
+
+            float alpha =
+              fieldPresence;
+
+            if(alpha <= 0.001) {
+              discard;
+            }
+
+            // Keep the geographic texture visually present under diagnostics.
+            // The field is an overlay, not an opaque replacement texture.
+            float finalAlpha =
+              clamp(
+                0.18 +
+                fieldBlend * 0.82,
+                0.0,
+                1.0
+              );
+
             gl_FragColor =
               vec4(
                 color,
-                1.0
+                finalAlpha
               );
           }
         `
@@ -607,6 +637,10 @@ export class SurfaceFieldVisualizer {
    */
   getValueTexture() {
     return this.valueTexture;
+  }
+
+  getPhysicalLightTexture() {
+    return this.physicalLightTexture;
   }
 
   setRadius(
