@@ -85,9 +85,9 @@ export const MORRA_CONFIG = {
     orbitSpeed: 360 / (40 * 30),
 
     // Canonical starting polar orbit.
-    orbitPlane: "YZ" as const,
+    orbitPlane: "XZ" as const,
 
-    orbitInclination: 0,
+    orbitInclination: 90,
 
     orbitAscendingNode: 0,
 
