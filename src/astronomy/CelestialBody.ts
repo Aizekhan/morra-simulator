@@ -110,9 +110,13 @@ export class CelestialBody {
       renderMode;
 
     this.material =
-      new THREE.MeshBasicMaterial({
-        color: 0xffffff
-      });
+      renderMode === "SELF_LUMINOUS"
+        ? new THREE.MeshBasicMaterial({
+            color: color
+          })
+        : new THREE.MeshBasicMaterial({
+            color: 0xffffff
+          });
 
     this.mesh =
       new THREE.Mesh(
