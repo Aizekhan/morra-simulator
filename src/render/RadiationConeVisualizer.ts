@@ -346,17 +346,20 @@ export class RadiationConeVisualizer {
         )
       );
 
+    const divergenceAngle =
+      Math.min(
+        sourceAngle *
+        this.radialScale,
+        Math.PI / 3
+      );
+
     const endRadius =
       Math.max(
         startRadius,
         startRadius +
         coneDepth *
         Math.tan(
-          Math.min(
-            sourceAngle *
-            this.radialScale,
-            Math.PI / 3
-          )
+          divergenceAngle
         )
       );
 
