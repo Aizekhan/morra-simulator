@@ -183,11 +183,19 @@ export class RadiationEngine {
           RadiationEngine.EPSILON
         );
 
+      const sourceReferenceDistance =
+        Math.max(
+          source.body.radius,
+          RadiationEngine.EPSILON
+        );
+
       const influence =
         Math.max(
           RadiationEngine.MINIMUM_INFLUENCE_FACTOR,
           geometricFalloff
-        );
+        ) *
+        sourceReferenceDistance *
+        sourceReferenceDistance;
 
       const directLightContribution =
         source.lightPower *
