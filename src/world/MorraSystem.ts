@@ -915,9 +915,6 @@ export class MorraSystem {
 
     if(fieldMap) {
       this.surfaceFieldVisualizer.update(fieldMap);
-      this.surfaceFieldVisualizer.updatePhysicalSurfaceTexture(
-        fieldMap
-      );
     }
 
     // Radiation geometry is debug-only and is rebuilt from the already-updated
