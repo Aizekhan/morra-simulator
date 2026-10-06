@@ -55,27 +55,6 @@ interface MoonVisual {
 
 export class DirectIlluminationVisualizer {
 
-  private getMoonPhaseFraction(
-    moonToSource: THREE.Vector3,
-    moonToMorraDirection: THREE.Vector3
-  ) {
-    const phaseCosine =
-      THREE.MathUtils.clamp(
-        moonToSource.dot(
-          moonToMorraDirection
-        ),
-        -1,
-        1
-      );
-
-    return (
-      1 +
-      phaseCosine
-    ) *
-    0.5;
-  }
-
-
   constructor(
     scene: THREE.Scene,
     engine: CelestialInteractionSystem
@@ -546,10 +525,16 @@ export class DirectIlluminationVisualizer {
           ) *
           visibility.factor;
 
-        const phase =
-          this.getMoonPhaseFraction(
-            moonToSource,
-            moonToMorraDirection
+        // Visual diagnostic intentionally mirrors the physics model:
+        // source irradiance follows inverse-square attenuation and the
+        // apparent reflected contribution is modulated by the same visible
+        // hemisphere geometry used by the moon reflection integrator.
+        const observerCosine =
+          Math.max(
+            0,
+            moonToSource.dot(
+              moonToMorraDirection
+            )
           );
 
         const reflected =
@@ -557,7 +542,7 @@ export class DirectIlluminationVisualizer {
           moon.radius *
           moon.radius *
           MORRA_CONFIG.MOON_REFLECTION.albedo *
-          phase /
+          observerCosine /
           (
             moonMorraDistance *
             moonMorraDistance
