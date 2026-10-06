@@ -304,6 +304,21 @@ export class SurfaceFieldEngine {
     return map;
   }
 
+  /**
+   * Returns the last physically evaluated surface map, building it once
+   * when no map exists. Rendering code may use this as its authoritative
+   * presentation input without duplicating radiation calculations.
+   */
+  getOrCreateMap(
+    absoluteHours: number
+  ) {
+    return this.map ??
+      this.update(
+        absoluteHours,
+        true
+      );
+  }
+
   private buildMap(
     absoluteHours: number
   ): SurfaceFieldMap {
