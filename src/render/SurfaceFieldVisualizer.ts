@@ -658,14 +658,20 @@ export class SurfaceFieldVisualizer {
         return {
           min: 0,
           max: 1,
-          average: 0
+          average:
+            this.average(
+              map.magosphereStability
+            )
         };
 
       case "ANOMALY":
         return {
           min: 0,
           max: 1,
-          average: 0
+          average:
+            this.average(
+              map.anomalyStrength
+            )
         };
 
       case "SHADOW":
@@ -675,14 +681,20 @@ export class SurfaceFieldVisualizer {
         return {
           min: 0,
           max: 1,
-          average: 0
+          average:
+            this.average(
+              map.umbra
+            )
         };
 
       case "PENUMBRA":
         return {
           min: 0,
           max: 1,
-          average: 0
+          average:
+            this.average(
+              map.penumbra
+            )
         };
 
       case "LARGE_SUN":
@@ -721,6 +733,26 @@ export class SurfaceFieldVisualizer {
       default:
         return map.magicStats;
     }
+  }
+
+  private average(
+    values:
+      Float32Array
+  ) {
+
+    let sum = 0;
+
+    for(
+      const value of values
+    ) {
+      sum += value;
+    }
+
+    return sum /
+      Math.max(
+        values.length,
+        1
+      );
   }
 
   private averageDayNight(
