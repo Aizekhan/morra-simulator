@@ -25,7 +25,7 @@ export class Renderer {
         window.innerWidth /
           window.innerHeight,
         1,
-        2000000
+        5000000
       );
 
     this.camera.layers.set(
@@ -40,7 +40,8 @@ export class Renderer {
 
     this.renderer =
       new THREE.WebGLRenderer({
-        antialias: true
+        antialias: true,
+        logarithmicDepthBuffer: true
       });
 
     this.renderer.setPixelRatio(
