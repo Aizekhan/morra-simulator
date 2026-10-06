@@ -48,19 +48,22 @@ export const MORRA_CONFIG = {
     LARGE: {
       color: 0xffcc88,
       intensity: 50,
-      distance: 2000000
+      distance: 2000000,
+      radiationScale: 1
     },
 
     MEDIUM: {
       color: 0xffaa55,
       intensity: 30,
-      distance: 2000000
+      distance: 2000000,
+      radiationScale: 1
     },
 
     SMALL: {
       color: 0xffffcc,
       intensity: 20,
-      distance: 2000000
+      distance: 2000000,
+      radiationScale: 1
     }
 
   },
