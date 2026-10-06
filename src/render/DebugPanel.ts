@@ -896,4 +896,4 @@ export class DebugPanel {
     folder.add(
       MORRA_CONFIG.DEBUG,
       "showSurfaceField"
-    ).name("SURFACE MAP").listen();
+    ).name("SURFACE MAP").listen();\n    folder.close();\n  }\n}\n
