@@ -75,6 +75,75 @@ export class DirectIlluminationVisualizer {
     0.5;
   }
 
+  private getMoonIlluminationBySun(
+    source: typeof this.engine.radiation extends never ? never : any,
+    moon: THREE.Object3D,
+    moonPosition: THREE.Vector3,
+    moonToMorraDirection: THREE.Vector3,
+    moonMorraDistance: number,
+    occluders: ReturnType<CelestialInteractionSystem["environment"]["getOccluders"]>
+  ) {
+    if(!source.body.mesh.visible) {
+      return 0;
+    }
+
+    const sourcePosition =
+      source.body.mesh.getWorldPosition(
+        new THREE.Vector3()
+      );
+
+    const moonToSource =
+      sourcePosition
+        .clone()
+        .sub(moonPosition);
+
+    const sourceDistance =
+      Math.max(
+        moonToSource.length(),
+        0.001
+      );
+
+    moonToSource.normalize();
+
+    const visibility =
+      this.engine.radiation.getVisibilityDetails(
+        moonPosition,
+        source,
+        occluders
+      );
+
+    const sourceRadius =
+      source.emissionReferenceRadius ??
+      source.body.radius;
+
+    const sourceIrradiance =
+      source.lightPower *
+      sourceRadius *
+      sourceRadius /
+      (
+        sourceDistance *
+        sourceDistance
+      ) *
+      visibility.factor;
+
+    const phase =
+      this.getMoonPhaseFraction(
+        moonToSource,
+        moonToMorraDirection
+      );
+
+    return sourceIrradiance *
+      moon.userData.radius *
+      moon.userData.radius *
+      MORRA_CONFIG.MOON_REFLECTION.albedo *
+      phase /
+      (
+        moonMorraDistance *
+        moonMorraDistance
+      ) *
+      MORRA_CONFIG.MOON_REFLECTION.intensityScale;
+  }
+
 
   constructor(
     scene: THREE.Scene,
