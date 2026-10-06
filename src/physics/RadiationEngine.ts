@@ -81,7 +81,7 @@ export class RadiationEngine {
   private readonly sources: RadiationSource[] = [];
 
   private readonly enableIndirectReflection =
-    true;
+    false;
 
   static readonly BASE_RADIATION_RANGE = 10000;
 
