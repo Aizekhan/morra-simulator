@@ -253,34 +253,13 @@ export class SurfaceFieldVisualizer {
                   )
                 : physicallyLitBase;
 
-            float fieldPresence =
-              smoothstep(
-                0.0,
-                0.001,
-                value
-              );
-
-            float alpha =
-              fieldPresence;
-
-            if(alpha <= 0.001) {
-              discard;
-            }
-
-            // Keep the geographic texture visually present under diagnostics.
-            // The field is an overlay, not an opaque replacement texture.
-            float finalAlpha =
-              clamp(
-                0.18 +
-                fieldBlend * 0.82,
-                0.0,
-                1.0
-              );
-
+            // This material is the physical surface presentation itself,
+            // so it must stay opaque. A diagnostic "presence" test would
+            // accidentally discard the entire unlit hemisphere.
             gl_FragColor =
               vec4(
                 color,
-                finalAlpha
+                1.0
               );
           }
         `
