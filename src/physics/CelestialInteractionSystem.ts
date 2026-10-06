@@ -224,7 +224,9 @@ export class CelestialInteractionSystem {
               body: sun.body,
               lightPower: sun.lightPower * runtimeScale,
               heatPower: 0,
-              magicPower: 0
+              magicPower: 0,
+              allowSecondaryReflection: false,
+              allowIndirectReflection: false
             },
             [
               ...this.getSourceBodies(),
