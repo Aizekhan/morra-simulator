@@ -225,7 +225,9 @@ export class CelestialInteractionSystem {
             [
               ...this.getSourceBodies(),
               ...this.getMoonBodies()
-            ]
+            ].filter(
+              body => body !== moon.body
+            )
           );
 
         const incoming =
