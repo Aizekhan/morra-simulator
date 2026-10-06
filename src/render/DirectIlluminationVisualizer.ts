@@ -55,6 +55,25 @@ interface MoonVisual {
 
 export class DirectIlluminationVisualizer {
 
+  private getMoonPhaseFraction(
+    moonToSource: THREE.Vector3,
+    moonToMorraDirection: THREE.Vector3
+  ) {
+    const phaseCosine =
+      THREE.MathUtils.clamp(
+        moonToSource.dot(moonToMorraDirection),
+        -1,
+        1
+      );
+
+    return (
+      1 +
+      phaseCosine
+    ) *
+    0.5;
+  }
+
+
   private readonly engine:
     CelestialInteractionSystem;
 
@@ -543,21 +562,11 @@ export class DirectIlluminationVisualizer {
           ) *
           visibility.factor;
 
-        const phaseCosine =
-          THREE.MathUtils.clamp(
-            moonToSource.dot(
-              moonToMorraDirection
-            ),
-            -1,
-            1
-          );
-
         const phase =
-          (
-            1 +
-            phaseCosine
-          ) *
-          0.5;
+          this.getMoonPhaseFraction(
+            moonToSource,
+            moonToMorraDirection
+          );
 
         const reflected =
           sourceIrradiance *
