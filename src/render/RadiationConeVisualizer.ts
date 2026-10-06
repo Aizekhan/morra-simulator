@@ -337,25 +337,16 @@ export class RadiationConeVisualizer {
         0.01
       );
 
-    const startDistance =
-      Math.max(
-        source.radius,
-        0.01
-      );
-
-    const endDistance =
-      Math.max(
-        startDistance +
-        coneDepth,
-        startDistance + 0.01
-      );
-
-    const sourceAngularExtent =
+    // The debug volume is drawn from the source to Morra. Its cross-section
+    // is intentionally controlled by the source's angular extent at Morra,
+    // so this visualization does not pretend that inverse-square flux is a
+    // geometric narrowing cone.
+    const morraAngularRadius =
       Math.asin(
         THREE.MathUtils.clamp(
           source.radius /
             Math.max(
-              startDistance,
+              sourceDistanceFromMorra,
               1e-6
             ),
           0,
@@ -365,7 +356,7 @@ export class RadiationConeVisualizer {
 
     const divergenceAngle =
       Math.min(
-        sourceAngularExtent *
+        morraAngularRadius *
         this.radialScale,
         Math.PI / 3
       );
