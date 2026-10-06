@@ -273,7 +273,13 @@ export class RadiationConeVisualizer {
       );
 
     const visibleDistance =
-      occlusionHit?.distance ?? targetDistance;
+      occlusionHit
+        ? Math.max(
+            1,
+            occlusionHit.distance -
+            this.morra.radius * 0.02
+          )
+        : targetDistance;
 
     if(visibleDistance <= 1) {
       return;
