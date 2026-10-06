@@ -175,7 +175,12 @@ function animate() {
       visible:
         simulation.morraSystem.sunLarge.mesh.visible,
       sourceRadius:
-        simulation.morraSystem.sunLarge.radius
+        simulation.morraSystem.sunLarge.radius,
+      referenceDistance:
+        simulation.morraSystem.sunLarge.orbitRadius,
+      radiationScale:
+        MORRA_CONFIG.LIGHTS.LARGE.radiationScale *
+        MORRA_CONFIG.LIGHTS.LARGE.presentationScale
     },
     {
       mesh:
@@ -188,7 +193,12 @@ function animate() {
       visible:
         simulation.morraSystem.sunMedium.mesh.visible,
       sourceRadius:
-        simulation.morraSystem.sunMedium.radius
+        simulation.morraSystem.sunMedium.radius,
+      referenceDistance:
+        simulation.morraSystem.sunMedium.orbitRadius,
+      radiationScale:
+        MORRA_CONFIG.LIGHTS.MEDIUM.radiationScale *
+        MORRA_CONFIG.LIGHTS.MEDIUM.presentationScale
     },
     {
       mesh:
@@ -201,7 +211,12 @@ function animate() {
       visible:
         simulation.morraSystem.sunSmall.mesh.visible,
       sourceRadius:
-        simulation.morraSystem.sunSmall.radius
+        simulation.morraSystem.sunSmall.radius,
+      referenceDistance:
+        simulation.morraSystem.sunSmall.orbitRadius,
+      radiationScale:
+        MORRA_CONFIG.LIGHTS.SMALL.radiationScale *
+        MORRA_CONFIG.LIGHTS.SMALL.presentationScale
     }
   ]);
 
