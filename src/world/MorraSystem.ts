@@ -456,6 +456,8 @@ export class MorraSystem {
                 MORRA_CONFIG.SUN_LARGE.radiationRole
               ].magicPower *
               MORRA_CONFIG.LIGHTS.LARGE.radiationScale,
+            emissionReferenceRadius:
+              MORRA_CONFIG.SUN_LARGE.radius,
             visible:
               () =>
                 MORRA_CONFIG.SUN_LARGE.visible
@@ -486,6 +488,8 @@ export class MorraSystem {
                 MORRA_CONFIG.SUN_MEDIUM.radiationRole
               ].magicPower *
               MORRA_CONFIG.LIGHTS.MEDIUM.radiationScale,
+            emissionReferenceRadius:
+              MORRA_CONFIG.SUN_MEDIUM.radius,
             visible:
               () =>
                 MORRA_CONFIG.SUN_MEDIUM.visible
@@ -516,6 +520,8 @@ export class MorraSystem {
                 MORRA_CONFIG.SUN_SMALL.radiationRole
               ].magicPower *
               MORRA_CONFIG.LIGHTS.SMALL.radiationScale,
+            emissionReferenceRadius:
+              MORRA_CONFIG.SUN_SMALL.radius,
             visible:
               () =>
                 MORRA_CONFIG.SUN_SMALL.visible
