@@ -235,6 +235,9 @@ export class SurfaceFieldVisualizer {
       this.surfaceRadius * 1.001
     );
 
+    // Keep the physical shell renderable independently of diagnostic toggles.
+    this.overlay.visible = true;
+
     this.morra.add(
       this.overlay
     );
