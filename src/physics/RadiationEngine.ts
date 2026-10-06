@@ -158,6 +158,10 @@ export class RadiationEngine {
           )
         );
 
+      if (source.body.mesh.visible === false) {
+        continue;
+      }
+
       const visibility =
         this.getVisibilityDetails(
           worldPoint,
