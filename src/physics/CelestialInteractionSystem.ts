@@ -182,6 +182,37 @@ export class CelestialInteractionSystem {
     );
   }
 
+  private getMoonPhaseFraction(
+    sunPosition: THREE.Vector3,
+    moonPosition: THREE.Vector3,
+    observerPosition: THREE.Vector3
+  ) {
+    const sunDirection =
+      sunPosition
+        .clone()
+        .sub(moonPosition)
+        .normalize();
+
+    const observerDirection =
+      observerPosition
+        .clone()
+        .sub(moonPosition)
+        .normalize();
+
+    const phaseCosine =
+      THREE.MathUtils.clamp(
+        sunDirection.dot(observerDirection),
+        -1,
+        1
+      );
+
+    return (
+      1 +
+      phaseCosine
+    ) *
+    0.5;
+  }
+
   private updateMoonReflections() {
     if(!MORRA_CONFIG.MOON_REFLECTION.enabled) {
       for(const moon of this.moonTargets) {
@@ -255,40 +286,21 @@ export class CelestialInteractionSystem {
           (distance * distance) *
           moonVisibility;
 
-        // Phase is evaluated from the Sun-Moon-Morra geometry.
-        const sunDirection =
-          sunPosition
-            .clone()
-            .sub(moonPosition)
-            .normalize();
-
-        const observerDirection =
-          this.environment.morra.mesh
-            .getWorldPosition(
+        // Each sun has its own phase relative to this moon and Morra.
+        // Contributions are summed, so multiple suns can illuminate the
+        // moon simultaneously without overwriting one another.
+        const phase =
+          this.getMoonPhaseFraction(
+            sunPosition,
+            moonPosition,
+            this.environment.morra.mesh.getWorldPosition(
               new THREE.Vector3()
             )
-            .sub(moonPosition)
-            .normalize();
-
-        const phaseCosine =
-          THREE.MathUtils.clamp(
-            sunDirection.dot(
-              observerDirection
-            ),
-            -1,
-            1
           );
-
-        const illuminatedFraction =
-          (
-            1 +
-            phaseCosine
-          ) *
-          0.5;
 
         const phaseAdjustedIncoming =
           incoming *
-          illuminatedFraction;
+          phase;
 
         sourceContributions.push(
           phaseAdjustedIncoming
