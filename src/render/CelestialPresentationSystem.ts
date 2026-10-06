@@ -118,11 +118,15 @@ export class CelestialPresentationSystem {
       const bodyMesh =
         proxy.body.mesh;
 
-      // Never hide the real body. This is the critical invariant:
-      // orbit visibility and physical-body visibility must not depend
-      // on presentation/LOD decisions.
-      bodyMesh.visible =
-        true;
+      // Respect the physical body's live visibility flag. The proxy
+      // may only improve readability while the real body is enabled.
+      if(
+        bodyMesh.visible === false
+      ) {
+        proxy.mesh.visible =
+          false;
+        continue;
+      }
 
       const worldPosition =
         bodyMesh.getWorldPosition(
