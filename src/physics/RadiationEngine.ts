@@ -80,6 +80,9 @@ export class RadiationEngine {
 
   private readonly sources: RadiationSource[] = [];
 
+  private readonly enableIndirectReflection =
+    true;
+
   static readonly BASE_RADIATION_RANGE = 10000;
 
   private static readonly MINIMUM_INFLUENCE_FACTOR =
