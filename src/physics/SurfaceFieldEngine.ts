@@ -4,6 +4,22 @@ import {
   MorraEnvironmentEngine
 } from "./MorraEnvironmentEngine";
 
+export interface SurfaceMaterialProperties {
+
+  /**
+   * Fraction of incident visible/radiative light that is reflected.
+   * This is intentionally explicit and provisional until Morra's
+   * canonical surface material model is authored.
+   */
+  albedo: number;
+
+  /**
+   * Fraction of reflected light response retained as diffuse
+   * surface illumination.
+   */
+  diffuseResponse: number;
+}
+
 export interface SurfaceFieldConfig {
 
   latitudeSegments: number;
