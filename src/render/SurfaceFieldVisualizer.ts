@@ -207,16 +207,25 @@ export class SurfaceFieldVisualizer {
                     value
                   );
 
+            float fieldBlend =
+              clamp(
+                opacity * (
+                  0.35 +
+                  0.65 * smoothstep(
+                    0.0,
+                    0.001,
+                    value
+                  )
+                ),
+                0.0,
+                1.0
+              );
+
             vec3 color =
               mix(
                 base.rgb,
                 fieldColor,
-                opacity * smoothstep(
-                  0.0,
-                  0.001,
-                  value
-                ) +
-                opacity * 0.35
+                fieldBlend
               );
 
             float fieldPresence =
