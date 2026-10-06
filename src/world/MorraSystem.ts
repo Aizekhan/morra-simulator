@@ -857,7 +857,11 @@ export class MorraSystem {
 
     this.celestialInteractionSystem.update();
 
+    // Keep the physical surface field as the authoritative visual source.
+    // The Three.js PointLights remain a presentation aid only.
     this.surfaceFieldEngine.setConfig({
+      surfaceMaterial:
+        MORRA_CONFIG.SURFACE_MATERIAL,
       latitudeSegments:
         MORRA_CONFIG.SURFACE_FIELD.latitudeSegments,
       longitudeSegments:
