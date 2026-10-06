@@ -17,7 +17,7 @@ export const MORRA_CONFIG = {
 
   MORRA_SURFACE_TEXTURE_ENABLED: true,
 
-  MORRA_BASE_EMISSIVE: 0.35,
+  MORRA_BASE_EMISSIVE: 0,
 
   // Canonical axial tilt.
   AXIS_TILT: 25,
@@ -44,7 +44,7 @@ export const MORRA_CONFIG = {
   LIGHTS: {
 
     // Scene ambient is a display control only. Physical radiation remains in the celestial model.
-    ambient: 0.15,
+    ambient: 0.02,
 
     LARGE: {
       color: 0xffcc88,
