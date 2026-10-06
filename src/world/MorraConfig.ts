@@ -14,6 +14,10 @@ export const MORRA_CONFIG = {
   // remains in use until an authored equirectangular map is added.
   MORRA_SURFACE_TEXTURE: "",
 
+  MORRA_SURFACE_TEXTURE_OPACITY: 1,
+
+  MORRA_SURFACE_TEXTURE_ENABLED: false,
+
   // Render-only base emissive so Morra remains visually readable
   // when the physical light sources are on the far side.
   // Keep the real Morra mesh visibly readable at system scale; this is render-only and does not change physical radiation.
