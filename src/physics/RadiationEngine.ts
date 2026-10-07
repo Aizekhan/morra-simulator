@@ -204,23 +204,9 @@ export class RadiationEngine {
       const visibilityFactor =
         visibility.factor;
 
-      const distanceSquared =
-        distance *
-        distance;
-
       const emissionRadius =
         source.emissionReferenceRadius ??
         source.body.radius;
-
-      const sourceReferenceArea =
-        Math.max(
-          emissionRadius,
-          RadiationEngine.EPSILON
-        ) *
-        Math.max(
-          emissionRadius,
-          RadiationEngine.EPSILON
-        );
 
       /*
        * Inverse-square attenuation is explicit:
