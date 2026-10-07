@@ -80,8 +80,8 @@ export class SurfaceFieldVisualizer {
         fieldTexture: { value: this.texture },
         baseTexture: { value: null },
         physicalExposure: { value: 1 },
-        physicalFloor: { value: 0.03 },
-        physicalGamma: { value: 0.5 }
+        physicalFloor: { value: 0.02 },
+        physicalGamma: { value: 0.55 }
       },
 
       vertexShader: `
@@ -202,7 +202,7 @@ export class SurfaceFieldVisualizer {
 
   setRadius(radius: number) {
     this.surfaceRadius = radius;
-    this.surfaceMesh.scale.setScalar(radius * 1.0002);
+    this.surfaceMesh.scale.setScalar(radius * 1.00005);
   }
 
   private updateMap(map: SurfaceFieldMap) {
@@ -221,7 +221,7 @@ export class SurfaceFieldVisualizer {
 
       const normalized =
         this.channel === "LIGHT_TOTAL"
-          ? THREE.MathUtils.clamp(raw * 1000000, 0, 1)
+          ? THREE.MathUtils.clamp(raw * 5000000, 0, 1)
           : hasRange
             ? THREE.MathUtils.clamp((raw - stats.min) / range, 0, 1)
             : THREE.MathUtils.clamp(raw, 0, 1);
