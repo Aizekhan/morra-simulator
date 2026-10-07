@@ -101,7 +101,7 @@ export class SurfaceFieldVisualizer {
     enabled: boolean
   ) {
     this.enabled = enabled;
-    this.material.emissiveIntensity = enabled ? 1 : 0;
+    this.material.emissiveIntensity = enabled ? 0.28 : 0;
     this.material.needsUpdate = true;
   }
 
