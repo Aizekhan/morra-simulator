@@ -55,7 +55,9 @@ export class SurfaceFieldVisualizer {
       THREE.UnsignedByteType
     );
 
-    this.texture.flipY = false;
+    // The surface map is sampled in the same equirectangular UV orientation
+    // as Morra's world texture.
+    this.texture.flipY = true;
     this.texture.wrapS = THREE.ClampToEdgeWrapping;
     this.texture.wrapT = THREE.ClampToEdgeWrapping;
     this.texture.minFilter = THREE.LinearFilter;
