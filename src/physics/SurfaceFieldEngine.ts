@@ -266,6 +266,12 @@ export class SurfaceFieldEngine {
     return this.map;
   }
 
+  getSample(
+    index: number
+  ) {
+    return this.map?.samples[index] ?? null;
+  }
+
   update(
     absoluteHours: number,
     force = false
