@@ -35,6 +35,9 @@ export class SurfaceFieldVisualizer {
   private baseTexture:
     THREE.Texture | null = null;
 
+  private readonly surfaceMesh:
+    THREE.Mesh;
+
   private width: number;
   private height: number;
   private surfaceRadius = 1;
@@ -128,7 +131,13 @@ export class SurfaceFieldVisualizer {
       `
     });
 
-    this.morra.add(this.materialMesh());
+    this.surfaceMesh =
+      this.materialMesh();
+
+    this.morra.add(
+      this.surfaceMesh
+    );
+
     this.setRadius(this.surfaceRadius);
     this.setEnabled(true);
   }
@@ -148,9 +157,7 @@ export class SurfaceFieldVisualizer {
   }
 
   private get mesh(): THREE.Mesh {
-    return this.morra.getObjectByName(
-      "Morra Physical Surface"
-    ) as THREE.Mesh;
+    return this.surfaceMesh;
   }
 
   setBaseTexture(texture: THREE.Texture | null) {
@@ -310,8 +317,8 @@ export class SurfaceFieldVisualizer {
   }
 
   dispose() {
-    this.mesh.removeFromParent();
-    this.mesh.geometry.dispose();
+    this.surfaceMesh.removeFromParent();
+    this.surfaceMesh.geometry.dispose();
     this.material.dispose();
     this.texture.dispose();
   }
