@@ -183,7 +183,7 @@ export class SurfaceFieldVisualizer {
 
   setEnabled(enabled: boolean) {
     this.enabled = enabled;
-    this.mesh.visible = enabled;
+    this.surfaceMesh.visible = enabled;
   }
 
   isEnabled() {
@@ -206,7 +206,7 @@ export class SurfaceFieldVisualizer {
 
   setRadius(radius: number) {
     this.surfaceRadius = radius;
-    this.mesh.scale.setScalar(radius * 1.0002);
+    this.surfaceMesh.scale.setScalar(radius * 1.0002);
   }
 
   private updateMap(map: SurfaceFieldMap) {
