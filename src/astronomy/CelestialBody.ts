@@ -110,7 +110,9 @@ export class CelestialBody {
         : new THREE.MeshStandardMaterial({
             color: 0xffffff,
             roughness: 1,
-            metalness: 0
+            metalness: 0,
+            emissive: 0x000000,
+            emissiveIntensity: 0
           });
 
     this.mesh =
