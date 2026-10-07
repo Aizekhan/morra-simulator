@@ -116,7 +116,7 @@ export class SurfaceFieldVisualizer {
         lightingMarker,
         lightingReplacement
       );
-        this.shaderUniforms.lightField = shader.uniforms.morraLightField;
+      this.shaderUniforms.lightField = shader.uniforms.morraLightField;
     };
 
     this.material.needsUpdate = true;
