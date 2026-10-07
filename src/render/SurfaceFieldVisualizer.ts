@@ -90,7 +90,7 @@ export class SurfaceFieldVisualizer {
 
       shader.fragmentShader = shader.fragmentShader.replace(
         "#include <opaque_fragment>",
-        "#include <opaque_fragment>\nfloat morraPhysicalLight = clamp(texture2D(morraLightField, vMapUv).r * morraLightExposure, 0.0, 1.0);\nfloat morraSurfaceBrightness = mix(morraNightFloor, 1.0, pow(morraPhysicalLight, morraLightGamma));\noutgoingLight = diffuseColor.rgb * morraSurfaceBrightness;"
+        "float morraPhysicalLight = clamp(texture2D(morraLightField, vUv).r * morraLightExposure, 0.0, 1.0);\nfloat morraSurfaceBrightness = mix(morraNightFloor, 1.0, pow(morraPhysicalLight, morraLightGamma));\noutgoingLight = diffuseColor.rgb * morraSurfaceBrightness;\n#include <opaque_fragment>"
       );
 
       this.shaderUniforms.lightField = shader.uniforms.morraLightField;
