@@ -23,7 +23,6 @@ export type SurfaceFieldChannel =
 
 export class SurfaceFieldVisualizer {
 
-  private readonly morra: THREE.Mesh;
   private readonly texture: THREE.DataTexture;
   private readonly material: THREE.MeshStandardMaterial;
   private readonly originalOnBeforeCompile:
@@ -46,7 +45,6 @@ export class SurfaceFieldVisualizer {
     initialWidth: number,
     initialHeight: number
   ) {
-    this.morra = morra;
     this.width = initialWidth;
     this.height = initialHeight;
 
