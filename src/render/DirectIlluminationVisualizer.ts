@@ -323,7 +323,7 @@ export class DirectIlluminationVisualizer {
       this.setLine(
         visual.line,
         sourcePosition,
-        surfacePoint
+        center
       );
 
       visual.spot.position.copy(
