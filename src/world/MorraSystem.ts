@@ -947,6 +947,9 @@ export class MorraSystem {
       MORRA_CONFIG.DEBUG.showLightHelpers
     );
 
+    // Debug radiation rays use the actual geometric center of Morra.
+    // The cyan center marker is intentionally independent from the axis helpers.
+
     this.radiationRayVisualizer.update();
 
     this.eclipseShadowVisualizer.setConfig({
