@@ -26,6 +26,9 @@ export class SurfaceFieldVisualizer {
   private readonly morra: THREE.Mesh;
   private readonly texture: THREE.DataTexture;
   private readonly material: THREE.MeshStandardMaterial;
+  private readonly originalOnBeforeCompile:
+    THREE.Material["onBeforeCompile"];
+
   private readonly shaderUniforms: {
     lightField?: { value: THREE.Texture };
     lightExposure?: { value: number };
@@ -52,6 +55,8 @@ export class SurfaceFieldVisualizer {
     }
 
     this.material = morra.material;
+    this.originalOnBeforeCompile =
+      this.material.onBeforeCompile;
 
     this.texture = new THREE.DataTexture(
       new Uint8Array(initialWidth * initialHeight * 4),
@@ -78,6 +83,13 @@ export class SurfaceFieldVisualizer {
     // LIGHT_TOTAL is applied to Morra's actual material. The geographic
     // texture remains authoritative; no secondary surface geometry is used.
     this.material.onBeforeCompile = (shader) => {
+      if(this.originalOnBeforeCompile) {
+        this.originalOnBeforeCompile(
+          shader,
+          this.material
+        );
+      }
+
       shader.uniforms.morraLightField = { value: this.texture };
       shader.uniforms.morraLightExposure = { value: 1.0 };
       shader.uniforms.morraNightFloor = { value: 0.02 };
@@ -406,7 +418,7 @@ export class SurfaceFieldVisualizer {
 
   dispose() {
     this.texture.dispose();
-    this.material.onBeforeCompile = undefined;
+    this.material.onBeforeCompile = this.originalOnBeforeCompile;
     this.material.needsUpdate = true;
   }
 }
