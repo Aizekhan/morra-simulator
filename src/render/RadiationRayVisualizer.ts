@@ -29,6 +29,9 @@ export class RadiationRayVisualizer {
   private enabled =
     true;
 
+  private readonly centerMarker:
+    THREE.Mesh;
+
   constructor(
     scene: THREE.Scene,
     engine: MorraEnvironmentEngine
@@ -66,7 +69,22 @@ export class RadiationRayVisualizer {
       this.marker
     );
 
+    this.centerMarker =
+      new THREE.Mesh(
+        new THREE.SphereGeometry(8, 16, 16),
+        new THREE.MeshBasicMaterial({
+          color: 0x00ffff
+        })
+      );
+
+    this.root.add(
+      this.centerMarker
+    );
+
     this.marker.visible =
+      false;
+
+    this.centerMarker.visible =
       false;
   }
 
@@ -109,6 +127,14 @@ export class RadiationRayVisualizer {
         .evaluateLocalPoint(
           this.localPoint
         );
+
+    const center =
+      this.engine.morra.mesh.getWorldPosition(
+        new THREE.Vector3()
+      );
+
+    this.centerMarker.position.copy(center);
+    this.centerMarker.visible = true;
 
     this.marker.position.copy(
       sample.point
