@@ -61,7 +61,7 @@ export class SurfaceFieldVisualizer {
       THREE.UnsignedByteType
     );
 
-    this.texture.flipY = true;
+    this.texture.flipY = false;
     this.texture.minFilter = THREE.LinearFilter;
     this.texture.magFilter = THREE.LinearFilter;
     this.texture.colorSpace = THREE.NoColorSpace;
