@@ -94,7 +94,7 @@ export class SurfaceFieldVisualizer {
 
       shader.vertexShader = shader.vertexShader.replace(
         "#include <begin_vertex>",
-        "#include <begin_vertex>\nmorraFieldUv = uv;"
+        "#include <begin_vertex>\nmorraFieldUv = vec2(1.0 - uv.x, 1.0 - uv.y);"
       );
 
       shader.fragmentShader = shader.fragmentShader.replace(
