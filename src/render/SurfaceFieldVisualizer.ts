@@ -95,11 +95,6 @@ export class SurfaceFieldVisualizer {
       shader.uniforms.morraNightFloor = { value: 0.02 };
       shader.uniforms.morraLightGamma = { value: 0.65 };
 
-      shader.fragmentShader = shader.fragmentShader.replace(
-        "#include <common>",
-        "#include <common>\nuniform sampler2D morraLightField;\nuniform float morraLightExposure;\nuniform float morraNightFloor;\nuniform float morraLightGamma;\nvarying vec2 morraFieldUv;"
-      );
-
       shader.vertexShader = shader.vertexShader.replace(
         "#include <common>",
         "#include <common>\nvarying vec2 morraFieldUv;"
@@ -108,6 +103,11 @@ export class SurfaceFieldVisualizer {
       shader.vertexShader = shader.vertexShader.replace(
         "#include <begin_vertex>",
         "#include <begin_vertex>\nmorraFieldUv = uv;"
+      );
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        "#include <common>",
+        "#include <common>\nuniform sampler2D morraLightField;\nuniform float morraLightExposure;\nuniform float morraNightFloor;\nuniform float morraLightGamma;\nvarying vec2 morraFieldUv;"
       );
 
       shader.fragmentShader = shader.fragmentShader.replace(
