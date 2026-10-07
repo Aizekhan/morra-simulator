@@ -211,15 +211,13 @@ export class Renderer {
   }
 
   update(
-    ambientIntensity = 0
+    _ambientIntensity = 0
   ) {
 
-    this.ambientLight.intensity =
-      THREE.MathUtils.clamp(
-        ambientIntensity,
-        0,
-        10
-      );
+    // Morra's surface is now illuminated by the authoritative physical
+    // LIGHT_TOTAL field. The global ambient channel is reserved for future
+    // non-surface scene elements and does not wash the planet uniformly.
+    this.ambientLight.intensity = 0;
 
   }
 
