@@ -65,7 +65,7 @@ export class SurfaceFieldVisualizer {
 
     this.material.emissive.setHex(0xffffff);
     this.material.emissiveMap = this.texture;
-    this.material.emissiveIntensity = 0;
+    this.material.emissiveIntensity = 1;
     this.material.needsUpdate = true;
   }
 
