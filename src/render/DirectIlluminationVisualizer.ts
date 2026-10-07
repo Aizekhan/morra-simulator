@@ -55,7 +55,6 @@ interface MoonVisual {
 
 export class DirectIlluminationVisualizer {
 
-  private readonly scene: THREE.Scene;
   private readonly engine: CelestialInteractionSystem;
   private readonly root: THREE.Group;
   private readonly visuals: SourceVisual[] = [];
@@ -67,7 +66,6 @@ export class DirectIlluminationVisualizer {
     engine: CelestialInteractionSystem
   ) {
 
-    this.scene = scene;
     this.engine =
       engine;
 
