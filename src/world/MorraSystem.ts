@@ -884,8 +884,7 @@ export class MorraSystem {
         MORRA_CONFIG.SURFACE_FIELD.longitudeSegments,
       updateIntervalHours:
         MORRA_CONFIG.SURFACE_FIELD.updateIntervalHours,
-      // SurfaceField remains the physical diagnostic source. The visible
-      // planet shading is driven separately by the celestial presentation lights.
+      // SurfaceField is the authoritative physical input for Morra's surface material.
       updateIntervalMilliseconds:
         MORRA_CONFIG.SURFACE_FIELD.updateIntervalHours > 0
           ? 250
@@ -1026,7 +1025,7 @@ export class MorraSystem {
           loaded
         );
 
-        this.surfaceFieldVisualizer.setBaseTexture(
+            this.surfaceFieldVisualizer.setBaseTexture(
           loaded
         );
 
