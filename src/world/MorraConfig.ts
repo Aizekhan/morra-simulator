@@ -46,7 +46,7 @@ export const MORRA_CONFIG = {
     // Scene ambient is a display control only. Physical radiation remains in the celestial model.
     // Keep presentation ambient effectively neutral so unlit-side darkness
     // remains driven by the actual celestial source lights.
-    ambient: 0.12,
+    ambient: 0,
 
     LARGE: {
       color: 0xffcc88,
