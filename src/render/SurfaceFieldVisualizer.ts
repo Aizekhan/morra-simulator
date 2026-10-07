@@ -156,10 +156,6 @@ export class SurfaceFieldVisualizer {
     return mesh;
   }
 
-  private get mesh(): THREE.Mesh {
-    return this.surfaceMesh;
-  }
-
   setBaseTexture(texture: THREE.Texture | null) {
     this.baseTexture = texture;
     this.material.uniforms.baseTexture.value =
