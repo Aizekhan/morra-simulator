@@ -106,7 +106,7 @@ export class SurfaceFieldVisualizer {
       const lightingReplacement =
         lightingMarker +
         "\nfloat morraPhysicalLight = clamp(texture2D(morraLightField, morraFieldUv).r, 0.0, 1.0);" +
-        "\noutgoingLight = diffuseColor.rgb * morraPhysicalLight;";
+        "\noutgoingLight *= morraPhysicalLight;";
 
       if(!shader.fragmentShader.includes(lightingMarker)) {
         throw new Error("Morra LIGHT_TOTAL shader hook is unavailable");
