@@ -67,7 +67,7 @@ export class SurfaceFieldVisualizer {
 
     this.material.emissive.setHex(0xffffff);
     this.material.emissiveMap = this.texture;
-    this.material.emissiveIntensity = 1;
+    this.material.emissiveIntensity = 0.35;
     this.material.needsUpdate = true;
   }
 
@@ -214,11 +214,12 @@ export class SurfaceFieldVisualizer {
 
     this.texture.needsUpdate = true;
 
-    // This map is now the actual surface response, not a separate visual shell.
+    // Physical field is an emissive contribution only. The existing geographic
+    // texture remains the visible base color of Morra.
     this.material.emissiveIntensity =
       this.channel === "LIGHT_TOTAL"
-        ? 0.65
-        : 0.35;
+        ? 0.28
+        : 0.12;
 
     this.material.needsUpdate = true;
   }
