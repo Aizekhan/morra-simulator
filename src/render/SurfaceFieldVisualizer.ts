@@ -89,8 +89,8 @@ export class SurfaceFieldVisualizer {
       );
 
       shader.fragmentShader = shader.fragmentShader.replace(
-        "#include <output_fragment>",
-        "float morraPhysicalLight = clamp(texture2D(morraLightField, vMapUv).r * morraLightExposure, 0.0, 1.0);\nfloat morraSurfaceBrightness = mix(morraNightFloor, 1.0, pow(morraPhysicalLight, morraLightGamma));\noutgoingLight += diffuseColor.rgb * morraSurfaceBrightness;\n#include <output_fragment>"
+        "#include <opaque_fragment>",
+        "#include <opaque_fragment>\nfloat morraPhysicalLight = clamp(texture2D(morraLightField, vMapUv).r * morraLightExposure, 0.0, 1.0);\nfloat morraSurfaceBrightness = mix(morraNightFloor, 1.0, pow(morraPhysicalLight, morraLightGamma));\noutgoingLight = diffuseColor.rgb * morraSurfaceBrightness;"
       );
 
       this.shaderUniforms.lightField = shader.uniforms.morraLightField;
@@ -105,8 +105,7 @@ export class SurfaceFieldVisualizer {
   setBaseTexture(
     _texture: THREE.Texture | null
   ) {
-    // The authoritative geographic texture remains Morra's own map.
-    // LIGHT_TOTAL is supplied independently as emissive response.
+    // Geographic texture remains owned by Morra's own material.
   }
 
   setChannel(
@@ -396,12 +395,8 @@ export class SurfaceFieldVisualizer {
   }
 
   dispose() {
-    if(this.material.emissiveMap === this.texture) {
-      this.material.emissiveMap = null;
-      this.material.emissiveIntensity = 0;
-      this.material.needsUpdate = true;
-    }
-
     this.texture.dispose();
+    this.material.onBeforeCompile = undefined;
+    this.material.needsUpdate = true;
   }
 }
