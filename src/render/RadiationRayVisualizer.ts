@@ -113,20 +113,13 @@ export class RadiationRayVisualizer {
   update() {
 
     if(
-      !this.enabled ||
-      !this.localPoint
+      !this.enabled
     ) {
       this.clearLines();
-      this.marker.visible =
-        false;
+      this.marker.visible = false;
+      this.centerMarker.visible = false;
       return;
     }
-
-    const sample =
-      this.engine
-        .evaluateLocalPoint(
-          this.localPoint
-        );
 
     const center =
       this.engine.morra.mesh.getWorldPosition(
@@ -134,14 +127,35 @@ export class RadiationRayVisualizer {
       );
 
     this.centerMarker.position.copy(center);
+    this.centerMarker.scale.setScalar(
+      Math.max(
+        this.engine.morra.radius * 0.0125 / 8,
+        1
+      )
+    );
     this.centerMarker.visible = true;
 
-    this.marker.position.copy(
-      sample.point
-    );
+    // The white marker is reserved for an explicitly selected surface sample.
+    // LIGHT HELPERS themselves always target Morra's geometric center.
+    if(this.localPoint) {
+      const sample =
+        this.engine.evaluateLocalPoint(
+          this.localPoint
+        );
 
-    this.marker.visible =
-      true;
+      this.marker.position.copy(
+        sample.point
+      );
+      this.marker.scale.setScalar(
+        Math.max(
+          this.engine.morra.radius * 0.006 / 4,
+          1
+        )
+      );
+      this.marker.visible = false;
+    } else {
+      this.marker.visible = false;
+    }
 
     this.clearLines();
 
@@ -149,19 +163,12 @@ export class RadiationRayVisualizer {
       this.engine.radiation.getSources();
 
     for(
-      const contribution
-      of sample.radiation.contributions
+      const source
+      of sources
     ) {
 
-      const source =
-        sources.find(
-          item =>
-            item.id ===
-            contribution.sourceId
-        );
-
       if(
-        !source
+        source.body.mesh.visible === false
       ) {
         continue;
       }
@@ -176,17 +183,12 @@ export class RadiationRayVisualizer {
         new THREE.BufferGeometry();
 
       geometry.setFromPoints([
-        sample.point,
+        center,
         sourcePosition
       ]);
 
       const color =
-        contribution.visibilityFactor >=
-          0.999
-          ? 0x55ff88
-          : contribution.visibilityFactor > 0
-            ? 0xffc857
-            : 0xff3344;
+        0x55ff88;
 
       const material =
         new THREE.LineBasicMaterial({
