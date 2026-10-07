@@ -182,37 +182,6 @@ export class CelestialInteractionSystem {
     );
   }
 
-  private getMoonPhaseFraction(
-    sunPosition: THREE.Vector3,
-    moonPosition: THREE.Vector3,
-    observerPosition: THREE.Vector3
-  ) {
-    const sunDirection =
-      sunPosition
-        .clone()
-        .sub(moonPosition)
-        .normalize();
-
-    const observerDirection =
-      observerPosition
-        .clone()
-        .sub(moonPosition)
-        .normalize();
-
-    const phaseCosine =
-      THREE.MathUtils.clamp(
-        sunDirection.dot(observerDirection),
-        -1,
-        1
-      );
-
-    return (
-      1 +
-      phaseCosine
-    ) *
-    0.5;
-  }
-
   private getMoonSurfaceIllumination(
     sunSources: CelestialSourceConfig[],
     moon: MoonTarget
@@ -413,11 +382,6 @@ export class CelestialInteractionSystem {
           source.id === "large-sun" ||
           source.id === "medium-sun" ||
           source.id === "small-sun"
-      );
-
-    const observerPosition =
-      this.environment.morra.mesh.getWorldPosition(
-        new THREE.Vector3()
       );
 
     for(const moon of this.moonTargets) {
