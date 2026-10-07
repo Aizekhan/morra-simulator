@@ -81,7 +81,7 @@ export class SurfaceFieldVisualizer {
     // LIGHT_TOTAL is applied to Morra's actual material. The geographic
     // texture remains authoritative; no secondary surface geometry is used.
     this.material.onBeforeCompile = (shader) => {
-      if(this.originalOnBeforeCompile) {
+        if(this.originalOnBeforeCompile) {
         this.originalOnBeforeCompile(
           shader,
           this.material
