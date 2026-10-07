@@ -117,6 +117,10 @@ export class SurfaceFieldVisualizer {
         "\nfloat morraSurfaceBrightness = mix(morraNightFloor, 1.0, pow(morraPhysicalLight, morraLightGamma));" +
         "\noutgoingLight = diffuseColor.rgb * morraSurfaceBrightness;";
 
+      if(!shader.fragmentShader.includes(lightingMarker)) {
+        throw new Error("Morra LIGHT_TOTAL shader hook is unavailable");
+      }
+
       shader.fragmentShader = shader.fragmentShader.replace(
         lightingMarker,
         lightingReplacement
