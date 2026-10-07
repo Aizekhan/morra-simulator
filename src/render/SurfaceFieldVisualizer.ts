@@ -83,10 +83,7 @@ export class SurfaceFieldVisualizer {
       shader.uniforms.morraNightFloor = { value: 0.02 };
       shader.uniforms.morraLightGamma = { value: 0.65 };
 
-      shader.fragmentShader = shader.fragmentShader.replace(
-        "#include <common>",
-        "#include <common>\nuniform sampler2D morraLightField;\nuniform float morraLightExposure;\nuniform float morraNightFloor;\nuniform float morraLightGamma;"
-      );
+
 
       shader.fragmentShader = shader.fragmentShader.replace(
         "#include <opaque_fragment>",
