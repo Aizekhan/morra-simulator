@@ -23,27 +23,13 @@ export type SurfaceFieldChannel =
 
 export class SurfaceFieldVisualizer {
 
-  private readonly morra:
-    THREE.Mesh;
-
-  private readonly material:
-    THREE.ShaderMaterial;
-
-  private readonly texture:
-    THREE.DataTexture;
-
-  private baseTexture:
-    THREE.Texture | null = null;
-
-  private readonly surfaceMesh:
-    THREE.Mesh;
-
+  private readonly morra: THREE.Mesh;
+  private readonly texture: THREE.DataTexture;
+  private readonly material: THREE.MeshStandardMaterial;
   private width: number;
   private height: number;
-  private surfaceRadius = 1;
-  private enabled = true;
   private channel: SurfaceFieldChannel = "LIGHT_TOTAL";
-  private opacity = 1;
+  private enabled = true;
   private lastMap: SurfaceFieldMap | null = null;
 
   constructor(
@@ -51,10 +37,15 @@ export class SurfaceFieldVisualizer {
     initialWidth: number,
     initialHeight: number
   ) {
-
     this.morra = morra;
     this.width = initialWidth;
     this.height = initialHeight;
+
+    if(!(morra.material instanceof THREE.MeshStandardMaterial)) {
+      throw new Error("Morra surface field requires MeshStandardMaterial");
+    }
+
+    this.material = morra.material;
 
     this.texture = new THREE.DataTexture(
       new Uint8Array(initialWidth * initialHeight * 4),
@@ -64,105 +55,30 @@ export class SurfaceFieldVisualizer {
       THREE.UnsignedByteType
     );
 
-    this.texture.flipY = false;
+    this.texture.flipY = true;
+    this.texture.wrapS = THREE.ClampToEdgeWrapping;
+    this.texture.wrapT = THREE.ClampToEdgeWrapping;
     this.texture.minFilter = THREE.LinearFilter;
     this.texture.magFilter = THREE.LinearFilter;
     this.texture.colorSpace = THREE.NoColorSpace;
     this.texture.needsUpdate = true;
 
-    this.material = new THREE.ShaderMaterial({
-      transparent: false,
-      depthWrite: true,
-      depthTest: true,
-      side: THREE.FrontSide,
-      toneMapped: false,
-      uniforms: {
-        fieldTexture: { value: this.texture },
-        baseTexture: { value: null },
-        physicalExposure: { value: 1 },
-        physicalFloor: { value: 0.02 },
-        physicalGamma: { value: 0.55 }
-      },
-
-      vertexShader: `
-        varying vec2 vUv;
-        void main() {
-          vUv = uv;
-          gl_Position =
-            projectionMatrix *
-            modelViewMatrix *
-            vec4(position, 1.0);
-        }
-      `,
-
-      fragmentShader: `
-        uniform sampler2D fieldTexture;
-        uniform sampler2D baseTexture;
-        uniform float physicalExposure;
-        uniform float physicalFloor;
-        uniform float physicalGamma;
-
-        varying vec2 vUv;
-
-        void main() {
-          vec4 base = texture2D(baseTexture, vUv);
-
-          float lightSignal =
-            clamp(
-              texture2D(fieldTexture, vUv).r *
-              physicalExposure,
-              0.0,
-              1.0
-            );
-
-          float brightness =
-            mix(
-              physicalFloor,
-              1.0,
-              pow(lightSignal, physicalGamma)
-            );
-
-          gl_FragColor =
-            vec4(
-              base.rgb * brightness,
-              1.0
-            );
-        }
-      `
-    });
-
-    this.surfaceMesh =
-      this.materialMesh();
-
-    this.morra.add(
-      this.surfaceMesh
-    );
-
-    this.setRadius(this.surfaceRadius);
-    this.setEnabled(true);
+    this.material.emissive.setHex(0xffffff);
+    this.material.emissiveMap = this.texture;
+    this.material.emissiveIntensity = 0;
+    this.material.needsUpdate = true;
   }
 
-  private materialMesh() {
-    const mesh = new THREE.Mesh(
-      new THREE.SphereGeometry(1, 64, 32),
-      this.material
-    );
-
-    mesh.name = "Morra Physical Surface";
-    mesh.renderOrder = 1;
-    mesh.frustumCulled = false;
-    mesh.userData.isMorraPhysicalSurface = true;
-
-    return mesh;
+  setBaseTexture(
+    _texture: THREE.Texture | null
+  ) {
+    // The authoritative geographic texture remains Morra's own map.
+    // LIGHT_TOTAL is supplied independently as emissive response.
   }
 
-  setBaseTexture(texture: THREE.Texture | null) {
-    this.baseTexture = texture;
-    this.material.uniforms.baseTexture.value =
-      texture ?? null;
-  }
-
-  setChannel(channel: SurfaceFieldChannel) {
+  setChannel(
+    channel: SurfaceFieldChannel
+  ) {
     this.channel = channel;
     if(this.lastMap) {
       this.updateMap(this.lastMap);
@@ -173,103 +89,206 @@ export class SurfaceFieldVisualizer {
     return this.channel;
   }
 
-  setOpacity(opacity: number) {
-    this.opacity = THREE.MathUtils.clamp(opacity, 0, 1);
+  setOpacity(
+    _opacity: number
+  ) {
+    // Kept for compatibility with the existing GUI/config contract.
   }
 
-  setEnabled(enabled: boolean) {
+  setEnabled(
+    enabled: boolean
+  ) {
     this.enabled = enabled;
-    this.surfaceMesh.visible = enabled;
+    this.material.emissiveIntensity = enabled ? 1 : 0;
+    this.material.needsUpdate = true;
   }
 
   isEnabled() {
     return this.enabled;
   }
 
-  update(map: SurfaceFieldMap | null) {
-    if(!map) return;
+  update(
+    map: SurfaceFieldMap | null
+  ) {
+    if(!map || !this.enabled) {
+      return;
+    }
 
     if(
       map.width !== this.width ||
       map.height !== this.height
     ) {
-      this.recreateTexture(map.width, map.height);
+      this.recreateTexture(
+        map.width,
+        map.height
+      );
     }
 
     this.lastMap = map;
     this.updateMap(map);
   }
 
-  setRadius(radius: number) {
-    this.surfaceRadius = radius;
-    this.surfaceMesh.scale.setScalar(radius * 1.00005);
+  setRadius(
+    _radius: number
+  ) {
+    // No secondary geometry: Morra's own mesh is the only rendered surface.
   }
 
-  private updateMap(map: SurfaceFieldMap) {
-    const data = this.texture.image.data as Uint8Array;
+  private updateMap(
+    map: SurfaceFieldMap
+  ) {
+    const data =
+      this.texture.image.data as Uint8Array;
 
-    const values = this.getChannelValues(map);
-    const stats = this.getChannelStats(map);
+    const values =
+      this.getChannelValues(map);
+
+    const stats =
+      this.getChannelStats(map);
+
     const hasRange =
       Number.isFinite(stats.min) &&
       Number.isFinite(stats.max) &&
       stats.max > stats.min;
-    const range = hasRange ? stats.max - stats.min : 1;
 
-    for(let i = 0; i < values.length; i++) {
-      const raw = Number.isFinite(values[i]) ? values[i] : 0;
+    const range =
+      hasRange
+        ? stats.max - stats.min
+        : 1;
 
+    for(
+      let i = 0;
+      i < values.length;
+      i++
+    ) {
+      const raw =
+        Number.isFinite(values[i])
+          ? values[i]
+          : 0;
+
+      // LIGHT_TOTAL uses a stable physical scale. Diagnostic channels keep
+      // their own min/max normalization.
       const normalized =
         this.channel === "LIGHT_TOTAL"
-          ? THREE.MathUtils.clamp(raw * 5000000, 0, 1)
+          ? THREE.MathUtils.clamp(
+              raw * 5000000,
+              0,
+              1
+            )
           : hasRange
-            ? THREE.MathUtils.clamp((raw - stats.min) / range, 0, 1)
-            : THREE.MathUtils.clamp(raw, 0, 1);
+            ? THREE.MathUtils.clamp(
+                (
+                  raw -
+                  stats.min
+                ) /
+                range,
+                0,
+                1
+              )
+            : THREE.MathUtils.clamp(
+                raw,
+                0,
+                1
+              );
 
-      const offset = i * 4;
-      data[offset] = Math.round(normalized * 255);
-      data[offset + 1] = Math.round(normalized * 255);
-      data[offset + 2] = Math.round(normalized * 255);
-      data[offset + 3] = 255;
+      const offset =
+        i * 4;
+
+      data[offset] =
+        Math.round(
+          normalized * 255
+        );
+      data[offset + 1] =
+        Math.round(
+          normalized * 255
+        );
+      data[offset + 2] =
+        Math.round(
+          normalized * 255
+        );
+      data[offset + 3] =
+        255;
     }
 
     this.texture.needsUpdate = true;
+
+    // This map is now the actual surface response, not a separate visual shell.
+    this.material.emissiveIntensity =
+      this.channel === "LIGHT_TOTAL"
+        ? 0.65
+        : 0.35;
+
+    this.material.needsUpdate = true;
   }
 
-  private getChannelValues(map: SurfaceFieldMap) {
+  private getChannelValues(
+    map: SurfaceFieldMap
+  ) {
     switch(this.channel) {
-      case "MAGOSPHERE": return map.magosphereStability;
-      case "ANOMALY": return map.anomalyStrength;
-      case "SHADOW": return map.shadow;
-      case "UMBRA": return map.umbra;
-      case "PENUMBRA": return map.penumbra;
-      case "LARGE_SUN": return map.largeSunLight;
-      case "MEDIUM_SUN": return map.mediumSunLight;
-      case "SMALL_SUN": return map.smallSunLight;
-      case "NORTH_MOON": return map.northMoonLight;
-      case "EQUATOR_MOON": return map.equatorMoonLight;
-      case "SPECTRUM": return map.spectrumIntensity;
-      case "DAY_NIGHT": return map.dayNight;
-      case "HEAT_TOTAL": return map.heat;
-      case "MAGIC_TOTAL": return map.magic;
+      case "MAGOSPHERE":
+        return map.magosphereStability;
+      case "ANOMALY":
+        return map.anomalyStrength;
+      case "SHADOW":
+        return map.shadow;
+      case "UMBRA":
+        return map.umbra;
+      case "PENUMBRA":
+        return map.penumbra;
+      case "LARGE_SUN":
+        return map.largeSunLight;
+      case "MEDIUM_SUN":
+        return map.mediumSunLight;
+      case "SMALL_SUN":
+        return map.smallSunLight;
+      case "NORTH_MOON":
+        return map.northMoonLight;
+      case "EQUATOR_MOON":
+        return map.equatorMoonLight;
+      case "SPECTRUM":
+        return map.spectrumIntensity;
+      case "DAY_NIGHT":
+        return map.dayNight;
+      case "HEAT_TOTAL":
+        return map.heat;
+      case "MAGIC_TOTAL":
+        return map.magic;
       case "LIGHT_TOTAL":
       default:
         return map.light;
     }
   }
 
-  private getChannelStats(map: SurfaceFieldMap) {
+  private getChannelStats(
+    map: SurfaceFieldMap
+  ) {
     switch(this.channel) {
       case "MAGOSPHERE":
-        return { min: 0, max: 1, average: this.average(map.magosphereStability) };
+        return {
+          min: 0,
+          max: 1,
+          average: this.average(map.magosphereStability)
+        };
       case "ANOMALY":
-        return { min: 0, max: 1, average: this.average(map.anomalyStrength) };
+        return {
+          min: 0,
+          max: 1,
+          average: this.average(map.anomalyStrength)
+        };
       case "SHADOW":
         return map.shadowStats;
       case "UMBRA":
-        return { min: 0, max: 1, average: this.average(map.umbra) };
+        return {
+          min: 0,
+          max: 1,
+          average: this.average(map.umbra)
+        };
       case "PENUMBRA":
-        return { min: 0, max: 1, average: this.average(map.penumbra) };
+        return {
+          min: 0,
+          max: 1,
+          average: this.average(map.penumbra)
+        };
       case "LARGE_SUN":
         return map.largeSunLightStats;
       case "MEDIUM_SUN":
@@ -295,27 +314,52 @@ export class SurfaceFieldVisualizer {
     }
   }
 
-  private average(values: Float32Array) {
+  private average(
+    values: Float32Array
+  ) {
     let sum = 0;
-    for(const value of values) sum += value;
-    return sum / Math.max(values.length, 1);
+    for(const value of values) {
+      sum += value;
+    }
+    return sum /
+      Math.max(
+        values.length,
+        1
+      );
   }
 
-  private recreateTexture(width: number, height: number) {
+  private recreateTexture(
+    width: number,
+    height: number
+  ) {
     this.texture.image = {
-      data: new Uint8Array(width * height * 4),
+      data:
+        new Uint8Array(
+          width *
+          height *
+          4
+        ),
       width,
       height
     };
-    this.width = width;
-    this.height = height;
-    this.texture.needsUpdate = true;
+
+    this.width =
+      width;
+
+    this.height =
+      height;
+
+    this.texture.needsUpdate =
+      true;
   }
 
   dispose() {
-    this.surfaceMesh.removeFromParent();
-    this.surfaceMesh.geometry.dispose();
-    this.material.dispose();
+    if(this.material.emissiveMap === this.texture) {
+      this.material.emissiveMap = null;
+      this.material.emissiveIntensity = 0;
+      this.material.needsUpdate = true;
+    }
+
     this.texture.dispose();
   }
 }
