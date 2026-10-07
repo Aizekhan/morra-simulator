@@ -228,6 +228,8 @@ export class DirectIlluminationVisualizer {
       return;
     }
 
+    // All celestial-to-Morra debug vectors are anchored to the actual
+    // geometric center of Morra, never to an axis helper/pole.
     const center =
       this.engine.environment.morra.mesh
         .getWorldPosition(
