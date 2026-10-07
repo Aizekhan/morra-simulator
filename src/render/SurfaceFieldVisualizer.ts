@@ -125,7 +125,8 @@ export class SurfaceFieldVisualizer {
     this.material =
       new THREE.ShaderMaterial({
         transparent: false,
-        depthWrite: true,
+        depthWrite: false,
+        depthTest: false,
         side: THREE.DoubleSide,
         toneMapped: false,
         uniforms: {
@@ -243,7 +244,7 @@ export class SurfaceFieldVisualizer {
       1;
 
     this.overlay.scale.setScalar(
-      this.surfaceRadius * 1.0002
+      this.surfaceRadius * 1.002
     );
 
     // Keep the physical shell renderable independently of diagnostic toggles.
