@@ -173,7 +173,7 @@ export class SurfaceFieldVisualizer {
       const normalized =
         this.channel === "LIGHT_TOTAL"
           ? THREE.MathUtils.clamp(
-              raw * 10000000,
+              raw * 25000000,
               0,
               1
             )
@@ -218,8 +218,8 @@ export class SurfaceFieldVisualizer {
     // texture remains the visible base color of Morra.
     this.material.emissiveIntensity =
       this.channel === "LIGHT_TOTAL"
-        ? 0.12
-        : 0.06;
+        ? 0.05
+        : 0.02;
 
     this.material.needsUpdate = true;
   }
