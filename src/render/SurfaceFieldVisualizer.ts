@@ -26,6 +26,12 @@ export class SurfaceFieldVisualizer {
   private readonly morra: THREE.Mesh;
   private readonly texture: THREE.DataTexture;
   private readonly material: THREE.MeshStandardMaterial;
+  private readonly shaderUniforms: {
+    lightField?: { value: THREE.Texture };
+    lightExposure?: { value: number };
+    nightFloor?: { value: number };
+    lightGamma?: { value: number };
+  } = {};
   private width: number;
   private height: number;
   private channel: SurfaceFieldChannel = "LIGHT_TOTAL";
@@ -65,9 +71,34 @@ export class SurfaceFieldVisualizer {
     this.texture.colorSpace = THREE.NoColorSpace;
     this.texture.needsUpdate = true;
 
-    this.material.emissive.setHex(0xffffff);
-    this.material.emissiveMap = this.texture;
-    this.material.emissiveIntensity = 0.12;
+    this.material.emissive.setHex(0x000000);
+    this.material.emissiveMap = null;
+    this.material.emissiveIntensity = 0;
+
+    // LIGHT_TOTAL is applied to Morra's actual material. The geographic
+    // texture remains authoritative; no secondary surface geometry is used.
+    this.material.onBeforeCompile = (shader) => {
+      shader.uniforms.morraLightField = { value: this.texture };
+      shader.uniforms.morraLightExposure = { value: 1.0 };
+      shader.uniforms.morraNightFloor = { value: 0.02 };
+      shader.uniforms.morraLightGamma = { value: 0.65 };
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        "#include <common>",
+        "#include <common>\nuniform sampler2D morraLightField;\nuniform float morraLightExposure;\nuniform float morraNightFloor;\nuniform float morraLightGamma;"
+      );
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        "#include <output_fragment>",
+        "float morraPhysicalLight = clamp(texture2D(morraLightField, vMapUv).r * morraLightExposure, 0.0, 1.0);\nfloat morraSurfaceBrightness = mix(morraNightFloor, 1.0, pow(morraPhysicalLight, morraLightGamma));\noutgoingLight += diffuseColor.rgb * morraSurfaceBrightness;\n#include <output_fragment>"
+      );
+
+      this.shaderUniforms.lightField = shader.uniforms.morraLightField;
+      this.shaderUniforms.lightExposure = shader.uniforms.morraLightExposure;
+      this.shaderUniforms.nightFloor = shader.uniforms.morraNightFloor;
+      this.shaderUniforms.lightGamma = shader.uniforms.morraLightGamma;
+    };
+
     this.material.needsUpdate = true;
   }
 
@@ -101,8 +132,6 @@ export class SurfaceFieldVisualizer {
     enabled: boolean
   ) {
     this.enabled = enabled;
-    this.material.emissiveIntensity = enabled ? 0.28 : 0;
-    this.material.needsUpdate = true;
   }
 
   isEnabled() {
@@ -214,14 +243,24 @@ export class SurfaceFieldVisualizer {
 
     this.texture.needsUpdate = true;
 
-    // Physical field is an emissive contribution only. The existing geographic
-    // texture remains the visible base color of Morra.
-    this.material.emissiveIntensity =
-      this.channel === "LIGHT_TOTAL"
-        ? 0.015
-        : 0.008;
+    if(this.shaderUniforms.lightField) {
+      this.shaderUniforms.lightField.value = this.texture;
+    }
 
-    this.material.needsUpdate = true;
+    if(this.shaderUniforms.lightExposure) {
+      this.shaderUniforms.lightExposure.value =
+        this.channel === "LIGHT_TOTAL" ? 1.0 : 0.35;
+    }
+
+    if(this.shaderUniforms.nightFloor) {
+      this.shaderUniforms.nightFloor.value =
+        this.channel === "LIGHT_TOTAL" ? 0.02 : 0.0;
+    }
+
+    if(this.shaderUniforms.lightGamma) {
+      this.shaderUniforms.lightGamma.value =
+        this.channel === "LIGHT_TOTAL" ? 0.65 : 1.0;
+    }
   }
 
   private getChannelValues(
