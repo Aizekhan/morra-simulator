@@ -87,7 +87,6 @@ export class SurfaceFieldVisualizer {
 
       shader.uniforms.morraLightField = { value: this.texture };
 
-
       shader.vertexShader = shader.vertexShader.replace(
         "#include <common>",
         "#include <common>\nvarying vec2 morraFieldUv;"
@@ -106,9 +105,8 @@ export class SurfaceFieldVisualizer {
       const lightingMarker = "#include <lights_fragment_end>";
       const lightingReplacement =
         lightingMarker +
-        "\nfloat morraPhysicalLight = clamp(texture2D(morraLightField, morraFieldUv).r * morraLightExposure, 0.0, 1.0);" +
-        "\nfloat morraSurfaceBrightness = mix(morraNightFloor, 1.0, pow(morraPhysicalLight, morraLightGamma));" +
-        "\noutgoingLight = diffuseColor.rgb * morraSurfaceBrightness;";
+        "\nfloat morraPhysicalLight = clamp(texture2D(morraLightField, morraFieldUv).r, 0.0, 1.0);" +
+        "\noutgoingLight = diffuseColor.rgb * morraPhysicalLight;";
 
       if(!shader.fragmentShader.includes(lightingMarker)) {
         throw new Error("Morra LIGHT_TOTAL shader hook is unavailable");
@@ -118,7 +116,7 @@ export class SurfaceFieldVisualizer {
         lightingMarker,
         lightingReplacement
       );
-      this.shaderUniforms.lightField = shader.uniforms.morraLightField;
+        this.shaderUniforms.lightField = shader.uniforms.morraLightField;
     };
 
     this.material.needsUpdate = true;
