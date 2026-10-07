@@ -30,9 +30,6 @@ export class SurfaceFieldVisualizer {
 
   private readonly shaderUniforms: {
     lightField?: { value: THREE.Texture };
-    lightExposure?: { value: number };
-    nightFloor?: { value: number };
-    lightGamma?: { value: number };
   } = {};
   private width: number;
   private height: number;
@@ -89,9 +86,7 @@ export class SurfaceFieldVisualizer {
       }
 
       shader.uniforms.morraLightField = { value: this.texture };
-      shader.uniforms.morraLightExposure = { value: 1.0 };
-      shader.uniforms.morraNightFloor = { value: 0.02 };
-      shader.uniforms.morraLightGamma = { value: 0.65 };
+
 
       shader.vertexShader = shader.vertexShader.replace(
         "#include <common>",
@@ -105,7 +100,7 @@ export class SurfaceFieldVisualizer {
 
       shader.fragmentShader = shader.fragmentShader.replace(
         "#include <common>",
-        "#include <common>\nuniform sampler2D morraLightField;\nuniform float morraLightExposure;\nuniform float morraNightFloor;\nuniform float morraLightGamma;\nvarying vec2 morraFieldUv;"
+        "#include <common>\nuniform sampler2D morraLightField;\nvarying vec2 morraFieldUv;"
       );
 
       const lightingMarker = "#include <lights_fragment_end>";
@@ -123,13 +118,7 @@ export class SurfaceFieldVisualizer {
         lightingMarker,
         lightingReplacement
       );
-
-
-
       this.shaderUniforms.lightField = shader.uniforms.morraLightField;
-      this.shaderUniforms.lightExposure = shader.uniforms.morraLightExposure;
-      this.shaderUniforms.nightFloor = shader.uniforms.morraNightFloor;
-      this.shaderUniforms.lightGamma = shader.uniforms.morraLightGamma;
     };
 
     this.material.needsUpdate = true;
@@ -229,8 +218,8 @@ export class SurfaceFieldVisualizer {
           ? values[i]
           : 0;
 
-      // LIGHT_TOTAL uses a stable physical scale. Diagnostic channels keep
-      // their own min/max normalization.
+      // LIGHT_TOTAL is uploaded on an explicit physical-to-display scale.
+      // Diagnostic channels keep their own min/max normalization.
       const normalized =
         this.channel === "LIGHT_TOTAL"
           ? THREE.MathUtils.clamp(
@@ -279,20 +268,6 @@ export class SurfaceFieldVisualizer {
       this.shaderUniforms.lightField.value = this.texture;
     }
 
-    if(this.shaderUniforms.lightExposure) {
-      this.shaderUniforms.lightExposure.value =
-        this.channel === "LIGHT_TOTAL" ? 1.0 : 0.35;
-    }
-
-    if(this.shaderUniforms.nightFloor) {
-      this.shaderUniforms.nightFloor.value =
-        this.channel === "LIGHT_TOTAL" ? 0.02 : 0.0;
-    }
-
-    if(this.shaderUniforms.lightGamma) {
-      this.shaderUniforms.lightGamma.value =
-        this.channel === "LIGHT_TOTAL" ? 0.65 : 1.0;
-    }
   }
 
   private getChannelValues(
