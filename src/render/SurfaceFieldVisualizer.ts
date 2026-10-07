@@ -55,7 +55,7 @@ export class SurfaceFieldVisualizer {
       THREE.UnsignedByteType
     );
 
-    this.texture.flipY = true;
+    this.texture.flipY = false;
     this.texture.wrapS = THREE.ClampToEdgeWrapping;
     this.texture.wrapT = THREE.ClampToEdgeWrapping;
     this.texture.minFilter = THREE.LinearFilter;
