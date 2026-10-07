@@ -216,30 +216,25 @@ export class SurfaceFieldVisualizer {
           ? values[i]
           : 0;
 
-      // LIGHT_TOTAL is uploaded on an explicit physical-to-display scale.
-      // Diagnostic channels keep their own min/max normalization.
+      // LIGHT_TOTAL is the authoritative physical field. Its display
+      // range is derived from the current field, not a hard-coded physics
+      // coefficient borrowed from another subsystem.
       const normalized =
-        this.channel === "LIGHT_TOTAL"
+        hasRange
           ? THREE.MathUtils.clamp(
-              raw * 25000000,
+              (
+                raw -
+                stats.min
+              ) /
+              range,
               0,
               1
             )
-          : hasRange
-            ? THREE.MathUtils.clamp(
-                (
-                  raw -
-                  stats.min
-                ) /
-                range,
-                0,
-                1
-              )
-            : THREE.MathUtils.clamp(
-                raw,
-                0,
-                1
-              );
+          : THREE.MathUtils.clamp(
+              raw,
+              0,
+              1
+            );
 
       const offset =
         i * 4;
