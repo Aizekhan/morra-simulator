@@ -110,9 +110,16 @@ export class SurfaceFieldVisualizer {
         "#include <common>\nuniform sampler2D morraLightField;\nuniform float morraLightExposure;\nuniform float morraNightFloor;\nuniform float morraLightGamma;\nvarying vec2 morraFieldUv;"
       );
 
+      const lightingMarker = "#include <lights_fragment_end>";
+      const lightingReplacement =
+        lightingMarker +
+        "\nfloat morraPhysicalLight = clamp(texture2D(morraLightField, morraFieldUv).r * morraLightExposure, 0.0, 1.0);" +
+        "\nfloat morraSurfaceBrightness = mix(morraNightFloor, 1.0, pow(morraPhysicalLight, morraLightGamma));" +
+        "\noutgoingLight = diffuseColor.rgb * morraSurfaceBrightness;";
+
       shader.fragmentShader = shader.fragmentShader.replace(
-        "#include <lights_fragment_end>",
-        "#include <lights_fragment_end>\nfloat morraPhysicalLight = clamp(texture2D(morraLightField, morraFieldUv).r * morraLightExposure, 0.0, 1.0);\nfloat morraSurfaceBrightness = mix(morraNightFloor, 1.0, pow(morraPhysicalLight, morraLightGamma));\noutgoingLight = diffuseColor.rgb * morraSurfaceBrightness;"
+        lightingMarker,
+        lightingReplacement
       );
 
 
