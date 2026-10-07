@@ -218,8 +218,8 @@ export class SurfaceFieldVisualizer {
     // texture remains the visible base color of Morra.
     this.material.emissiveIntensity =
       this.channel === "LIGHT_TOTAL"
-        ? 0.05
-        : 0.02;
+        ? 0.015
+        : 0.008;
 
     this.material.needsUpdate = true;
   }
