@@ -258,6 +258,22 @@ export class RadiationRayVisualizer {
       this.marker
     );
 
+    this.centerMarker.geometry.dispose();
+
+    const centerMaterial =
+      this.centerMarker.material;
+
+    if(
+      centerMaterial instanceof
+      THREE.Material
+    ) {
+      centerMaterial.dispose();
+    }
+
+    this.root.remove(
+      this.centerMarker
+    );
+
     this.engine.morra.mesh.remove(
       this.root
     );
