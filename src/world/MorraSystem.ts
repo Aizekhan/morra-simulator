@@ -107,6 +107,14 @@ export class MorraSystem {
   private worldTextureLoadError:
     unknown = null;
 
+  getSurfaceTextureStatus() {
+    return {
+      loaded: this.worldTexture !== null,
+      path: this.worldTexturePath,
+      error: this.worldTextureLoadError
+    };
+  }
+
   /**
    * Keep Morra's visual axis helpers in the same transform space as
    * the planet surface. The helpers are authored in Morra-local
