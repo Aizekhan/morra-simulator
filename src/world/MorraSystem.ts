@@ -1058,9 +1058,6 @@ export class MorraSystem {
 
         this.worldTextureLoadError = error;
         this.worldTexturePath = "";
-        console.error(
-          "[Morra] Texture status now reports a load failure."
-        );
 
       }
     );
