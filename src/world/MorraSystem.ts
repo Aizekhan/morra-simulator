@@ -104,6 +104,9 @@ export class MorraSystem {
   private worldTexturePath =
     "";
 
+  private worldTextureLoadError:
+    unknown = null;
+
   /**
    * Keep Morra's visual axis helpers in the same transform space as
    * the planet surface. The helpers are authored in Morra-local
@@ -1020,7 +1023,7 @@ export class MorraSystem {
           loaded
         );
 
-            this.surfaceFieldVisualizer.setBaseTexture(
+        this.surfaceFieldVisualizer.setBaseTexture(
           loaded
         );
 
@@ -1036,6 +1039,18 @@ export class MorraSystem {
 
         this.worldTexturePath =
           path;
+      },
+      undefined,
+      error => {
+        console.error(
+          "[Morra] Failed to load surface texture:",
+          path,
+          error
+        );
+
+        this.worldTextureLoadError = error;
+        this.worldTexturePath = "";
+
       }
     );
   }
