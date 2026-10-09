@@ -25,12 +25,6 @@ export class SurfaceFieldVisualizer {
 
   private readonly texture: THREE.DataTexture;
   private readonly material: THREE.MeshStandardMaterial;
-  private readonly originalOnBeforeCompile:
-    THREE.Material["onBeforeCompile"];
-
-  private readonly shaderUniforms: {
-    lightField?: { value: THREE.Texture };
-  } = {};
   private width: number;
   private height: number;
   private channel: SurfaceFieldChannel = "LIGHT_TOTAL";
@@ -50,8 +44,6 @@ export class SurfaceFieldVisualizer {
     }
 
     this.material = morra.material;
-    this.originalOnBeforeCompile =
-      this.material.onBeforeCompile;
 
     // Fail-safe until the first valid physical field arrives:
     // a neutral factor keeps Morra's base map visible instead of black.
@@ -87,92 +79,15 @@ export class SurfaceFieldVisualizer {
     this.texture.colorSpace = THREE.NoColorSpace;
     this.texture.needsUpdate = true;
 
-    // Do not let the physical-field visualization erase the geographic map
-    // while shader compilation or field initialization is still pending.
-    this.material.emissive.setHex(0x000000);
-    this.material.emissiveMap = null;
-    this.material.emissiveIntensity = 0;
+    // Use Three.js' supported emissive-map path instead of patching raw GLSL.
+    // This keeps the geographic diffuse map visible and avoids runtime shader
+    // compilation failures when Three.js changes internal shader chunks.
     this.material.color.setHex(0xffffff);
-
-    // LIGHT_TOTAL is applied to Morra's actual material. The geographic
-    // texture remains authoritative; no secondary surface geometry is used.
-    this.material.onBeforeCompile = (shader, renderer) => {
-      if(this.originalOnBeforeCompile) {
-        this.originalOnBeforeCompile(
-          shader,
-          renderer
-        );
-      }
-
-      shader.uniforms.morraLightField = { value: this.texture };
-
-      const vertexCommonMarker = "#include <common>";
-      const vertexBeginMarker = "#include <begin_vertex>";
-      const fragmentCommonMarker = "#include <common>";
-      // opaque_fragment runs after outgoingLight is assembled in
-      // Three.js' standard physical-material shader. Injecting before this
-      // chunk avoids touching the variable before it exists.
-
-      // Three.js shader chunks are an internal integration boundary.
-      // Verify every expected insertion point before mutating either shader;
-      // otherwise leave the material's standard geographic rendering intact.
-      const missingMarkers = [
-        !shader.vertexShader.includes(vertexCommonMarker) ? vertexCommonMarker : null,
-        !shader.vertexShader.includes(vertexBeginMarker) ? vertexBeginMarker : null,
-        !shader.fragmentShader.includes(fragmentCommonMarker) ? fragmentCommonMarker : null,
-        !shader.fragmentShader.includes("#include <opaque_fragment>") ? "#include <opaque_fragment>" : null
-      ].filter((marker): marker is string => marker !== null);
-
-      if(missingMarkers.length > 0) {
-        console.error(
-          "[Morra] Physical surface-light shader hooks unavailable; retaining standard surface rendering.",
-          missingMarkers
-        );
-        return;
-      }
-
-      shader.vertexShader = shader.vertexShader.replace(
-        vertexCommonMarker,
-        vertexCommonMarker + "\nvarying vec2 morraFieldUv;"
-      );
-
-      shader.vertexShader = shader.vertexShader.replace(
-        vertexBeginMarker,
-        vertexBeginMarker + "\nmorraFieldUv = vec2(1.0 - uv.x, 1.0 - uv.y);"
-      );
-
-      shader.fragmentShader = shader.fragmentShader.replace(
-        fragmentCommonMarker,
-        fragmentCommonMarker + "\nuniform sampler2D morraLightField;\nvarying vec2 morraFieldUv;"
-      );
-
-
-      const outputMarker = "#include <opaque_fragment>";
-      if(!shader.fragmentShader.includes(outputMarker)) {
-        console.error(
-          "[Morra] Physical surface-light output hook unavailable; retaining standard surface rendering.",
-          outputMarker
-        );
-        return;
-      }
-
-      const lightingReplacement =
-        "float morraPhysicalLight = clamp(texture2D(morraLightField, morraFieldUv).r, 0.0, 1.0);\n" +
-        "outgoingLight *= morraPhysicalLight;\n" +
-        outputMarker;
-
-      shader.fragmentShader = shader.fragmentShader.replace(
-        outputMarker,
-        lightingReplacement
-      );
-      this.shaderUniforms.lightField = shader.uniforms.morraLightField;
-
-      console.info(
-        "[Morra] Physical surface-light shader compiled."
-      );
-    };
-
+    this.material.emissive.setHex(0xffffff);
+    this.material.emissiveMap = this.texture;
+    this.material.emissiveIntensity = 0.65;
     this.material.needsUpdate = true;
+
   }
 
   setBaseTexture(
@@ -309,11 +224,6 @@ export class SurfaceFieldVisualizer {
     }
 
     this.texture.needsUpdate = true;
-
-    if(this.shaderUniforms.lightField) {
-      this.shaderUniforms.lightField.value = this.texture;
-    }
-
   }
 
   private getChannelValues(
@@ -449,8 +359,13 @@ export class SurfaceFieldVisualizer {
   }
 
   dispose() {
+    if(this.material.emissiveMap === this.texture) {
+      this.material.emissiveMap = null;
+      this.material.emissiveIntensity = 0;
+      this.material.emissive.setHex(0x000000);
+      this.material.needsUpdate = true;
+    }
+
     this.texture.dispose();
-    this.material.onBeforeCompile = this.originalOnBeforeCompile;
-    this.material.needsUpdate = true;
   }
 }
