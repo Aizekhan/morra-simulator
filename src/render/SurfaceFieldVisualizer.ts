@@ -131,17 +131,17 @@ export class SurfaceFieldVisualizer {
 
       shader.vertexShader = shader.vertexShader.replace(
         vertexCommonMarker,
-        vertexCommonMarker + "\\nvarying vec2 morraFieldUv;"
+        vertexCommonMarker + "\nvarying vec2 morraFieldUv;"
       );
 
       shader.vertexShader = shader.vertexShader.replace(
         vertexBeginMarker,
-        vertexBeginMarker + "\\nmorraFieldUv = vec2(1.0 - uv.x, 1.0 - uv.y);"
+        vertexBeginMarker + "\nmorraFieldUv = vec2(1.0 - uv.x, 1.0 - uv.y);"
       );
 
       shader.fragmentShader = shader.fragmentShader.replace(
         fragmentCommonMarker,
-        fragmentCommonMarker + "\\nuniform sampler2D morraLightField;\\nvarying vec2 morraFieldUv;"
+        fragmentCommonMarker + "\nuniform sampler2D morraLightField;\nvarying vec2 morraFieldUv;"
       );
 
 
