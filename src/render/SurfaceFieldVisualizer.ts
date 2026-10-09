@@ -53,8 +53,24 @@ export class SurfaceFieldVisualizer {
     this.originalOnBeforeCompile =
       this.material.onBeforeCompile;
 
+    // Fail-safe until the first valid physical field arrives:
+    // a neutral factor keeps Morra's base map visible instead of black.
+    const initialPixels =
+      new Uint8Array(
+        initialWidth *
+        initialHeight *
+        4
+      );
+
+    for(let i = 0; i < initialPixels.length; i += 4) {
+      initialPixels[i] = 255;
+      initialPixels[i + 1] = 255;
+      initialPixels[i + 2] = 255;
+      initialPixels[i + 3] = 255;
+    }
+
     this.texture = new THREE.DataTexture(
-      new Uint8Array(initialWidth * initialHeight * 4),
+      initialPixels,
       initialWidth,
       initialHeight,
       THREE.RGBAFormat,
