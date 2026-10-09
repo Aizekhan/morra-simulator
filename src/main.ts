@@ -233,7 +233,7 @@ function animate() {
         texture: {
           loaded: boolean;
           path: string;
-          error: unknown;
+          failed: boolean;
         };
         field: {
           exists: boolean;
