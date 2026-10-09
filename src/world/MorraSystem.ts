@@ -111,7 +111,7 @@ export class MorraSystem {
     return {
       loaded: this.worldTexture !== null,
       path: this.worldTexturePath,
-      error: this.worldTextureLoadError
+      failed: this.worldTextureLoadError !== null
     };
   }
 
@@ -1058,6 +1058,9 @@ export class MorraSystem {
 
         this.worldTextureLoadError = error;
         this.worldTexturePath = "";
+        console.error(
+          "[Morra] Texture status now reports a load failure."
+        );
 
       }
     );
