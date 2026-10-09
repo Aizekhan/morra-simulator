@@ -83,9 +83,14 @@ export class SurfaceFieldVisualizer {
     // Keep the field DataTexture separate and use it only as a display overlay.
     // Its initial all-white pixels are neutral so the map can be shown immediately.
     this.material.color.setHex(0xffffff);
-    this.material.emissive.setHex(0x000000);
-    this.material.emissiveMap = null;
-    this.material.emissiveIntensity = 0;
+
+    // Keep the geographic map visible even when physically modeled source
+    // lights contribute almost no renderer energy. The same map is used as a
+    // restrained emissive fallback; the physical radiation field remains
+    // separately calculated and never replaces the diffuse world texture.
+    this.material.emissive.setHex(0xffffff);
+    this.material.emissiveMap = this.material.map;
+    this.material.emissiveIntensity = 0.8;
     this.material.needsUpdate = true;
 
   }
@@ -99,6 +104,12 @@ export class SurfaceFieldVisualizer {
       this.material.map = texture;
       this.material.needsUpdate = true;
     }
+
+    // Rebind emissive fallback when the asynchronous map arrives or changes.
+    this.material.emissiveMap = texture;
+    this.material.emissive.setHex(0xffffff);
+    this.material.emissiveIntensity = texture ? 0.8 : 0;
+    this.material.needsUpdate = true;
   }
 
   setChannel(
