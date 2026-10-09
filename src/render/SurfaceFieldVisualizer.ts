@@ -79,13 +79,13 @@ export class SurfaceFieldVisualizer {
     this.texture.colorSpace = THREE.NoColorSpace;
     this.texture.needsUpdate = true;
 
-    // Use Three.js' supported emissive-map path instead of patching raw GLSL.
-    // This keeps the geographic diffuse map visible and avoids runtime shader
-    // compilation failures when Three.js changes internal shader chunks.
+    // The physical field must not replace or overwrite Morra's geographic map.
+    // Keep the field DataTexture separate and use it only as a display overlay.
+    // Its initial all-white pixels are neutral so the map can be shown immediately.
     this.material.color.setHex(0xffffff);
-    this.material.emissive.setHex(0xffffff);
-    this.material.emissiveMap = this.texture;
-    this.material.emissiveIntensity = 0.65;
+    this.material.emissive.setHex(0x000000);
+    this.material.emissiveMap = null;
+    this.material.emissiveIntensity = 0;
     this.material.needsUpdate = true;
 
   }
@@ -359,13 +359,6 @@ export class SurfaceFieldVisualizer {
   }
 
   dispose() {
-    if(this.material.emissiveMap === this.texture) {
-      this.material.emissiveMap = null;
-      this.material.emissiveIntensity = 0;
-      this.material.emissive.setHex(0x000000);
-      this.material.needsUpdate = true;
-    }
-
     this.texture.dispose();
   }
 }
