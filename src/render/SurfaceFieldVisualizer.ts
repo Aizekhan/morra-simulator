@@ -157,8 +157,8 @@ export class SurfaceFieldVisualizer {
       }
 
       const lightingReplacement =
-        "float morraPhysicalLight = clamp(texture2D(morraLightField, morraFieldUv).r, 0.0, 1.0);\\n" +
-        "outgoingLight *= morraPhysicalLight;\\n" +
+        "float morraPhysicalLight = clamp(texture2D(morraLightField, morraFieldUv).r, 0.0, 1.0);\n" +
+        "outgoingLight *= morraPhysicalLight;\n" +
         outputMarker;
 
       shader.fragmentShader = shader.fragmentShader.replace(
