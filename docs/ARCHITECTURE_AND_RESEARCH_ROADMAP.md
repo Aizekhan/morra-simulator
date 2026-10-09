@@ -15,22 +15,22 @@ Build a deterministic, reproducible cosmology research simulator for Morra. The 
 - Orbit math supports radius, eccentricity, inclination, ascending node, plane offsets and direction reversal.
 - Simulation time, timeline, body inspector, environment inspector and configurable GUI exist.
 - Surface grid is 64 × 128 and records light, heat, magic, source contributions, shadows, umbra/penumbra, spectrum/day-night diagnostics.
-- Surface field is mapped onto Morra's own material through a custom Three.js shader hook.
+- Surface field is mapped onto Morra's own `MeshStandardMaterial` through the standard `emissiveMap` path; the fragile custom GLSL hook was removed after browser console errors showed GLSL compilation failures.
 - Cones, shadow volumes and eclipse surface overlay exist, but are not yet validated as a consistent, physically accurate lighting/shadow solution.
-- Recent known-good CI: run #620 passed for `84005fb`; later shader-initialization diagnostics are being built. CI proves compilation only, not physical or visual correctness.
+- Latest CI: run #630 passed for `422bdfb` after replacing the custom GLSL patch with `emissiveMap`. CI proves TypeScript/Vite build integrity only, not browser rendering or physical correctness.
 - Provisional configuration currently conflicts with the proposed research baseline: code says 30-hour day and 25° axial tilt, whereas research brief says 120-hour rotation and 0° tilt. Do not silently promote either to canon; introduce explicit named parameter profiles and owner-approved baseline.
 
 ## Current visibility issue — most likely cause
 
-The planet is instantiated and forced visible; frustum culling is disabled. Its material is a `MeshStandardMaterial` with an asynchronously loaded world texture. `SurfaceFieldVisualizer` patches its shader to multiply `outgoingLight` by a DataTexture value. Before the first map is produced, that field texture was initialized with zeros, which can render the planet black. A safe neutral fallback was committed (`2b600c9`). Texture load/error status and render/field diagnostics were added (`eb5be79`, `db97733` and follow-up typing fixes). Current run #620 is green, and shader-init logging was added in `b4ae38a` pending CI.
+The planet is instantiated and forced visible; frustum culling is disabled. Its material is a `MeshStandardMaterial` with an asynchronously loaded world texture. A custom GLSL patch attempted to multiply `outgoingLight` by a DataTexture value and failed at runtime: the browser console showed literal `\\n` tokens, undeclared shader symbols and an invalid insertion point. The patch has now been removed and the physical display map is assigned as the material's standard `emissiveMap`; the initial map is neutral white so it does not erase the geographic surface before the first sample. Presentation lights from the three stars are also restored. Commit `422bdfb` passes CI, but a browser reload is still required to confirm visual behavior.
 
 Other root-cause risks:
-1. Fragile string replacement in Three.js shader chunks.
+1. Avoided for the current surface field: no manual string replacement in Three.js shader chunks remains in `SurfaceFieldVisualizer`.
 2. UV transform (`1-u, 1-v`) may not match the equirectangular world texture orientation.
 3. Physical light samples are normalized to current min/max for display, losing absolute flux meaning.
 4. Field recompute uses wall-clock rate limiting, so it can lag behind timeline seeks/config changes.
-5. Presentation point lights are deliberately disabled; thus if the physical field/shader fails, no independent visual fallback lights the sphere.
-6. A CI build can succeed while the WebGL shader fails only at runtime.
+5. Presentation point lights from the three stars are enabled again; validate that their visual contribution and the emissive field display are not excessively bright.
+6. A CI build can succeed while a runtime WebGL issue exists; the current fix eliminates this custom shader path, but still requires browser verification.
 
 ## Architecture rules (non-negotiable)
 
@@ -50,7 +50,7 @@ Other root-cause risks:
 ### Phase 0 — Restore visible, diagnosable baseline (P0)
 - Confirm Morra remains visible before/after texture and field initialization.
 - Add debug display modes: plain-color sphere, texture-only sphere, physical-light overlay, diagnostic map.
-- Expose texture load state, shader compile outcome, field timestamp/min/max/finite sample count and active channel.
+- Expose texture load state, field timestamp/min/max/finite sample count and active channel; custom surface-shader compile outcome is no longer applicable because the custom GLSL hook was removed.
 - Test known UV test pattern; establish correct mapping rather than guessing flips.
 - Avoid uninitialized zero texture; explicitly define how true night looks without corrupting geographic texture.
 
