@@ -109,7 +109,9 @@ export class SurfaceFieldVisualizer {
       const vertexCommonMarker = "#include <common>";
       const vertexBeginMarker = "#include <begin_vertex>";
       const fragmentCommonMarker = "#include <common>";
-      const lightingMarker = "#include <lights_fragment_end>";
+      // opaque_fragment runs after outgoingLight is assembled in
+      // Three.js' standard physical-material shader. Injecting before this
+      // chunk avoids touching the variable before it exists.
 
       // Three.js shader chunks are an internal integration boundary.
       // Verify every expected insertion point before mutating either shader;
@@ -145,13 +147,22 @@ export class SurfaceFieldVisualizer {
       );
 
 
+      const outputMarker = "#include <opaque_fragment>";
+      if(!shader.fragmentShader.includes(outputMarker)) {
+        console.error(
+          "[Morra] Physical surface-light output hook unavailable; retaining standard surface rendering.",
+          outputMarker
+        );
+        return;
+      }
+
       const lightingReplacement =
-        lightingMarker +
-        "\nfloat morraPhysicalLight = clamp(texture2D(morraLightField, morraFieldUv).r, 0.0, 1.0);" +
-        "\noutgoingLight *= morraPhysicalLight;";
+        "float morraPhysicalLight = clamp(texture2D(morraLightField, morraFieldUv).r, 0.0, 1.0);\\n" +
+        "outgoingLight *= morraPhysicalLight;\\n" +
+        outputMarker;
 
       shader.fragmentShader = shader.fragmentShader.replace(
-        lightingMarker,
+        outputMarker,
         lightingReplacement
       );
       this.shaderUniforms.lightField = shader.uniforms.morraLightField;
