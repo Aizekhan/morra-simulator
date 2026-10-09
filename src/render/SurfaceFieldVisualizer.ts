@@ -87,9 +87,12 @@ export class SurfaceFieldVisualizer {
     this.texture.colorSpace = THREE.NoColorSpace;
     this.texture.needsUpdate = true;
 
+    // Do not let the physical-field visualization erase the geographic map
+    // while shader compilation or field initialization is still pending.
     this.material.emissive.setHex(0x000000);
     this.material.emissiveMap = null;
     this.material.emissiveIntensity = 0;
+    this.material.color.setHex(0xffffff);
 
     // LIGHT_TOTAL is applied to Morra's actual material. The geographic
     // texture remains authoritative; no secondary surface geometry is used.
@@ -133,6 +136,10 @@ export class SurfaceFieldVisualizer {
         lightingReplacement
       );
       this.shaderUniforms.lightField = shader.uniforms.morraLightField;
+
+      console.info(
+        "[Morra] Physical surface-light shader compiled."
+      );
     };
 
     this.material.needsUpdate = true;
