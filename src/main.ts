@@ -1,3 +1,5 @@
+import * as THREE from "three";
+
 import "./style.css";
 
 import {
@@ -221,6 +223,79 @@ function animate() {
   );
 
   renderer.render();
+
+  // Low-noise diagnostics for the current render/field health.
+  // Helps distinguish a missing body from a missing texture or uninitialized field.
+  const diagnostics = (
+    window as Window & {
+      __MORRA_DIAGNOSTICS__?: {
+        at: number;
+        texture: {
+          loaded: boolean;
+          path: string;
+          error: unknown;
+        };
+        field: {
+          exists: boolean;
+          time: number | null;
+          samples: number;
+          min: number | null;
+          max: number | null;
+          finite: number;
+        };
+        planet: {
+          visible: boolean;
+          material: string;
+          radius: number;
+          cameraDistance: number;
+        };
+      };
+    }
+  );
+
+  const map =
+    simulation.morraSystem.surfaceFieldEngine.getMap();
+
+  const lightValues =
+    map?.light;
+
+  let finiteSamples = 0;
+  let minLight = Number.POSITIVE_INFINITY;
+  let maxLight = Number.NEGATIVE_INFINITY;
+
+  if(lightValues) {
+    for(const value of lightValues) {
+      if(Number.isFinite(value)) {
+        finiteSamples += 1;
+        minLight = Math.min(minLight, value);
+        maxLight = Math.max(maxLight, value);
+      }
+    }
+  }
+
+  diagnostics.__MORRA_DIAGNOSTICS__ = {
+    at: frame.time.totalHours,
+    texture:
+      simulation.morraSystem.getSurfaceTextureStatus(),
+    field: {
+      exists: map !== null,
+      time: map?.absoluteHours ?? null,
+      samples: lightValues?.length ?? 0,
+      min: finiteSamples > 0 ? minLight : null,
+      max: finiteSamples > 0 ? maxLight : null,
+      finite: finiteSamples
+    },
+    planet: {
+      visible: simulation.morraSystem.morra.mesh.visible,
+      material: simulation.morraSystem.morra.material.type,
+      radius: simulation.morraSystem.morra.radius,
+      cameraDistance: renderer.camera.position.distanceTo(
+        simulation.morraSystem.morra.mesh.getWorldPosition(
+          new THREE.Vector3()
+        )
+      )
+    }
+  };
 }
 
 animate();
