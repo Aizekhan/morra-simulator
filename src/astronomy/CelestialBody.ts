@@ -336,9 +336,14 @@ export class CelestialBody {
       this.material instanceof
       THREE.MeshStandardMaterial
     ) {
-      this.material.emissive.setHex(
-        color
-      );
+      // Preserve Morra's neutral white tint and any geographic diffuse map.
+      // A config color change must not tint the world map or its emissive
+      // contribution; celestial bodies can still use their configured color.
+      if(this.mesh.userData.surfaceLightingOwnedByField !== true) {
+        this.material.emissive.setHex(
+          color
+        );
+      }
     }
   }
 
