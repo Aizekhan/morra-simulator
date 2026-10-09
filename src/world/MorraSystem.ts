@@ -124,7 +124,9 @@ export class MorraSystem {
           : String(this.worldTextureLoadError),
       assignedToMaterial:
         this.morra.material.map === this.worldTexture &&
-        this.worldTexture !== null
+        this.worldTexture !== null,
+      materialMapPresent:
+        this.morra.material.map !== null
     };
   }
 
