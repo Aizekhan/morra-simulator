@@ -25,6 +25,7 @@ export class SurfaceFieldVisualizer {
 
   private readonly texture: THREE.DataTexture;
   private readonly material: THREE.MeshStandardMaterial;
+  private baseTexture: THREE.Texture | null = null;
   private width: number;
   private height: number;
   private channel: SurfaceFieldChannel = "LIGHT_TOTAL";
