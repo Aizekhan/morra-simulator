@@ -1049,10 +1049,6 @@ export class MorraSystem {
           loaded
         );
 
-        this.surfaceFieldVisualizer.setBaseTexture(
-          loaded
-        );
-
         if(
           this.worldTexture &&
           this.worldTexture !== loaded
