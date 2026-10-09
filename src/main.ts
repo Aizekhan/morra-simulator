@@ -227,7 +227,7 @@ function animate() {
   // Low-noise diagnostics for the current render/field health.
   // Helps distinguish a missing body from a missing texture or uninitialized field.
   const diagnostics = (
-    window as Window & {
+    window as unknown as {
       __MORRA_DIAGNOSTICS__?: {
         at: number;
         texture: {
