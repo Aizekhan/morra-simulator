@@ -120,7 +120,7 @@ export class SurfaceFieldVisualizer {
         !shader.vertexShader.includes(vertexCommonMarker) ? vertexCommonMarker : null,
         !shader.vertexShader.includes(vertexBeginMarker) ? vertexBeginMarker : null,
         !shader.fragmentShader.includes(fragmentCommonMarker) ? fragmentCommonMarker : null,
-        !shader.fragmentShader.includes(lightingMarker) ? lightingMarker : null
+        !shader.fragmentShader.includes("#include <opaque_fragment>") ? "#include <opaque_fragment>" : null
       ].filter((marker): marker is string => marker !== null);
 
       if(missingMarkers.length > 0) {
