@@ -259,9 +259,13 @@ function animate() {
       __MORRA_DIAGNOSTICS__?: {
         at: number;
         texture: {
+          enabled: boolean;
           loaded: boolean;
           path: string;
+          requestedPath: string;
           failed: boolean;
+          error: string | null;
+          assignedToMaterial: boolean;
         };
         field: {
           exists: boolean;
