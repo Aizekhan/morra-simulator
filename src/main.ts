@@ -248,6 +248,17 @@ function animate() {
           material: string;
           radius: number;
           cameraDistance: number;
+          renderOrder: number;
+          frustumCulled: boolean;
+          worldPosition: { x: number; y: number; z: number };
+          scale: { x: number; y: number; z: number };
+          textureAssigned: boolean;
+        };
+        renderer: {
+          webglAvailable: boolean;
+          pixelRatio: number;
+          viewportWidth: number;
+          viewportHeight: number;
         };
       };
     }
@@ -293,7 +304,28 @@ function animate() {
         simulation.morraSystem.morra.mesh.getWorldPosition(
           new THREE.Vector3()
         )
-      )
+      ),
+      renderOrder: simulation.morraSystem.morra.mesh.renderOrder,
+      frustumCulled: simulation.morraSystem.morra.mesh.frustumCulled,
+      worldPosition: (() => {
+        const position = simulation.morraSystem.morra.mesh.getWorldPosition(
+          new THREE.Vector3()
+        );
+        return { x: position.x, y: position.y, z: position.z };
+      })(),
+      scale: {
+        x: simulation.morraSystem.morra.mesh.scale.x,
+        y: simulation.morraSystem.morra.mesh.scale.y,
+        z: simulation.morraSystem.morra.mesh.scale.z
+      },
+      textureAssigned:
+        simulation.morraSystem.morra.material.map !== null
+    },
+    renderer: {
+      webglAvailable: renderer.renderer.getContext() !== null,
+      pixelRatio: renderer.renderer.getPixelRatio(),
+      viewportWidth: renderer.renderer.domElement.width,
+      viewportHeight: renderer.renderer.domElement.height
     }
   };
 }
