@@ -82,6 +82,7 @@ export class SurfaceFieldVisualizer {
     // The physical field must not replace or overwrite Morra's geographic map.
     // Keep the field DataTexture separate and use it only as a display overlay.
     // Its initial all-white pixels are neutral so the map can be shown immediately.
+    this.baseTexture = this.material.map;
     this.material.color.setHex(0xffffff);
     this.material.emissive.setHex(0x000000);
     this.material.emissiveMap = null;
@@ -91,9 +92,16 @@ export class SurfaceFieldVisualizer {
   }
 
   setBaseTexture(
-    _texture: THREE.Texture | null
+    texture: THREE.Texture | null
   ) {
-    // Geographic texture remains owned by Morra's own material.
+    this.baseTexture = texture;
+
+    // Keep the geographic map on the diffuse channel. Never replace it with
+    // the physical-field DataTexture used for illumination diagnostics.
+    if(this.material.map !== texture) {
+      this.material.map = texture;
+      this.material.needsUpdate = true;
+    }
   }
 
   setChannel(
