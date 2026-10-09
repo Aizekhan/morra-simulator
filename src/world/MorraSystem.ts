@@ -107,11 +107,24 @@ export class MorraSystem {
   private worldTextureLoadError:
     unknown = null;
 
+  private worldTextureRequestedPath =
+    "";
+
   getSurfaceTextureStatus() {
     return {
+      enabled: MORRA_CONFIG.MORRA_SURFACE_TEXTURE_ENABLED,
       loaded: this.worldTexture !== null,
       path: this.worldTexturePath,
-      failed: this.worldTextureLoadError !== null
+      requestedPath: this.worldTextureRequestedPath,
+      failed: this.worldTextureLoadError !== null,
+      error: this.worldTextureLoadError instanceof Error
+        ? this.worldTextureLoadError.message
+        : this.worldTextureLoadError === null
+          ? null
+          : String(this.worldTextureLoadError),
+      assignedToMaterial:
+        this.morra.material.map === this.worldTexture &&
+        this.worldTexture !== null
     };
   }
 
@@ -1014,6 +1027,11 @@ export class MorraSystem {
       return;
     }
 
+    // Track the attempted path independently from the successfully loaded texture.
+    // This prevents the UI from reporting a blank path after a failed request.
+    this.worldTextureRequestedPath = path;
+    this.worldTextureLoadError = null;
+
     const loader =
       new THREE.TextureLoader();
 
@@ -1058,6 +1076,7 @@ export class MorraSystem {
 
         this.worldTextureLoadError = error;
         this.worldTexturePath = "";
+        this.morra.setSurfaceTexture(null);
 
       }
     );
