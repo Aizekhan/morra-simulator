@@ -314,9 +314,14 @@ export class CelestialBody {
     color: number
   ) {
 
-    this.material.color.setHex(
-      color
-    );
+    // Morra's diffuse world map needs a neutral white base tint.
+    // Let the configuration color apply to ordinary celestial bodies, but
+    // don't multiply the planet's geographic texture by a second tint.
+    if(this.mesh.userData.surfaceLightingOwnedByField !== true) {
+      this.material.color.setHex(
+        color
+      );
+    }
 
     const presentationMesh =
       this.mesh.userData.presentationMesh as
