@@ -106,30 +106,49 @@ export class SurfaceFieldVisualizer {
 
       shader.uniforms.morraLightField = { value: this.texture };
 
+      const vertexCommonMarker = "#include <common>";
+      const vertexBeginMarker = "#include <begin_vertex>";
+      const fragmentCommonMarker = "#include <common>";
+      const lightingMarker = "#include <lights_fragment_end>";
+
+      // Three.js shader chunks are an internal integration boundary.
+      // Verify every expected insertion point before mutating either shader;
+      // otherwise leave the material's standard geographic rendering intact.
+      const missingMarkers = [
+        !shader.vertexShader.includes(vertexCommonMarker) ? vertexCommonMarker : null,
+        !shader.vertexShader.includes(vertexBeginMarker) ? vertexBeginMarker : null,
+        !shader.fragmentShader.includes(fragmentCommonMarker) ? fragmentCommonMarker : null,
+        !shader.fragmentShader.includes(lightingMarker) ? lightingMarker : null
+      ].filter((marker): marker is string => marker !== null);
+
+      if(missingMarkers.length > 0) {
+        console.error(
+          "[Morra] Physical surface-light shader hooks unavailable; retaining standard surface rendering.",
+          missingMarkers
+        );
+        return;
+      }
+
       shader.vertexShader = shader.vertexShader.replace(
-        "#include <common>",
-        "#include <common>\nvarying vec2 morraFieldUv;"
+        vertexCommonMarker,
+        vertexCommonMarker + "\\nvarying vec2 morraFieldUv;"
       );
 
       shader.vertexShader = shader.vertexShader.replace(
-        "#include <begin_vertex>",
-        "#include <begin_vertex>\nmorraFieldUv = vec2(1.0 - uv.x, 1.0 - uv.y);"
+        vertexBeginMarker,
+        vertexBeginMarker + "\\nmorraFieldUv = vec2(1.0 - uv.x, 1.0 - uv.y);"
       );
 
       shader.fragmentShader = shader.fragmentShader.replace(
-        "#include <common>",
-        "#include <common>\nuniform sampler2D morraLightField;\nvarying vec2 morraFieldUv;"
+        fragmentCommonMarker,
+        fragmentCommonMarker + "\\nuniform sampler2D morraLightField;\\nvarying vec2 morraFieldUv;"
       );
 
-      const lightingMarker = "#include <lights_fragment_end>";
+
       const lightingReplacement =
         lightingMarker +
         "\nfloat morraPhysicalLight = clamp(texture2D(morraLightField, morraFieldUv).r, 0.0, 1.0);" +
         "\noutgoingLight *= morraPhysicalLight;";
-
-      if(!shader.fragmentShader.includes(lightingMarker)) {
-        throw new Error("Morra LIGHT_TOTAL shader hook is unavailable");
-      }
 
       shader.fragmentShader = shader.fragmentShader.replace(
         lightingMarker,
