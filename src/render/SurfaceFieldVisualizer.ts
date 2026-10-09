@@ -25,7 +25,6 @@ export class SurfaceFieldVisualizer {
 
   private readonly texture: THREE.DataTexture;
   private readonly material: THREE.MeshStandardMaterial;
-  private baseTexture: THREE.Texture | null = null;
   private width: number;
   private height: number;
   private channel: SurfaceFieldChannel = "LIGHT_TOTAL";
@@ -83,7 +82,6 @@ export class SurfaceFieldVisualizer {
     // The physical field must not replace or overwrite Morra's geographic map.
     // Keep the field DataTexture separate and use it only as a display overlay.
     // Its initial all-white pixels are neutral so the map can be shown immediately.
-    this.baseTexture = this.material.map;
     this.material.color.setHex(0xffffff);
     this.material.emissive.setHex(0x000000);
     this.material.emissiveMap = null;
@@ -95,8 +93,6 @@ export class SurfaceFieldVisualizer {
   setBaseTexture(
     texture: THREE.Texture | null
   ) {
-    this.baseTexture = texture;
-
     // Keep the geographic map on the diffuse channel. Never replace it with
     // the physical-field DataTexture used for illumination diagnostics.
     if(this.material.map !== texture) {
